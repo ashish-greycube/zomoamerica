@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include zomoamerica *.css
+recursive-include zomoamerica *.csv
+recursive-include zomoamerica *.html
+recursive-include zomoamerica *.ico
+recursive-include zomoamerica *.js
+recursive-include zomoamerica *.json
+recursive-include zomoamerica *.md
+recursive-include zomoamerica *.png
+recursive-include zomoamerica *.py
+recursive-include zomoamerica *.svg
+recursive-include zomoamerica *.txt
+recursive-exclude zomoamerica *.pyc
