@@ -1,0 +1,30 @@
+{
+ "add_total_row": 1, 
+ "creation": "2019-05-30 01:18:36.949746", 
+ "disable_prepared_report": 0, 
+ "disabled": 0, 
+ "docstatus": 0, 
+ "doctype": "Report", 
+ "icon": "fa fa-book", 
+ "idx": 0, 
+ "is_standard": "Yes", 
+ "letter_head": "ZA - Standard", 
+ "modified": "2019-05-30 01:48:22.299693", 
+ "modified_by": "Administrator", 
+ "module": "ZomoAmerica", 
+ "name": "Sales Tax Collection", 
+ "owner": "Administrator", 
+ "prepared_report": 0, 
+ "query": "select distinct\n\tSI.posting_date as InvoiceDate,\n\tSI.name as \"Invoice:Link/Sales Invoice:80\" ,\n\tSI.customer as \"Customer:Link/Customer:120\", \t\n\tSI.address_display as \"Address:Data:120\", \n\tCASE  WHEN SI.base_total_taxes_and_charges > 0 THEN \"YES\" ELSE \"NO\" END AS TaxCollected,\n\tC.customers_license as \"License:Data:80\",\n\tSI.rounded_total as \"GrossTotal:Float:100\",\n\tSI.base_total_taxes_and_charges As \"TaxAmount:Float:80\",\n\tROUND(SI.total_net_weight,2) as \"SalesWeight:Float:100\",\n\tROUND(SI.total_net_weight * 2.20462,2) AS \"WeightinLB:Float:100\",\n\tDN.order_tracking_number as \"Shipping:Data:100\"\n\tFROM  `tabSales Invoice` as SI \n\tINNER JOIN tabCustomer as C \n\tON SI.customer = C.customer_name\n\tLEFT OUTER JOIN `tabDelivery Note Item` AS DNI\t\n\tON  SI.name = DNI.against_sales_invoice \n\tLEFT OUTER JOIN `tabDelivery Note` As DN \n\tON DNI.parent = DN.name\n\tWHERE SI.posting_date >= %(from_date)s and SI.posting_date <= %(to_date)s  \n", 
+ "ref_doctype": "Sales Invoice", 
+ "report_name": "Sales Tax Collection", 
+ "report_type": "Query Report", 
+ "roles": [
+  {
+   "role": "Accounts Manager"
+  }, 
+  {
+   "role": "Accounts User"
+  }
+ ]
+}
