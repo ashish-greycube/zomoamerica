@@ -1,4 +1,4 @@
-frappe.query_reports["Sales Tax Collection"] = {
+frappe.query_reports["Tobacco Product Tax"] = {
 	"filters": [
 		
 		{
