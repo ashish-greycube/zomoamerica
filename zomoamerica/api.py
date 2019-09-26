@@ -4,11 +4,9 @@ import frappe
 from frappe import scrub
 from textwrap import wrap
 
-@frappe.whitelist(allow_guest=True)
-def create_lead(email_address):
-# def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number):
-	# hard coded values
-	# lead_owner="ahmed@zomoamerica.com"
+@frappe.whitelist()
+def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number):
+# def create_lead(email_address):
 	business_name='y'
 	first_name='y'
 	last_name='y'
@@ -17,9 +15,12 @@ def create_lead(email_address):
 	state='y'
 	zipcode='11212'
 	website='y.com'
-	email_address='y@y.com'
+	# email_address='y@y.com'
 	telephone_number='1122'	
-	# lead_owner="ashish@greycube.in"
+	
+	# hard coded values
+	# lead_owner="ahmed@zomoamerica.com"
+	lead_owner="ashish@greycube.in"
 	request_type="Product Enquiry"
 	territory='United States'
 	country="United States"
@@ -29,7 +30,7 @@ def create_lead(email_address):
 	address_type="Billing"
 
 	lead_name=frappe.scrub(first_name)+frappe.scrub(last_name)
-# "lead_owner":lead_owner,
+
 	lead_map={
 	"company_name":business_name,
 	"lead_name":lead_name,
@@ -38,6 +39,7 @@ def create_lead(email_address):
 	"phone":telephone_number,
 	"organization_lead":organization_lead,
 	"status":status,
+	"lead_owner":lead_owner,
 	"request_type":request_type,
 	"company":company,
 	"territory":territory
@@ -62,13 +64,14 @@ def create_lead(email_address):
 		"country":country
 	}
 
-	address = frappe.new_doc("Address")
-	address.update(address_map)
-	lead_link={
-		"link_doctype":"Lead",
-		"link_name":lead.name,
-		"link_title":lead.name
-	}
-	address.append("links",lead_link)
-	address.insert(ignore_permissions=True)
-	print(address.name,"address")
+	# address = frappe.new_doc("Address")
+	# address.update(address_map)
+	# lead_link={
+	# 	"link_doctype":"Lead",
+	# 	"link_name":lead.name,
+	# 	"link_title":lead.name
+	# }
+	# address.append("links",lead_link)
+	# address.insert(ignore_permissions=True)
+	# print(address.name,"address")
+	frappe.db.commit()
