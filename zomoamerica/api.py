@@ -4,7 +4,7 @@ import frappe
 from frappe import scrub
 from textwrap import wrap
 
-@frappe.whitelist()
+@frappe.whitelist(allow_guest=True)
 def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number):
 	# hard coded values
 	lead_owner="ahmed@zomoamerica.com"
