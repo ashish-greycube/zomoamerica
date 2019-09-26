@@ -5,18 +5,18 @@ from frappe import scrub
 from textwrap import wrap
 
 @frappe.whitelist()
-def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number):
-# def create_lead(email_address):
-	business_name='y'
-	first_name='y'
+# def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number):
+def create_lead(email_address):
+	business_name='ys'
+	first_name='yd'
 	last_name='y'
-	address='yyyyyyyyyyyssssssssssssdddddddddddddddddddddddd'
-	city='y'
-	state='y'
+	address='yyydyyyyyyyyssssssssssssdddddddddddddddddddddddd'
+	city='yd'
+	state='yd'
 	zipcode='11212'
-	website='y.com'
+	website='yd.com'
 	# email_address='y@y.com'
-	telephone_number='1122'	
+	telephone_number='11322'	
 	
 	# hard coded values
 	# lead_owner="ahmed@zomoamerica.com"
@@ -31,6 +31,8 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 
 	lead_name=frappe.scrub(first_name)+frappe.scrub(last_name)
 
+	# 
+# "lead_owner":lead_owner,
 	lead_map={
 	"company_name":business_name,
 	"lead_name":lead_name,
@@ -39,7 +41,6 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 	"phone":telephone_number,
 	"organization_lead":organization_lead,
 	"status":status,
-	"lead_owner":lead_owner,
 	"request_type":request_type,
 	"company":company,
 	"territory":territory
@@ -48,6 +49,7 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 	lead = frappe.new_doc("Lead")
 	lead.update(lead_map)
 	lead.insert(ignore_permissions=True)
+	# lead.save(ignore_permissions=True)
 	print(lead.name,"lead")
 
 	address_list=wrap(address,40)
@@ -64,14 +66,15 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 		"country":country
 	}
 
-	# address = frappe.new_doc("Address")
-	# address.update(address_map)
-	# lead_link={
-	# 	"link_doctype":"Lead",
-	# 	"link_name":lead.name,
-	# 	"link_title":lead.name
-	# }
+	address = frappe.new_doc("Address")
+	address.update(address_map)
+	lead_link={
+		"link_doctype":"Lead",
+		"link_name":lead.name,
+		"link_title":lead.name
+	}
 	# address.append("links",lead_link)
+	# # address.save(ignore_permissions=True)
 	# address.insert(ignore_permissions=True)
 	# print(address.name,"address")
-	frappe.db.commit()
+	# frappe.db.commit()
