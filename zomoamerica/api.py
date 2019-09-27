@@ -6,11 +6,19 @@ from textwrap import wrap
 
 @frappe.whitelist()
 def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number,territory):
+
+	if territory:
+		if frappe.db.exists("Territory", territory):
+			territory=territory
+		else:
+			territory='United States'
+	else:
+		territory='United States'
+
 	# hard coded values
 	lead_owner="ahmed@zomoamerica.com"
 	# lead_owner="ashish@greycube.in"
 	request_type="Product Enquiry"
-	# territory='United States'
 	country="United States"
 	status="Lead"
 	organization_lead=1
