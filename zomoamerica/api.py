@@ -5,12 +5,12 @@ from frappe import scrub
 from textwrap import wrap
 
 @frappe.whitelist()
-def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number):
+def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number,territory):
 	# hard coded values
 	lead_owner="ahmed@zomoamerica.com"
 	# lead_owner="ashish@greycube.in"
 	request_type="Product Enquiry"
-	territory='United States'
+	# territory='United States'
 	country="United States"
 	status="Lead"
 	organization_lead=1
