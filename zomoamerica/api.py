@@ -24,6 +24,7 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 	organization_lead=1
 	company = frappe.db.get_single_value('Global Defaults', 'default_company')
 	address_type="Billing"
+	source="Wholesale Inquiry form"
 
 	lead_map={
 	"company_name":business_name,
@@ -33,7 +34,8 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 	"request_type":request_type,
 	"company":company,
 	"lead_owner":lead_owner,
-	"territory":territory
+	"territory":territory,
+	"source":source
 	}
 
 	# Check if existing lead
