@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe import scrub
 from textwrap import wrap
+from frappe.utils import add_to_date, nowdate
 
 @frappe.whitelist()
 def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number,territory):
@@ -25,6 +26,8 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 	company = frappe.db.get_single_value('Global Defaults', 'default_company')
 	address_type="Billing"
 	source="Wholesale Inquiry form"
+	contact_by="luz@zomoamerica.com"
+	contact_date=add_to_date(nowdate(), months=0, days=7)
 
 	lead_map={
 	"company_name":business_name,
@@ -35,7 +38,9 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 	"company":company,
 	"lead_owner":lead_owner,
 	"territory":territory,
-	"source":source
+	"source":source,
+	"contact_by":contact_by,
+	"contact_date":contact_date
 	}
 
 	# Check if existing lead
