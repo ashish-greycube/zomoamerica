@@ -6,7 +6,7 @@ import frappe
 def get_data():
 	config = [
 		{
-			"label": _("Tools"),
+			"label": _("Reports"),
 			"items": [
 				{
 					"type": "report",
@@ -19,7 +19,17 @@ def get_data():
 					"name": "Item wise Master Case Sales",
 					"is_query_report": True,
 					"doctype": "File"
-				},
+				}
+			]
+		},
+		{
+			"label": _("Setup"),
+			"items": [
+				{
+					"type": "doctype",
+					"name": "US State wise Tobacco Excise",
+					"description": "US State wise Tobacco Excise"
+				}
 			]
 		}
 		]
