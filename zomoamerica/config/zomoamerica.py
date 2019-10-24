@@ -19,6 +19,12 @@ def get_data():
 					"name": "Item wise Master Case Sales",
 					"is_query_report": True,
 					"doctype": "File"
+				},
+				{
+					"type":"report",
+					"name":"Tobacco In Out",
+					"is_query_report":True,
+					"doctype": "File"
 				}
 			]
 		},
