@@ -16,7 +16,13 @@ def get_data():
 				},
 				{
 					"type": "report",
-					"name": "Item wise Master Case Sales",
+					"name": "Tobacco Master Case Sales",
+					"is_query_report": True,
+					"doctype": "File"
+				},
+				{
+					"type": "report",
+					"name": "Tobacco Flavorwise Stock Summary",
 					"is_query_report": True,
 					"doctype": "File"
 				},

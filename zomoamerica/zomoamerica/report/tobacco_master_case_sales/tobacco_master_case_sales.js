@@ -1,4 +1,4 @@
-frappe.query_reports["Item wise Master Case Sales"] = {
+frappe.query_reports["Tobacco Master Case Sales"] = {
 	"filters": [
 		
 		{
