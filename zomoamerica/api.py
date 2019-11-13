@@ -6,7 +6,7 @@ from textwrap import wrap
 from frappe.utils import add_to_date, nowdate
 
 @frappe.whitelist()
-def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number,territory,organization_lead=None,notes=None):
+def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number,territory,source=None,organization_lead=None,notes=None):
 
 	if territory:
 		if frappe.db.exists("Territory", territory):
@@ -25,7 +25,12 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 		notes=notes
 	else:
 		notes=''
-	
+
+	if 	source!=None:
+		source=source
+	else:
+		source="Wholesale Inquiry form"
+
 	# hard coded values
 	lead_owner="ahmed@zomoamerica.com"
 	# lead_owner="ashish@greycube.in"
@@ -35,7 +40,7 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 	organization_lead=organization_lead
 	company = frappe.db.get_single_value('Global Defaults', 'default_company')
 	address_type="Billing"
-	source="Wholesale Inquiry form"
+	source=source
 	contact_by="luz@zomoamerica.com"
 	contact_date=add_to_date(nowdate(), months=0, days=7)
 
