@@ -73,7 +73,7 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 
 	if not lead_name:
 		#new
-		lead_name=frappe.scrub(first_name)+frappe.scrub(last_name)
+		lead_name=frappe.scrub(first_name)+' '+frappe.scrub(last_name)
 		lead_map.update({"lead_name":lead_name})	
 		lead = frappe.new_doc("Lead")
 		lead.update(lead_map)
