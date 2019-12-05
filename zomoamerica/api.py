@@ -42,7 +42,8 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 	address_type="Billing"
 	source=source
 	contact_by="luz@zomoamerica.com"
-	contact_date=add_to_date(nowdate(), months=0, days=7)
+	last_followup_date=add_to_date(nowdate(), months=0, days=7)
+	first_followup_date=add_to_date(nowdate(), months=0, days=1)
 
 	lead_map={
 	"company_name":business_name,
@@ -55,7 +56,8 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 	"territory":territory,
 	"source":source,
 	"contact_by":contact_by,
-	"contact_date":contact_date,
+	"contact_date":first_followup_date,
+	"ends_on":last_followup_date,
 	"notes":notes
 	}
 
