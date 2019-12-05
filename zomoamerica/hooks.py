@@ -86,13 +86,17 @@ doctype_js = {
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-#	}
-# }
+doc_events = {
+	"Sales Invoice": {
+		"validate": "zomoamerica.api.calculate_total_tobacco_weight"
+	},
+	"Sales Order": {
+		"validate": "zomoamerica.api.calculate_total_tobacco_weight"
+	},
+	"Delivery Note": {
+		"validate": "zomoamerica.api.calculate_total_tobacco_weight"
+	},		
+}
 
 # Scheduled Tasks
 # ---------------

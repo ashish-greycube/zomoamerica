@@ -128,3 +128,20 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 		address.insert(ignore_permissions=True)
 		print(address.name,"address new")
 	frappe.db.commit()
+
+def calculate_total_tobacco_weight(self,method):
+	self.total_tobacco_weight_za=0
+	for item in self.items:
+		if item.item_group =='TOBACCO':
+			self.total_tobacco_weight_za+=item.total_weight
+		else:
+			item_group = frappe.get_doc("Item Group", item.item_group)
+			parent_groups = frappe.db.sql("""select name from `tabItem Group`
+			where lft <= %s and rgt >= %s
+			and name = 'TOBACCO'
+			order by lft asc""", (item_group.lft, item_group.rgt), as_list=True)
+			if parent_groups:
+				parent_tobacco_group=parent_groups[0][0]
+				if parent_tobacco_group:
+					self.total_tobacco_weight_za+=item.total_weight
+
