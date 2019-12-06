@@ -129,6 +129,19 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 		print(address.name,"address new")
 	frappe.db.commit()
 
+
+
+def copy_shipping_details_from_item_to_SI(self,method):
+	if self.items:
+		if self.items[0]:
+			if self.items[0].delivery_note:
+				delivery_note=self.items[0].delivery_note
+				shipping_method_za,order_tracking_number,	no_of_boxes_za,shipment_tracking_no_za,	no_of_boxes_za = frappe.db.get_value('Delivery Note', delivery_note, ['shipping_method_za', 'order_tracking_number','no_of_boxes_za'])
+				self.shipping_method_za=shipping_method_za
+				self.shipment_tracking_no_za=order_tracking_number
+				self.no_of_boxes_za=no_of_boxes_za
+			
+
 def calculate_total_tobacco_weight(self,method):
 	self.total_tobacco_weight_za=0
 	for item in self.items:
