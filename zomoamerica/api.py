@@ -136,9 +136,9 @@ def copy_shipping_details_from_item_to_SI(self,method):
 		if self.items[0]:
 			if self.items[0].delivery_note:
 				delivery_note=self.items[0].delivery_note
-				shipping_method_za,order_tracking_number,	no_of_boxes_za,shipment_tracking_no_za,	no_of_boxes_za = frappe.db.get_value('Delivery Note', delivery_note, ['shipping_method_za', 'order_tracking_number','no_of_boxes_za'])
+				shipping_method_za,shipment_tracking_no_za,	no_of_boxes_za = frappe.db.get_value('Delivery Note', delivery_note, ['shipping_method_za', 'order_tracking_number','no_of_boxes_za'])
 				self.shipping_method_za=shipping_method_za
-				self.shipment_tracking_no_za=order_tracking_number
+				self.shipment_tracking_no_za=shipment_tracking_no_za
 				self.no_of_boxes_za=no_of_boxes_za
 			
 
