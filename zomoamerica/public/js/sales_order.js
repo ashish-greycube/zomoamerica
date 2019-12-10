@@ -12,6 +12,10 @@ frappe.ui.form.on('Sales Order', {
 frappe.ui.form.on('Sales Order Item', {
 	item_code(frm, cdt, cdn) {
 		let row = frappe.get_doc(cdt, cdn);
+		if(row.item_code) {
+            row.uom='';
+            refresh_field("uom", cdn, "items");
+        }
 		frappe.db.get_value('Item', row.item_code, 'stock_uom')
 			.then(r => {
 				if (r.message.stock_uom) {
