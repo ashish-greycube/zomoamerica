@@ -41,7 +41,7 @@ def create_lead(business_name,first_name,last_name,address,city,state,zipcode,we
 	company = frappe.db.get_single_value('Global Defaults', 'default_company')
 	address_type="Billing"
 	source=source
-	contact_by="luz@zomoamerica.com"
+	contact_by="ahmed@zomoamerica.com"
 	last_followup_date=add_to_date(nowdate(), months=0, days=7)
 	first_followup_date=add_to_date(nowdate(), months=0, days=1)
 
