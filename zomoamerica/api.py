@@ -158,3 +158,9 @@ def calculate_total_tobacco_weight(self,method):
 				if parent_tobacco_group:
 					self.total_tobacco_weight_za+=item.total_weight
 
+def update_delivery_note_workflow_state(self,method):
+	print('update_delivery_note_worflow_state-------')
+	if self.status == 'Completed':
+		print('---------inside')
+		self.db_set('workflow_state', self.status, update_modified = True)
+
