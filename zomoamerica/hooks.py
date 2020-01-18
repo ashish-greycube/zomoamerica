@@ -96,7 +96,7 @@ doc_events = {
 	},
 	"Delivery Note": {
 		"validate": "zomoamerica.api.calculate_total_tobacco_weight",
-		"on_submit": "zomoamerica.api.update_delivery_note_workflow_state"
+		"on_update": "zomoamerica.api.update_delivery_note_workflow_state"
 	},		
 }
 
