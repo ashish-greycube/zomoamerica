@@ -159,8 +159,6 @@ def calculate_total_tobacco_weight(self,method):
 					self.total_tobacco_weight_za+=item.total_weight
 
 def update_delivery_note_workflow_state(self,method):
-	print('update_delivery_note_worflow_state-------')
-	if self.status == 'Completed':
-		print('---------inside')
+	if self.status == 'Completed' and self.workflow_state != 'Completed':
 		self.db_set('workflow_state', self.status, update_modified = True)
 
