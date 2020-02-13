@@ -8,7 +8,7 @@
   "state",
   "tax_percent",
   "weight",
-  "permit__number"
+  "permit_number"
  ],
  "fields": [
   {
@@ -34,12 +34,12 @@
    "reqd": 1
   },
   {
-   "fieldname": "permit__number",
+   "fieldname": "permit_number",
    "fieldtype": "Data",
-   "label": "Permit  Number"
+   "label": "Permit Number"
   }
  ],
- "modified": "2020-02-13 08:36:39.709802",
+ "modified": "2020-02-13 09:04:58.250143",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "US State wise Tobacco Excise",

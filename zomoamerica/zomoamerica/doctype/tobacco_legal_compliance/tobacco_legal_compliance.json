@@ -1,0 +1,152 @@
+{
+ "autoname": "format:{report_type}-{month}-{year}-{company}",
+ "creation": "2020-02-13 08:53:56.928942",
+ "description": "Tobacco Legal Compliance ",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "report_type",
+  "column_break_3",
+  "year",
+  "month",
+  "section_break_5",
+  "company_address",
+  "email",
+  "us_state",
+  "permit_number",
+  "column_break_8",
+  "employer_identification_number",
+  "legal_head",
+  "phone",
+  "fax"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "company_address",
+   "fieldtype": "Link",
+   "label": "Company Address",
+   "options": "Address",
+   "reqd": 1
+  },
+  {
+   "fieldname": "report_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Report Type",
+   "options": "FDA-3852",
+   "reqd": 1
+  },
+  {
+   "fieldname": "year",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Year"
+  },
+  {
+   "fieldname": "month",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Month",
+   "options": "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_5",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fetch_from": "company.email",
+   "fieldname": "email",
+   "fieldtype": "Data",
+   "label": "Email"
+  },
+  {
+   "fieldname": "column_break_8",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "company.employer_identification_number_cf",
+   "fieldname": "employer_identification_number",
+   "fieldtype": "Data",
+   "label": "Employer Identification Number"
+  },
+  {
+   "fetch_from": "company.legal_head_cf",
+   "fieldname": "legal_head",
+   "fieldtype": "Data",
+   "label": "Legal Head"
+  },
+  {
+   "fetch_from": "company.phone_no",
+   "fieldname": "phone",
+   "fieldtype": "Data",
+   "label": "Phone"
+  },
+  {
+   "fetch_from": "company.fax",
+   "fieldname": "fax",
+   "fieldtype": "Data",
+   "label": "Fax"
+  },
+  {
+   "fieldname": "us_state",
+   "fieldtype": "Link",
+   "label": "US State",
+   "options": "US State wise Tobacco Excise"
+  },
+  {
+   "fetch_from": "us_state.permit_number",
+   "fieldname": "permit_number",
+   "fieldtype": "Data",
+   "label": "Permit Number"
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "modified": "2020-02-13 09:07:35.755206",
+ "modified_by": "Administrator",
+ "module": "ZomoAmerica",
+ "name": "Tobacco Legal Compliance",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
