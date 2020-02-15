@@ -13,12 +13,15 @@
   "month",
   "section_break_5",
   "company_address",
-  "email",
+  "address_line1",
+  "address_line2",
+  "zipcode",
   "us_state",
   "permit_number",
   "column_break_8",
   "employer_identification_number",
   "legal_head",
+  "email",
   "phone",
   "fax"
  ],
@@ -101,7 +104,7 @@
   {
    "fieldname": "us_state",
    "fieldtype": "Link",
-   "label": "US State",
+   "label": "US State Permit",
    "options": "US State wise Tobacco Excise"
   },
   {
@@ -113,9 +116,27 @@
   {
    "fieldname": "column_break_3",
    "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "company_address.address_line1",
+   "fieldname": "address_line1",
+   "fieldtype": "Data",
+   "label": "Address Line 1"
+  },
+  {
+   "fetch_from": "company_address.address_line2",
+   "fieldname": "address_line2",
+   "fieldtype": "Data",
+   "label": "Address Line 2"
+  },
+  {
+   "fetch_from": "company_address.pincode",
+   "fieldname": "zipcode",
+   "fieldtype": "Data",
+   "label": "ZipCode"
   }
  ],
- "modified": "2020-02-13 09:07:35.755206",
+ "modified": "2020-02-15 05:03:15.390608",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",
