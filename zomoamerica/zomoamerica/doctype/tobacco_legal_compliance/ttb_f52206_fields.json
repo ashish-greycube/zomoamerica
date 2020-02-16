@@ -1,0 +1,1300 @@
+{
+  "fda": [
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page1[0].compname[0]",
+      "FieldNameAlt": "Enter the company name/address including Zip Code).",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page1[0].altcompadd[0]",
+      "FieldNameAlt": "Enter the Alternate Company Address (if any, for FDA notifications).",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page1[0].contactname[0]",
+      "FieldNameAlt": "Enter the contact person&apos;s name.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page1[0].TTBpermit[0]",
+      "FieldNameAlt": "Enter the T T B permit number.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page1[0].Phone[0]",
+      "FieldNameAlt": "Enter the telephone number including area code.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page1[0].empID[0]",
+      "FieldNameAlt": "Enter the employer&apos;s identification number.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page1[0].emailaddress[0]",
+      "FieldNameAlt": "Enter e mail address.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page1[0].month[0]",
+      "FieldNameAlt": "Enter the period of activity month.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page1[0].activityyear[0]",
+      "FieldNameAlt": "Enter the period of activity year.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].voldomestic8[0]",
+      "FieldNameAlt": "Enter volume of domestic cigarettes from line 14 columns C and D.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].taxesdomestic8[0]",
+      "FieldNameAlt": "Enter taxes from domestic cigarettes line 13 column B.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].volimport8[0]",
+      "FieldNameAlt": "Enter box 31 monthly volume total for imported cigarettes.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].volimport8[1]",
+      "FieldNameAlt": "Enter box 38 monthly tax total for imported cigarettes.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].voldomestic11[0]",
+      "FieldNameAlt": "Enter volume of cigars from line 14 columns A and B.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].taxesdomestic11[0]",
+      "FieldNameAlt": "Enter taxes for cigars from line 12 column B.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].voimport11[0]",
+      "FieldNameAlt": "Enter box 31 monthly volume total for imported cigars.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].volimport11[0]",
+      "FieldNameAlt": "Enter box 38 monthly tax total for imported cigars.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].voldomestic9[0]",
+      "FieldNameAlt": "Enter volume of snuff from line 14 column F.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].taxesdomestic9[0]",
+      "FieldNameAlt": "Enter taxes for snuff from line 15 column B.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].voimport9[0]",
+      "FieldNameAlt": "Enter box 31 monthly volume total for imported snuff.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].volimport9[0]",
+      "FieldNameAlt": "Enter box 38 monthly tax total for imported snuff.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].voldomestic10[0]",
+      "FieldNameAlt": "Enter volume of chewing tobacco from line 14 column E.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].taxesdomestic10[0]",
+      "FieldNameAlt": "Enter taxes for chewing tobacco from line 15 column B.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].voimport10[0]",
+      "FieldNameAlt": "Enter box 31 monthly volume total for imported chewing tobacco.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].volimport10[0]",
+      "FieldNameAlt": "Enter box 38 monthly tax total for imported chewing tobacco.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].voldomestic12[0]",
+      "FieldNameAlt": "Enter volume of pipe tobacco from line 14 column G.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].taxesdomestic12[0]",
+      "FieldNameAlt": "Enter taxes for pipe tobacco from line 16 column B.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].voimport12[0]",
+      "FieldNameAlt": "Enter box 31 monthly volume total for imported pipe tobacco.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].volimport12[0]",
+      "FieldNameAlt": "Enter box 38 monthly tax total for imported pipe tobacco.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].voldomestic13[0]",
+      "FieldNameAlt": "Enter volume of roll your own tobacco from line 14 column H.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].taxesdomestic13[0]",
+      "FieldNameAlt": "Enter taxes for roll your own tobacco from line 16 column B.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].voimport13[0]",
+      "FieldNameAlt": "Enter box 31 monthly volume total for imported roll your own tobacco.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].volimport11[1]",
+      "FieldNameAlt": "Enter box 38 monthly tax total for imported roll your own tobacco.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "0",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].SignatureField1[0]",
+      "FieldNameAlt": "Enter authorizing official&apos;s signature, by pressing Enter.",
+      "FieldType": "Signature"
+    },
+    {
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].title[0]",
+      "FieldNameAlt": "Enter authorizing official&apos;s title.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page2[0].dateprepared[0]",
+      "FieldNameAlt": "Enter date prepared, in a 2 digit month / 2 digit day / 4 digit year format.",
+      "FieldType": "Text"
+    },
+    {
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left",
+      "FieldName": "topmostSubform[0].Page1[0].compname[0]",
+      "FieldNameAlt": "Enter the company name/address including Zip Code).",
+      "FieldType": "Text"
+    }
+  ],
+
+  "ttbf": [
+    {
+      "FieldType": "Text",
+      "FieldName": "1 NAME OF IMPORTER",
+      "FieldNameAlt": "1. NAME OF IMPORTER",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "4 PERMIT NUMBER",
+      "FieldNameAlt": "4. PERMIT NUMBER",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "5 EMPLOYER IDENTIFICATION NUMBER EIN",
+      "FieldNameAlt": "5. EMPLOYER IDENTIFICATION NUMBER (EIN",
+      "FieldFlags": "29360128",
+      "FieldJustification": "Left",
+      "FieldMaxLength": "2"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "3 MONTH AND YEAR",
+      "FieldNameAlt": "3. MONTH AND YEAR",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "undefined",
+      "FieldNameAlt": "undefined",
+      "FieldFlags": "29360128",
+      "FieldJustification": "Left",
+      "FieldMaxLength": "7"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "2 PRINCIPAL BUSINESS ADDRESS Number Street City State and ZIP Code",
+      "FieldNameAlt": "2. PRINCIPAL BUSINESS ADDRESS (Number, Street, City, State, and ZIP Code)",
+      "FieldFlags": "8392704",
+      "FieldJustification": "Left"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a6 On Hand Beginning of Month",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_6. On Hand, Beginning of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b6 On Hand Beginning of Month",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_6. On Hand, Beginning of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c6 On Hand Beginning of Month",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_6. On Hand, Beginning of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d6 On Hand Beginning of Month",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_6. On Hand, Beginning of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e6 On Hand Beginning of Month",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_6. On Hand, Beginning of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f6 On Hand Beginning of Month",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_6. On Hand, Beginning of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g6 On Hand Beginning of Month",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_6. On Hand, Beginning of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h6 On Hand Beginning of Month",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_6. On Hand, Beginning of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i6 On Hand Beginning of Month",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_6. On Hand, Beginning of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a7 Imported and Released from Customs Custody into the United States",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_7. Imported and Released from Customs Custody into the United States",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b7 Imported and Released from Customs Custody into the United States",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_7. Imported and Released from Customs Custody into the United States",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c7 Imported and Released from Customs Custody into the United States",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_7. Imported and Released from Customs Custody into the United States",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d7 Imported and Released from Customs Custody into the United States",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_7. Imported and Released from Customs Custody into the United States",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e7 Imported and Released from Customs Custody into the United States",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_7. Imported and Released from Customs Custody into the United States",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f7 Imported and Released from Customs Custody into the United States",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_7. Imported and Released from Customs Custody into the United States",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g7 Imported and Released from Customs Custody into the United States",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_7. Imported and Released from Customs Custody into the United States",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h7 Imported and Released from Customs Custody into the United States",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_7. Imported and Released from Customs Custody into the United States",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i7 Imported and Released from Customs Custody into the United States",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_7. Imported and Released from Customs Custody into the United States",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a8 Received from Other Sources",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_8. Received from Other Sources",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b8 Received from Other Sources",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_8. Received from Other Sources",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c8 Received from Other Sources",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_8. Received from Other Sources",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d8 Received from Other Sources",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_8. Received from Other Sources",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e8 Received from Other Sources",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_8. Received from Other Sources",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f8 Received from Other Sources",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_8. Received from Other Sources",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g8 Received from Other Sources",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_8. Received from Other Sources",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h8 Received from Other Sources",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_8. Received from Other Sources",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i8 Received from Other Sources",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_8. Received from Other Sources",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a9 Overage Disclosed by Inventory",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_9. Overage Disclosed by Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b9 Overage Disclosed by Inventory",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_9. Overage Disclosed by Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c9 Overage Disclosed by Inventory",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_9. Overage Disclosed by Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d9 Overage Disclosed by Inventory",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_9. Overage Disclosed by Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e9 Overage Disclosed by Inventory",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_9. Overage Disclosed by Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f9 Overage Disclosed by Inventory",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_9. Overage Disclosed by Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g9 Overage Disclosed by Inventory",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_9. Overage Disclosed by Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h9 Overage Disclosed by Inventory",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_9. Overage Disclosed by Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i9 Overage Disclosed by Inventory",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_9. Overage Disclosed by Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a10 Returned from Domestic Customers",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_10. Returned from Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b10 Returned from Domestic Customers",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_10. Returned from Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c10 Returned from Domestic Customers",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_10. Returned from Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d10 Returned from Domestic Customers",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_10. Returned from Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e10 Returned from Domestic Customers",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_10. Returned from Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f10 Returned from Domestic Customers",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_10. Returned from Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g10 Returned from Domestic Customers",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_10. Returned from Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h10 Returned from Domestic Customers",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_10. Returned from Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i10 Returned from Domestic Customers",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_10. Returned from Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a11 TOTAL",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_11. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b11 TOTAL",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_11. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c11 TOTAL",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_11. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d11 TOTAL",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_11. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e11 TOTAL",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_11. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f11 TOTAL",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_11. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g11 TOTAL",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_11. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h11 TOTAL",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_11. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i11 TOTAL",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_11. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a12 Removed for Export Purposes",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_12. Removed for Export Purposes",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b12 Removed for Export Purposes",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_12. Removed for Export Purposes",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c12 Removed for Export Purposes",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_12. Removed for Export Purposes",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d12 Removed for Export Purposes",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_12. Removed for Export Purposes",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e12 Removed for Export Purposes",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_12. Removed for Export Purposes",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f12 Removed for Export Purposes",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_12. Removed for Export Purposes",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g12 Removed for Export Purposes",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_12. Removed for Export Purposes",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h12 Removed for Export Purposes",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_12. Removed for Export Purposes",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i12 Removed for Export Purposes",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_12. Removed for Export Purposes",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a13 Transferred to Domestic Customers",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_13. Transferred to Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b13 Transferred to Domestic Customers",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_13. Transferred to Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c13 Transferred to Domestic Customers",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_13. Transferred to Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d13 Transferred to Domestic Customers",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_13. Transferred to Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e13 Transferred to Domestic Customers",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_13. Transferred to Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f13 Transferred to Domestic Customers",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_13. Transferred to Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g13 Transferred to Domestic Customers",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_13. Transferred to Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h13 Transferred to Domestic Customers",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_13. Transferred to Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i13 Transferred to Domestic Customers",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_13. Transferred to Domestic Customers",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a14 Removed to a Foreign Trade Zone",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_14. Removed to a Foreign Trade Zone",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b14 Removed to a Foreign Trade Zone",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_14. Removed to a Foreign Trade Zone",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c14 Removed to a Foreign Trade Zone",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_14. Removed to a Foreign Trade Zone",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d14 Removed to a Foreign Trade Zone",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_14. Removed to a Foreign Trade Zone",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e14 Removed to a Foreign Trade Zone",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_14. Removed to a Foreign Trade Zone",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f14 Removed to a Foreign Trade Zone",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_14. Removed to a Foreign Trade Zone",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g14 Removed to a Foreign Trade Zone",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_14. Removed to a Foreign Trade Zone",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h14 Removed to a Foreign Trade Zone",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_14. Removed to a Foreign Trade Zone",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i14 Removed to a Foreign Trade Zone",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_14. Removed to a Foreign Trade Zone",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a15 Returned to Customs Custody",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_15. Returned to Customs Custody",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b15 Returned to Customs Custody",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_15. Returned to Customs Custody",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c15 Returned to Customs Custody",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_15. Returned to Customs Custody",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d15 Returned to Customs Custody",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_15. Returned to Customs Custody",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e15 Returned to Customs Custody",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_15. Returned to Customs Custody",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f15 Returned to Customs Custody",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_15. Returned to Customs Custody",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g15 Returned to Customs Custody",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_15. Returned to Customs Custody",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h15 Returned to Customs Custody",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_15. Returned to Customs Custody",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i15 Returned to Customs Custody",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_15. Returned to Customs Custody",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a16 Lost",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_16. Lost",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b16 Lost",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_16. Lost",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c16 Lost",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_16. Lost",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d16 Lost",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_16. Lost",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e16 Lost",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_16. Lost",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f16 Lost",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_16. Lost",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g16 Lost",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_16. Lost",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h16 Lost",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_16. Lost",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i16 Lost",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_16. Lost",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a17 Destroyed",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_17. Destroyed",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b17 Destroyed",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_17. Destroyed",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c17 Destroyed",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_17. Destroyed",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d17 Destroyed",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_17. Destroyed",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e17 Destroyed",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_17. Destroyed",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f17 Destroyed",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_17. Destroyed",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g17 Destroyed",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_17. Destroyed",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h17 Destroyed",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_17. Destroyed",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i17 Destroyed",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_17. Destroyed",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a18 Shortages Disclosed By Inventory",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_18. Shortages Disclosed By Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b18 Shortages Disclosed By Inventory",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_18. Shortages Disclosed By Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c18 Shortages Disclosed By Inventory",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_18. Shortages Disclosed By Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d18 Shortages Disclosed By Inventory",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_18. Shortages Disclosed By Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e18 Shortages Disclosed By Inventory",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_18. Shortages Disclosed By Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f18 Shortages Disclosed By Inventory",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_18. Shortages Disclosed By Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g18 Shortages Disclosed By Inventory",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_18. Shortages Disclosed By Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h18 Shortages Disclosed By Inventory",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_18. Shortages Disclosed By Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i18 Shortages Disclosed By Inventory",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_18. Shortages Disclosed By Inventory",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a19 On Hand End of Month",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_19. On Hand, End of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b19 On Hand End of Month",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_19. On Hand, End of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c19 On Hand End of Month",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_19. On Hand, End of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d19 On Hand End of Month",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_19. On Hand, End of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e19 On Hand End of Month",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_19. On Hand, End of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f19 On Hand End of Month",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_19. On Hand, End of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g19 On Hand End of Month",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_19. On Hand, End of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h19 On Hand End of Month",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_19. On Hand, End of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i19 On Hand End of Month",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_19. On Hand, End of Month",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARETTES Number a20 TOTAL",
+      "FieldNameAlt": "SMALL CIGARETTES (Number) (a)_20. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARETTES Number b20 TOTAL",
+      "FieldNameAlt": "LARGE CIGARETTES (Number) (b)_20. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SMALL CIGARS Number c20 TOTAL",
+      "FieldNameAlt": "SMALL CIGARS (Number) (c)_20. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "LARGE CIGARS Number d20 TOTAL",
+      "FieldNameAlt": "LARGE CIGARS (Number) (d)_20. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "SNUFF Pounds e20 TOTAL",
+      "FieldNameAlt": "SNUFF (Pounds) (e)_20. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "CHEWING TOBACCO Pounds f20 TOTAL",
+      "FieldNameAlt": "CHEWING TOBACCO (Pounds) (f)_20. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PIPE TOBACCO Pounds g20 TOTAL",
+      "FieldNameAlt": "PIPE TOBACCO (Pounds) (g)_20. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "ROLLYOUROWN TOBACCO Pounds h20 TOTAL",
+      "FieldNameAlt": "ROLL-YOUR-OWN TOBACCO (Pounds) (h)_20. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "PROCESSED TOBACCO Pounds i20 TOTAL",
+      "FieldNameAlt": "PROCESSED TOBACCO (Pounds) (i)_20. TOTAL",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Right"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "22 DATE",
+      "FieldNameAlt": "22. DATE",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "23 EMAIL ADDRESS",
+      "FieldNameAlt": "23. E-MAIL ADDRESS",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "24 TITLE OR STATUS State whether individual owner partner member of a limited liability company or if officer of corporation give title",
+      "FieldNameAlt": "24. TITLE OR STATUS (State whether individual owner, partner, member of a limited liability company, or if officer of corporation, give title)",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Left"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "25 TELEPHONE NUMBER.0",
+      "FieldNameAlt": "25. TELEPHONE NUMBER ( ) ?",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Center",
+      "FieldMaxLength": "3"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "25 TELEPHONE NUMBER.1",
+      "FieldNameAlt": "25. TELEPHONE NUMBER ( ) ?",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Center",
+      "FieldMaxLength": "3"
+    },
+    {
+      "FieldType": "Text",
+      "FieldName": "25 TELEPHONE NUMBER.2",
+      "FieldNameAlt": "25. TELEPHONE NUMBER ( ) ?",
+      "FieldFlags": "8388608",
+      "FieldJustification": "Center",
+      "FieldMaxLength": "4"
+    }
+  ]
+}

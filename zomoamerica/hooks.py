@@ -27,12 +27,12 @@ app_license = "MIT"
 
 # include js in doctype views
 doctype_js = {
-	"Sales Order" : "public/js/sales_order.js",
-	"Sales Invoice" : "public/js/item_uom_reset.js",
-	"Delivery Note" : "public/js/item_uom_reset.js",
-	"Purchase Order" : "public/js/item_uom_reset.js",
-	"Purchase Invoice" : "public/js/item_uom_reset.js",
-
+    "Sales Order": "public/js/sales_order.js",
+    "Sales Invoice": "public/js/item_uom_reset.js",
+    "Delivery Note": "public/js/item_uom_reset.js",
+    "Purchase Order": "public/js/item_uom_reset.js",
+    "Purchase Invoice": "public/js/item_uom_reset.js",
+    "Tobacco Legal Compliance": "public/js/tobacco.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -87,17 +87,17 @@ doctype_js = {
 # Hook on document methods and events
 
 doc_events = {
-	"Sales Invoice": {
-		"validate": "zomoamerica.api.calculate_total_tobacco_weight",
-		"validate": "zomoamerica.api.copy_shipping_details_from_item_to_SI"
-	},
-	"Sales Order": {
-		"validate": "zomoamerica.api.calculate_total_tobacco_weight"
-	},
-	"Delivery Note": {
-		"validate": "zomoamerica.api.calculate_total_tobacco_weight",
-		"on_change": "zomoamerica.api.update_delivery_note_workflow_state"
-	},		
+    "Sales Invoice": {
+        "validate": "zomoamerica.api.calculate_total_tobacco_weight",
+        "validate": "zomoamerica.api.copy_shipping_details_from_item_to_SI"
+    },
+    "Sales Order": {
+        "validate": "zomoamerica.api.calculate_total_tobacco_weight"
+    },
+    "Delivery Note": {
+        "validate": "zomoamerica.api.calculate_total_tobacco_weight",
+        "on_change": "zomoamerica.api.update_delivery_note_workflow_state"
+    },
 }
 
 # Scheduled Tasks
@@ -132,4 +132,3 @@ doc_events = {
 # override_whitelisted_methods = {
 # 	"frappe.desk.doctype.event.event.get_events": "zomoamerica.event.get_events"
 # }
-
