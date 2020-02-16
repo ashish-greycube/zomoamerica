@@ -10,6 +10,7 @@ import io
 import pypdftk
 from frappe.utils import touch_file
 from pprint import pprint
+import time
 
 
 class TobaccoLegalCompliance(Document):
@@ -45,7 +46,7 @@ FROM
     `tabTobacco Legal Compliance` tlc
     INNER JOIN `tabPurchase Receipt` PR ON PR.company = tlc.company
     and PR.docstatus = 1
-    and month(PR.posting_date) = 1 -- to replace the get_period() function
+    and MONTHNAME(PR.posting_date) = %s
     and year(PR.posting_date) = tlc.year
     INNER JOIN `tabPurchase Receipt Item` PRI on PR.name = PRI.parent
     AND PRI.item_group in (
@@ -59,7 +60,7 @@ FROM
     LEFT JOIN `tabPurchase Taxes and Charges` AS PTC ON PR.name = PTC.parent
     LEFT JOIN tabAccount as AC on PTC.account_head = AC.name  and AC.account_type = 'Tax'
     where tlc.name = %s
-                 """, (self.name,), as_dict=True)
+                 """, (self.month, self.name,), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
 
@@ -81,6 +82,8 @@ FROM
 # return field_dictionary
 
     def get_55206(self):
+        month_and_year = "%s %s" % (time.strptime(
+            self.month, '%B').tm_mon, self.year)
 
         field_dictionary = frappe.db.sql("""
   SELECT
@@ -88,7 +91,7 @@ FROM
     tlc.permit_number as '4 PERMIT NUMBER',
     SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ) as '5 EMPLOYER IDENTIFICATION NUMBER EIN',
     tlc.phone as '(Enter the telephone number including area code.)',
-    CONCAT("2", '/', '2020') as "3 MONTH AND YEAR",    -- replace month with number
+    %s as "3 MONTH AND YEAR",  
     SUBSTR( tlc.employer_identification_number FROM 3 ) as 'undefined',
     CONCAT_WS(
         '\n',
@@ -112,7 +115,8 @@ FROM
 FROM
     `tabTobacco Legal Compliance` tlc
     INNER JOIN `tabPurchase Receipt` PR ON PR.company = tlc.company
-    and PR.docstatus = 1 -- and month(PR.posting_date) = 1 -- to replace the get_period() function
+    and PR.docstatus = 1 
+    and MONTHNAME(PR.posting_date) = %s
     and year(PR.posting_date) = tlc.year
     INNER JOIN `tabPurchase Receipt Item` PRI on PR.name = PRI.parent
     AND PRI.item_group in (
@@ -125,7 +129,7 @@ FROM
     )
     LEFT JOIN `tabPurchase Taxes and Charges` AS PTC ON PR.name = PTC.parent
     LEFT JOIN tabAccount as AC on PTC.account_head = AC.name and AC.account_type = 'Tax'
-    where tlc.name = %s""", (self.name), as_dict=True)
+    where tlc.name = %s""", (month_and_year, self.month, self.name), as_dict=True)
 
         # field_dictionary = {
         #     '1 NAME OF IMPORTER': 'MAWGROUP LLC',
