@@ -23,7 +23,9 @@
   "legal_head",
   "email",
   "phone",
-  "fax"
+  "fax",
+  "section_break_19",
+  "opening_stock"
  ],
  "fields": [
   {
@@ -134,9 +136,18 @@
    "fieldname": "zipcode",
    "fieldtype": "Data",
    "label": "ZipCode"
+  },
+  {
+   "fieldname": "section_break_19",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "opening_stock",
+   "fieldtype": "Float",
+   "label": "Opening Stock"
   }
  ],
- "modified": "2020-02-15 05:03:15.390608",
+ "modified": "2020-02-16 08:58:09.521926",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",
