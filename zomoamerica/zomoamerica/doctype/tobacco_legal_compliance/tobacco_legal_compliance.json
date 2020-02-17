@@ -55,7 +55,8 @@
    "fieldname": "year",
    "fieldtype": "Select",
    "in_list_view": 1,
-   "label": "Year"
+   "label": "Year",
+   "reqd": 1
   },
   {
    "fieldname": "month",
@@ -73,7 +74,8 @@
    "fetch_from": "company.email",
    "fieldname": "email",
    "fieldtype": "Data",
-   "label": "Email"
+   "label": "Email",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_8",
@@ -83,31 +85,36 @@
    "fetch_from": "company.employer_identification_number_cf",
    "fieldname": "employer_identification_number",
    "fieldtype": "Data",
-   "label": "Employer Identification Number"
+   "label": "Employer Identification Number",
+   "reqd": 1
   },
   {
    "fetch_from": "company.legal_head_cf",
    "fieldname": "legal_head",
    "fieldtype": "Data",
-   "label": "Legal Head"
+   "label": "Legal Head",
+   "reqd": 1
   },
   {
    "fetch_from": "company.phone_no",
    "fieldname": "phone",
    "fieldtype": "Data",
-   "label": "Phone"
+   "label": "Phone",
+   "reqd": 1
   },
   {
    "fetch_from": "company.fax",
    "fieldname": "fax",
    "fieldtype": "Data",
-   "label": "Fax"
+   "label": "Fax",
+   "reqd": 1
   },
   {
    "fieldname": "us_state",
    "fieldtype": "Link",
    "label": "US State Permit",
-   "options": "US State wise Tobacco Excise"
+   "options": "US State wise Tobacco Excise",
+   "reqd": 1
   },
   {
    "fetch_from": "us_state.permit_number",
@@ -142,12 +149,13 @@
    "fieldtype": "Section Break"
   },
   {
+   "default": "0",
    "fieldname": "opening_stock",
    "fieldtype": "Float",
    "label": "Opening Stock"
   }
  ],
- "modified": "2020-02-16 08:58:09.521926",
+ "modified": "2020-02-17 00:30:57.567435",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",

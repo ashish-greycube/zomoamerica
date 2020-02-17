@@ -34,12 +34,12 @@ class TobaccoLegalCompliance(Document):
     round(
         SUM(coalesce(PR.total_net_weight, 0)) * 2.20462,
         2
-    ) as 'topmostSubform[0].Page2[0].volimport8[0]',
+    ) as 'topmostSubform[0].Page2[0].voimport12[0]',
     case
         AC.account_type
         when "Tax" then SUM(coalesce(PTC.base_tax_amount, 0))
         else 0
-    end as 'topmostSubform[0].Page2[0].volimport8[1]',
+    end as 'topmostSubform[0].Page2[0].volimport12[0]',
     'OWNER' as 'topmostSubform[0].Page2[0].title[0]',
     DATE_FORMAT(CURDATE(), '%%m/%%d/%%Y') as 'topmostSubform[0].Page2[0].dateprepared[0]'
 FROM
@@ -73,8 +73,8 @@ FROM
 #     "topmostSubform[0].Page1[0].activityyear[0]": '2020',
 #     "topmostSubform[0].Page1[0].compname[0]": '138-140 MICHIGAN AVENUE \n PATERSON \n , NJ 07503',
 #     "topmostSubform[0].Page1[0].contactname[0]": 'AHMED',
-#     "topmostSubform[0].Page2[0].volimport8[0]": '3968.32',
-#     "topmostSubform[0].Page2[0].volimport8[1]": '11243.60',
+#     "topmostSubform[0].Page2[0].voimport12[0]": '3968.32',
+#     "topmostSubform[0].Page2[0].volimport12[0]": '11243.60',
 #     "topmostSubform[0].Page2[0].title[0]": 'OWNER',
 #     "topmostSubform[0].Page2[0].dateprepared[0]": '02/15/2020'
 # }
@@ -103,9 +103,9 @@ FROM
     tlc.opening_stock as 'PIPE TOBACCO Pounds g6 On Hand Beginning of Month',   -- opening allow user to enter
     round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462, 2) as 'PIPE TOBACCO Pounds g7 Imported and Released from Customs Custody into the United States',
     tlc.opening_stock + round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462, 2) as 'PIPE TOBACCO Pounds g11 TOTAL',
-    2954 as 'PIPE TOBACCO Pounds g13 Transferred to Domestic Customers',
-    tlc.opening_stock + round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462, 2) - 2954 as 'PIPE TOBACCO Pounds g19 On Hand End of Month',
-    2954 + tlc.opening_stock + round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462, 2) - 2954 as 'PIPE TOBACCO Pounds g20 TOTAL',
+    domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g13 Transferred to Domestic Customers',
+    tlc.opening_stock + round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462, 2) - domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g19 On Hand End of Month',
+    domesticsales.total_tobacco_weight_lbs  + tlc.opening_stock + round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462, 2) - domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g20 TOTAL',
     DATE_FORMAT(CURDATE(), '%%m/%%d/%%Y') as '22 DATE',
     tlc.email as '23 EMAIL ADDRESS',
     'OWNER' as '24 TITLE OR STATUS State whether individual owner partner member of a limited liability company or if officer of corporation give title',
@@ -129,7 +129,19 @@ FROM
     )
     LEFT JOIN `tabPurchase Taxes and Charges` AS PTC ON PR.name = PTC.parent
     LEFT JOIN tabAccount as AC on PTC.account_head = AC.name and AC.account_type = 'Tax'
-    where tlc.name = %s""", (month_and_year, self.month, self.name), as_dict=True)
+    LEFT JOIN (select si.company,sum(round(coalesce(item.total_weight,0)*2.20462,2)) as total_tobacco_weight_lbs from `tabSales Invoice` si
+    LEFT JOIN (SELECT sum(total_weight)as total_weight, parent from (select CASE weight_uom
+                            WHEN 'Gram' then sum(total_weight/1000)
+                            ELSE sum(total_weight)
+                            END as total_weight,
+                            parent from `tabSales Invoice Item` where item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO') group by parent,weight_uom) as t group by parent) item on item.parent=si.name
+    WHERE si.docstatus=1
+    and si.is_return <> 1 
+    AND MONTHNAME(si.posting_date) = %s
+    and year(si.posting_date) = %s 
+    group by si.company) as domesticsales 
+    on domesticsales.company = tlc.company
+    where tlc.name = %s""", (month_and_year, self.month, self.month,self.year,self.name,), as_dict=True)
 
         # field_dictionary = {
         #     '1 NAME OF IMPORTER': 'MAWGROUP LLC',
