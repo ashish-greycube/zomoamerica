@@ -15,7 +15,7 @@ frappe.ui.form.on("Tobacco Legal Compliance", {
   download_pdf: function(frm, cdt, cdn) {
     var w = window.open(
       frappe.urllib.get_full_url(
-        "/api/method/zomoamerica.zomoamerica.doctype.tobacco_legal_compliance.tobacco_legal_compliance.download_52206?" +
+        "/api/method/zomoamerica.zomoamerica.doctype.tobacco_legal_compliance.tobacco_legal_compliance.download_tlc?" +
           "docname=" +
           frm.doc.name
       )

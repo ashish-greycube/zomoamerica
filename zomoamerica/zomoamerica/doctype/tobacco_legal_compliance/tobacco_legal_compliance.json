@@ -31,7 +31,7 @@
   {
    "fieldname": "company",
    "fieldtype": "Link",
-   "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Company",
    "options": "Company",
    "reqd": 1
@@ -47,14 +47,16 @@
    "fieldname": "report_type",
    "fieldtype": "Select",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Report Type",
-   "options": "FDA-3852",
+   "options": "FDA-3852\nTTB-5220",
    "reqd": 1
   },
   {
    "fieldname": "year",
    "fieldtype": "Select",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Year",
    "reqd": 1
   },
@@ -62,6 +64,7 @@
    "fieldname": "month",
    "fieldtype": "Select",
    "in_list_view": 1,
+   "in_standard_filter": 1,
    "label": "Month",
    "options": "January\nFebruary\nMarch\nApril\nMay\nJune\nJuly\nAugust\nSeptember\nOctober\nNovember\nDecember",
    "reqd": 1
@@ -150,12 +153,13 @@
   },
   {
    "default": "0",
+   "depends_on": "eval:doc.report_type == \"TTB-5220\"",
    "fieldname": "opening_stock",
    "fieldtype": "Float",
    "label": "Opening Stock"
   }
  ],
- "modified": "2020-02-17 00:30:57.567435",
+ "modified": "2020-02-18 02:09:39.158817",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",

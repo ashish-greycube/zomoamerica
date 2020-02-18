@@ -43,6 +43,16 @@ def get_data():
 					"description": "US State wise Tobacco Excise"
 				}
 			]
+		},
+		{
+			"label": _("Doctype"),
+			"items": [
+				{
+					"type": "doctype",
+					"name": "Tobacco Legal Compliance",
+					"description": "Tobacco Legal Compliance"
+				}
+			]
 		}
 		]
 	return config

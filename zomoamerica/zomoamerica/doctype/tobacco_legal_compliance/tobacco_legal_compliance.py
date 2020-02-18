@@ -174,7 +174,7 @@ def touch_random_file():
 
 
 @frappe.whitelist()
-def download_52206(docname="FDA-3852-January-year-Zomo America"):
+def download_tlc(docname="FDA-3852-January-year-Zomo America"):
 
     # Uses https://github.com/revolunet/pypdftk for form filling and merging pdf
     # pypdftk depends on pdftk
@@ -188,18 +188,20 @@ def download_52206(docname="FDA-3852-January-year-Zomo America"):
     doc = frappe.get_doc("Tobacco Legal Compliance", docname)
     file_name = "%s.pdf" % doc.name
 
-    ttbf = pypdftk.fill_form(
-        ttbf_template, doc.get_55206(), out_file=touch_random_file())
 
-    fda = pypdftk.fill_form(
-        fda_template, doc.get_fda(), out_file=touch_random_file())
-
-    merged_file = pypdftk.concat([fda, ttbf], touch_random_file())
+    if doc.report_type == "FDA-3852":
+        pdfreport = pypdftk.fill_form(fda_template, doc.get_fda(), out_file=touch_random_file())
+    elif doc.report_type == "TTB-5220":
+         pdfreport = pypdftk.fill_form(ttbf_template, doc.get_55206(), out_file=touch_random_file())
+    else:
+        pass
+    
+    # merged_file = pypdftk.concat([fda, ttbf], touch_random_file())
 
     # print(merged_file)
     # return merged_file
 
-    with open(merged_file, "rb") as fileobj:
+    with open(pdfreport, "rb") as fileobj:
         filedata = fileobj.read()
         frappe.local.response.filename = file_name
         frappe.local.response.filecontent = filedata
