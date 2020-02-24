@@ -116,7 +116,7 @@ class TobaccoLegalCompliance(Document):
             parent_item_group = 'TOBACCO'
     ) ) ) as PRW
     where tlc.name = %s
-                 """, (self.company_warehouse, self.month, self.year,self.company_warehouse,self.month,self.year,self.company_warehouse,self.month,self.year,self.company_warehouse,self.month,self.year,self.name), as_dict=True)
+                 """, (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
 
@@ -223,7 +223,7 @@ class TobaccoLegalCompliance(Document):
     and year(si.posting_date) = %s 
     and si.company = %s
    ) as domesticsales 
-    where tlc.name = %s""", (month_and_year, self.company_warehouse,self.month,self.year, self.company_warehouse,self.month,self.year,self.month,self.year,self.company,self.name), as_dict=True)
+    where tlc.name = %s""", (month_and_year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.name), as_dict=True)
 
         # field_dictionary = {
         #     '1 NAME OF IMPORTER': 'MAWGROUP LLC',
@@ -247,130 +247,129 @@ class TobaccoLegalCompliance(Document):
         # }
         return field_dictionary and field_dictionary[0] or {}
 
-
-def get_tpt10(self):
-    field_dictionary = frappe.db.sql("""SELECT
-    CASE tlc.month 
-    when 'January' THEN 1 
-    WHEN 'February' THEN 2
-    when 'March' THEN 3
-    WHEN 'April' THEN 4
-    when 'May' THEN 5
-    WHEN 'June' THEN 6
-    WHEN 'July' THEN 7
-    WHEN 'August' THEN 8
-    WHEN 'September' THEN 9
-    WHEN 'October' THEN 10
-    WHEN 'November' THEN 11
-    WHEN 'December' THEN 12
-    ELSE 0 END as 'Month',
-    tlc.year as 'Year',
-    tlc.employer_identification_number as 'Federal ID Number',
-    tlc.title as 'Title',
-    DATE_FORMAT(CURDATE(), '%%m/%d/%%Y') as 'Date',
-    tlc.legal_head as  'Printed Taxpayer Name',
-    tlc.phone as 'Telephone Number' ,
-    tlc.tax_payer_id as 'Taxpayer ID',
-    CONCAT_WS(
-            ',',
-            tlc.preparer_address_line1,
-            tlc.preparer_address_line2,
-            tlc.preparer_city,
-            tlc.preparer_state,
-            tlc.preparer_zipcode
-        ) AS 'Preparer s Address',
-    tlc.preparer_id as 'Preparer s ID',
-    tlc.legal_company as 'Taxpayer Name',
-    tlc.address_line1 as 'Address',
-    0 as 1A,
-    (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)) AS 2A,
-    COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)  AS 7A,
-    TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales as  8A,
-    TOTAL_SALES.total_sales - NJSALES.nj_sales as 10A,
-    (TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) as 11A,
-    0 AS 12A,
-    NJSAMPLES.nj_sample_sales AS 13A,
-    0 AS 14A,
-    NJSAMPLES.nj_sample_sales  AS 15A,
-    (TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales AS 16A,
-    round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 18A,
-    round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 19A,
-    0 AS 20A,
-    round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 21A
-    from `tabTobacco Legal Compliance` AS tlc ,
-    (select  SUM(total_amount)   as mt_total_amt
-        from `tabStock Entry` as SE 
-        WHERE SE.purpose = 'Material Transfer'
-        and SE.docstatus = 1
-        and SE.from_warehouse like '%%bond%%' and SE.to_warehouse  = %s
-        and MONTHNAME(SE.posting_date) = %s 
-        and year(SE.posting_date) =  %s 
-        and SE.name IN (SELECT DISTINCT parent from  `tabStock Entry Detail` AS SED 
-        where SED.item_group in (
-            select
-                distinct name
-            from
-                `tabItem Group`
-            where
-                parent_item_group = 'TOBACCO'
-        ))
-        ) as MTA,   
-        (select 
-        SUM(rounded_total) AS p_total
-        from `tabPurchase Receipt` PR 
-        where PR.docstatus = 1
-        and PR.set_warehouse =  %s  
-        and MONTHNAME(PR.posting_date) =  %s  
-        and year(PR.posting_date) =  %s 
-        and name in (select distinct parent from `tabPurchase Receipt Item` PRI
-        where  PRI.item_group in (
-            select
-                distinct name
-            from
-                `tabItem Group`
-            where
-                parent_item_group = 'TOBACCO'))
-        ) as PRA,
-        (SELECT  sum(amount) AS total_sales from  `tabSales Invoice Item` 
-                                where item_group in
-                                (select distinct name from `tabItem Group` 
-                                where parent_item_group = 'TOBACCO') 
-                                and parent in (select distinct name from `tabSales Invoice` si 
-        WHERE si.docstatus=1
-        and si.is_return <> 1 
-        AND MONTHNAME(si.posting_date) = %s  
-        and year(si.posting_date) =  %s 
-        and si.company = %s  ))    
-        as TOTAL_SALES,
-        (SELECT  sum(amount)as nj_sample_sales from  `tabSales Invoice Item` 
-                                where item_group in
-                                (select distinct name from `tabItem Group` 
-                                where parent_item_group = 'TOBACCO') 
-                                and parent in (select distinct si.name from `tabSales Invoice` si 
-                                inner JOIN tabAddress  AS CA ON 
-                                si.customer_address = CA.name and CA.state = 'NJ'
-        AND si.docstatus=1
-        and si.is_return <> 1 
-        AND si.customer in ('SAMPLE/TASTING','SAMPLE/EVENT')
-        AND MONTHNAME(si.posting_date) = %s 
-        and year(si.posting_date) =  %s 
-        and si.company =  %s ) 
-        )as NJSAMPLES,
-        (SELECT  sum(amount)as nj_sales from  `tabSales Invoice Item` 
-                                where item_group in
-                                (select distinct name from `tabItem Group` 
-                                where parent_item_group = 'TOBACCO') 
-                                and parent in (select distinct si.name from `tabSales Invoice` si 
-                                inner JOIN tabAddress  AS CA ON 
-                                si.customer_address = CA.name and CA.state = 'NJ'
-        AND si.docstatus=1
-        and si.is_return <> 1 
-        AND MONTHNAME(si.posting_date) = %s 
-        and year(si.posting_date) =  %s   
-        and si.company =  %s ) 
-        )as NJSALES
-    where tlc.name = %s""", ( self.company_warehouse,self.month,self.year, self.company_warehouse,self.month,self.year,self.month,self.year,self.company,self.month,self.year,self.company,self.month,self.year,self.company,self.name), as_dict=True)
-    return field_dictionary and field_dictionary[0] or {}
+    def get_tpt10(self):
+        field_dictionary = frappe.db.sql("""SELECT
+        CASE tlc.month 
+        when 'January' THEN 1 
+        WHEN 'February' THEN 2
+        when 'March' THEN 3
+        WHEN 'April' THEN 4
+        when 'May' THEN 5
+        WHEN 'June' THEN 6
+        WHEN 'July' THEN 7
+        WHEN 'August' THEN 8
+        WHEN 'September' THEN 9
+        WHEN 'October' THEN 10
+        WHEN 'November' THEN 11
+        WHEN 'December' THEN 12
+        ELSE 0 END as 'Month',
+        tlc.year as 'Year',
+        tlc.employer_identification_number as 'Federal ID Number',
+        tlc.title as 'Title',
+        DATE_FORMAT(CURDATE(), '%%m/%d/%%Y') as 'Date',
+        tlc.legal_head as  'Printed Taxpayer Name',
+        tlc.phone as 'Telephone Number' ,
+        tlc.tax_payer_id as 'Taxpayer ID',
+        CONCAT_WS(
+                ',',
+                tlc.preparer_address_line1,
+                tlc.preparer_address_line2,
+                tlc.preparer_city,
+                tlc.preparer_state,
+                tlc.preparer_zipcode
+            ) AS 'Preparer s Address',
+        tlc.preparer_id as 'Preparer s ID',
+        tlc.legal_company as 'Taxpayer Name',
+        tlc.address_line1 as 'Address',
+        0 as 1A,
+        (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)) AS 2A,
+        COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)  AS 7A,
+        TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales as  8A,
+        TOTAL_SALES.total_sales - NJSALES.nj_sales as 10A,
+        (TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) as 11A,
+        0 AS 12A,
+        NJSAMPLES.nj_sample_sales AS 13A,
+        0 AS 14A,
+        NJSAMPLES.nj_sample_sales  AS 15A,
+        (TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales AS 16A,
+        round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 18A,
+        round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 19A,
+        0 AS 20A,
+        round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 21A
+        from `tabTobacco Legal Compliance` AS tlc ,
+        (select  SUM(total_amount)   as mt_total_amt
+            from `tabStock Entry` as SE 
+            WHERE SE.purpose = 'Material Transfer'
+            and SE.docstatus = 1
+            and SE.from_warehouse like '%%bond%%' and SE.to_warehouse  = %s
+            and MONTHNAME(SE.posting_date) = %s 
+            and year(SE.posting_date) =  %s 
+            and SE.name IN (SELECT DISTINCT parent from  `tabStock Entry Detail` AS SED 
+            where SED.item_group in (
+                select
+                    distinct name
+                from
+                    `tabItem Group`
+                where
+                    parent_item_group = 'TOBACCO'
+            ))
+            ) as MTA,   
+            (select 
+            SUM(rounded_total) AS p_total
+            from `tabPurchase Receipt` PR 
+            where PR.docstatus = 1
+            and PR.set_warehouse =  %s  
+            and MONTHNAME(PR.posting_date) =  %s  
+            and year(PR.posting_date) =  %s 
+            and name in (select distinct parent from `tabPurchase Receipt Item` PRI
+            where  PRI.item_group in (
+                select
+                    distinct name
+                from
+                    `tabItem Group`
+                where
+                    parent_item_group = 'TOBACCO'))
+            ) as PRA,
+            (SELECT  sum(amount) AS total_sales from  `tabSales Invoice Item` 
+                                    where item_group in
+                                    (select distinct name from `tabItem Group` 
+                                    where parent_item_group = 'TOBACCO') 
+                                    and parent in (select distinct name from `tabSales Invoice` si 
+            WHERE si.docstatus=1
+            and si.is_return <> 1 
+            AND MONTHNAME(si.posting_date) = %s  
+            and year(si.posting_date) =  %s 
+            and si.company = %s  ))    
+            as TOTAL_SALES,
+            (SELECT  sum(amount)as nj_sample_sales from  `tabSales Invoice Item` 
+                                    where item_group in
+                                    (select distinct name from `tabItem Group` 
+                                    where parent_item_group = 'TOBACCO') 
+                                    and parent in (select distinct si.name from `tabSales Invoice` si 
+                                    inner JOIN tabAddress  AS CA ON 
+                                    si.customer_address = CA.name and CA.state = 'NJ'
+            AND si.docstatus=1
+            and si.is_return <> 1 
+            AND si.customer in ('SAMPLE/TASTING','SAMPLE/EVENT')
+            AND MONTHNAME(si.posting_date) = %s 
+            and year(si.posting_date) =  %s 
+            and si.company =  %s ) 
+            )as NJSAMPLES,
+            (SELECT  sum(amount)as nj_sales from  `tabSales Invoice Item` 
+                                    where item_group in
+                                    (select distinct name from `tabItem Group` 
+                                    where parent_item_group = 'TOBACCO') 
+                                    and parent in (select distinct si.name from `tabSales Invoice` si 
+                                    inner JOIN tabAddress  AS CA ON 
+                                    si.customer_address = CA.name and CA.state = 'NJ'
+            AND si.docstatus=1
+            and si.is_return <> 1 
+            AND MONTHNAME(si.posting_date) = %s 
+            and year(si.posting_date) =  %s   
+            and si.company =  %s ) 
+            )as NJSALES
+        where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
+        return field_dictionary and field_dictionary[0] or {}
 
 
 def touch_random_file():
@@ -391,21 +390,29 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
 
     ttbf_template = frappe.get_site_path('private', 'files', 'ttbf_52206.pdf')
     fda_template = frappe.get_site_path('private', 'files', 'FDA3852.pdf')
-    tpt10_template = frappe.get_site_path('private', 'files', 'TPT-10_template.pdf')
+    tpt10_template = frappe.get_site_path(
+        'private', 'files', 'TPT-10_template.pdf')
 
     doc = frappe.get_doc("Tobacco Legal Compliance", docname)
     file_name = "%s.pdf" % doc.name
 
+    pdfreport = ""
 
     if doc.report_type == "FDA-3852":
-        pdfreport = pypdftk.fill_form(fda_template, doc.get_fda(), out_file=touch_random_file())
+        pdfreport = pypdftk.fill_form(
+            fda_template, doc.get_fda(), out_file=touch_random_file())
     elif doc.report_type == "TTB-5220":
-        pdfreport = pypdftk.fill_form(ttbf_template, doc.get_55206(), out_file=touch_random_file())
+        pdfreport = pypdftk.fill_form(
+            ttbf_template, doc.get_55206(), out_file=touch_random_file())
     elif doc.report_type == "NJ TPT-10":
-        pdfreport = pypdftk.fill_form(tpt10_template, doc.get_tpt10(), out_file=touch_random_file())
+        pdfreport = pypdftk.fill_form(
+            tpt10_template, doc.get_tpt10(), out_file=touch_random_file())
     else:
         pass
-    
+
+    if not pdfreport:
+        frappe.throw("No format found for report type %s" % doc.report_type)
+
     # merged_file = pypdftk.concat([fda, ttbf], touch_random_file())
 
     # print(merged_file)
@@ -416,5 +423,3 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
         frappe.local.response.filename = file_name
         frappe.local.response.filecontent = filedata
         frappe.local.response.type = "download"
-
-
