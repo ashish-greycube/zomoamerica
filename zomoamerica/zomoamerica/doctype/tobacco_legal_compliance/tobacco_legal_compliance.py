@@ -31,25 +31,20 @@ class TobaccoLegalCompliance(Document):
         tlc.us_state
     ) as 'topmostSubform[0].Page1[0].compname[0]',
     tlc.legal_head as 'topmostSubform[0].Page1[0].contactname[0]',
-    round(
-        SUM(coalesce(PR.total_net_weight, 0)) * 2.20462,
-        2
-    ) as 'topmostSubform[0].Page2[0].voimport12[0]',
-    case
-        AC.account_type
-        when "Tax" then SUM(coalesce(PTC.base_tax_amount, 0))
-        else 0
-    end as 'topmostSubform[0].Page2[0].volimport12[0]',
+    MTIW.mti_w + PRW.p_weight  as 'topmostSubform[0].Page2[0].voimport12[0]',
+    PRTAX.ptax+ MTTAX.TAX_7501 as 'topmostSubform[0].Page2[0].volimport12[0]',
     'OWNER' as 'topmostSubform[0].Page2[0].title[0]',
     DATE_FORMAT(CURDATE(), '%%m/%%d/%%Y') as 'topmostSubform[0].Page2[0].dateprepared[0]'
-FROM
-    `tabTobacco Legal Compliance` tlc
-    INNER JOIN `tabPurchase Receipt` PR ON PR.company = tlc.company
-    and PR.docstatus = 1
-    and MONTHNAME(PR.posting_date) = %s
-    and year(PR.posting_date) = tlc.year
-    INNER JOIN `tabPurchase Receipt Item` PRI on PR.name = PRI.parent
-    AND PRI.item_group in (
+	FROM
+    `tabTobacco Legal Compliance` tlc,
+    (SELECT 
+  	SUM(coalesce(LCT.amount, 0))
+    as TAX_7501
+    FROM `tabLanded Cost Taxes and Charges` AS LCT 
+    where LCT.expense_account IN (SELECT distinct name from tabAccount as AC1 where AC1.account_type = 'Tax') 
+    AND LCT.PARENT IN (select distinct parent from `tabStock Entry Detail` SED 
+    where SED.s_warehouse like '%%bonded%%' and SED.t_warehouse  = %s
+    AND SED.item_group in (
         select
             distinct name
         from
@@ -57,10 +52,71 @@ FROM
         where
             parent_item_group = 'TOBACCO'
     )
-    LEFT JOIN `tabPurchase Taxes and Charges` AS PTC ON PR.name = PTC.parent
-    LEFT JOIN tabAccount as AC on PTC.account_head = AC.name  and AC.account_type = 'Tax'
+    and SED.parent in (select distinct name from `tabStock Entry` as SE 
+    WHERE SE.purpose = 'Material Transfer'
+    and SE.docstatus = 1
+    and MONTHNAME(SE.posting_date) = %s 
+    and year(SE.posting_date) = %s ) )) as MTTAX,
+    (SELECT 
+    SUM(coalesce(PTC.base_tax_amount, 0)) as ptax
+ 	from
+ 	`tabPurchase Taxes and Charges` AS PTC 
+ 	INNER JOIN `tabPurchase Receipt` PR 
+ 	ON PR.name = PTC.parent 
+    AND PR.docstatus = 1
+    and PR.set_warehouse = %s
+    and MONTHNAME(PR.posting_date) =  %s 
+    and year(PR.posting_date) = %s
+    INNER JOIN tabAccount as AC 
+    on PTC.account_head = AC.name
+     and AC.account_type = 'Tax'
+    AND PR.name in (select distinct parent from  `tabPurchase Receipt Item` PRI 
+    where PRI.item_group in (
+        select
+            distinct name
+        from
+            `tabItem Group`
+        where
+            parent_item_group = 'TOBACCO'
+    ))) AS PRTAX,
+    (select  coalesce(round(SUM(coalesce(coalesce(I.weight_per_unit,0) * coalesce(SED.qty,0), 0)) * 2.20462,2),0)  as mti_w
+    from `tabStock Entry Detail` SED 
+    INNER JOIN tabItem  as I 
+    ON I.item_code= SED.item_code
+    where SED.s_warehouse 
+    like '%%bond%%' and SED.t_warehouse  = %s 
+    AND SED.item_group in (
+        select
+            distinct name
+        from
+            `tabItem Group`
+        where
+            parent_item_group = 'TOBACCO'
+    )
+    and SED.parent in (select distinct name from `tabStock Entry` as SE 
+    WHERE SE.purpose = 'Material Transfer'
+    and SE.docstatus = 1
+    and MONTHNAME(SE.posting_date) = %s 
+    and year(SE.posting_date) = %s 
+    )) as MTIW,   
+    (select 
+    round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462,2) AS p_weight
+ 	from `tabPurchase Receipt` PR 
+ 	where PR.docstatus = 1
+    and PR.set_warehouse = %s 
+    and MONTHNAME(PR.posting_date) = %s 
+    and year(PR.posting_date) = %s
+    AND PR.name in (select distinct parent  from `tabPurchase Receipt Item` PRI
+    where  PRI.item_group in (
+        select
+            distinct name
+        from
+            `tabItem Group`
+        where
+            parent_item_group = 'TOBACCO'
+    ) ) ) as PRW
     where tlc.name = %s
-                 """, (self.month, self.name,), as_dict=True)
+                 """, (self.company_warehouse, self.month, self.year,self.company_warehouse,self.month,self.year,self.company_warehouse,self.month,self.year,self.company_warehouse,self.month,self.year,self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
 
@@ -85,8 +141,7 @@ FROM
         month_and_year = "%s %s" % (time.strptime(
             self.month, '%B').tm_mon, self.year)
 
-        field_dictionary = frappe.db.sql("""
-  SELECT
+        field_dictionary = frappe.db.sql("""SELECT
     tlc.company as '1 NAME OF IMPORTER',
     tlc.permit_number as '4 PERMIT NUMBER',
     SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ) as '5 EMPLOYER IDENTIFICATION NUMBER EIN',
@@ -100,26 +155,28 @@ FROM
         tlc.zipcode,
         tlc.us_state
     ) as '2 PRINCIPAL BUSINESS ADDRESS Number Street City State and ZIP Code',
-    tlc.opening_stock as 'PIPE TOBACCO Pounds g6 On Hand Beginning of Month',   -- opening allow user to enter
-    round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462, 2) as 'PIPE TOBACCO Pounds g7 Imported and Released from Customs Custody into the United States',
-    tlc.opening_stock + round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462, 2) as 'PIPE TOBACCO Pounds g11 TOTAL',
+    tlc.opening_stock as 'PIPE TOBACCO Pounds g6 On Hand Beginning of Month', 
+     MTIW.mti_w + PRW.p_weight 
+    as 'PIPE TOBACCO Pounds g7 Imported and Released from Customs Custody into the United States',
+    tlc.opening_stock +  MTIW.mti_w + PRW.p_weight  as 'PIPE TOBACCO Pounds g11 TOTAL',
     domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g13 Transferred to Domestic Customers',
-    tlc.opening_stock + round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462, 2) - domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g19 On Hand End of Month',
-    domesticsales.total_tobacco_weight_lbs  + tlc.opening_stock + round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462, 2) - domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g20 TOTAL',
+    tlc.opening_stock +  MTIW.mti_w + PRW.p_weight  - domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g19 On Hand End of Month',
+    domesticsales.total_tobacco_weight_lbs  + tlc.opening_stock +  MTIW.mti_w + PRW.p_weight  - domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g20 TOTAL',
     DATE_FORMAT(CURDATE(), '%%m/%%d/%%Y') as '22 DATE',
     tlc.email as '23 EMAIL ADDRESS',
     'OWNER' as '24 TITLE OR STATUS State whether individual owner partner member of a limited liability company or if officer of corporation give title',
     SUBSTR( tlc.phone FROM 1 FOR 3 ) as '25 TELEPHONE NUMBER.0',
     SUBSTR( tlc.phone FROM 3 FOR 3 ) as '25 TELEPHONE NUMBER.1',
     SUBSTR( tlc.phone FROM -3 ) as '25 TELEPHONE NUMBER.2'
-FROM
-    `tabTobacco Legal Compliance` tlc
-    INNER JOIN `tabPurchase Receipt` PR ON PR.company = tlc.company
-    and PR.docstatus = 1 
-    and MONTHNAME(PR.posting_date) = %s
-    and year(PR.posting_date) = tlc.year
-    INNER JOIN `tabPurchase Receipt Item` PRI on PR.name = PRI.parent
-    AND PRI.item_group in (
+    FROM
+    `tabTobacco Legal Compliance` tlc ,
+    (select  coalesce(round(SUM(coalesce(coalesce(I.weight_per_unit,0) * coalesce(SED.qty,0), 0)) * 2.20462,2),0)  as mti_w
+    from `tabStock Entry Detail` SED 
+    INNER JOIN tabItem  as I 
+    ON I.item_code= SED.item_code
+    where SED.s_warehouse 
+    like '%%bond%%' and SED.t_warehouse  = %s 
+    AND SED.item_group in (
         select
             distinct name
         from
@@ -127,21 +184,46 @@ FROM
         where
             parent_item_group = 'TOBACCO'
     )
-    LEFT JOIN `tabPurchase Taxes and Charges` AS PTC ON PR.name = PTC.parent
-    LEFT JOIN tabAccount as AC on PTC.account_head = AC.name and AC.account_type = 'Tax'
-    LEFT JOIN (select si.company,sum(round(coalesce(item.total_weight,0)*2.20462,2)) as total_tobacco_weight_lbs from `tabSales Invoice` si
+    and SED.parent in (select distinct name from `tabStock Entry` as SE 
+    WHERE SE.purpose = 'Material Transfer'
+    and SE.docstatus = 1
+    and MONTHNAME(SE.posting_date) = %s 
+    and year(SE.posting_date) = %s 
+    )) as MTIW,     
+    (select 
+    round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462,2) AS p_weight
+ 	from `tabPurchase Receipt` PR 
+ 	where PR.docstatus = 1
+    and PR.set_warehouse = %s 
+    and MONTHNAME(PR.posting_date) = %s 
+    and year(PR.posting_date) = %s 
+    AND PR.name in (select distinct parent  from `tabPurchase Receipt Item` PRI
+    where  PRI.item_group in (
+        select
+            distinct name
+        from
+            `tabItem Group`
+        where
+            parent_item_group = 'TOBACCO'
+    ) )) as PRW,
+  	(select sum(round(coalesce(item.total_weight,0)*2.20462,2)) as total_tobacco_weight_lbs from `tabSales Invoice` si
     LEFT JOIN (SELECT sum(total_weight)as total_weight, parent from (select CASE weight_uom
                             WHEN 'Gram' then sum(total_weight/1000)
                             ELSE sum(total_weight)
                             END as total_weight,
-                            parent from `tabSales Invoice Item` where item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO') group by parent,weight_uom) as t group by parent) item on item.parent=si.name
+                            parent from `tabSales Invoice Item` 
+                            where item_group
+                            in
+                            (select distinct name from `tabItem Group` 
+                            where parent_item_group = 'TOBACCO') group by parent,weight_uom) as t group by parent) item 
+                            on item.parent=si.name
     WHERE si.docstatus=1
     and si.is_return <> 1 
     AND MONTHNAME(si.posting_date) = %s
     and year(si.posting_date) = %s 
-    group by si.company) as domesticsales 
-    on domesticsales.company = tlc.company
-    where tlc.name = %s""", (month_and_year, self.month, self.month,self.year,self.name,), as_dict=True)
+    and si.company = %s
+   ) as domesticsales 
+    where tlc.name = %s""", (month_and_year, self.company_warehouse,self.month,self.year, self.company_warehouse,self.month,self.year,self.month,self.year,self.company,self.name), as_dict=True)
 
         # field_dictionary = {
         #     '1 NAME OF IMPORTER': 'MAWGROUP LLC',
@@ -208,5 +290,3 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
         frappe.local.response.type = "download"
 
 
-def test():
-    download_52206()

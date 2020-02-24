@@ -23,9 +23,10 @@
   "legal_head",
   "email",
   "phone",
-  "fax",
   "section_break_19",
-  "opening_stock"
+  "opening_stock",
+  "column_break_21",
+  "company_warehouse"
  ],
  "fields": [
   {
@@ -49,7 +50,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Report Type",
-   "options": "FDA-3852\nTTB-5220",
+   "options": "FDA-3852\nTTB-5220\nNJ TPT-10",
    "reqd": 1
   },
   {
@@ -106,13 +107,6 @@
    "reqd": 1
   },
   {
-   "fetch_from": "company.fax",
-   "fieldname": "fax",
-   "fieldtype": "Data",
-   "label": "Fax",
-   "reqd": 1
-  },
-  {
    "fieldname": "us_state",
    "fieldtype": "Link",
    "label": "US State Permit",
@@ -157,9 +151,20 @@
    "fieldname": "opening_stock",
    "fieldtype": "Float",
    "label": "Opening Stock"
+  },
+  {
+   "fieldname": "column_break_21",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "company.company_warehouse_cf",
+   "fieldname": "company_warehouse",
+   "fieldtype": "Link",
+   "label": "Company Warehouse",
+   "options": "Warehouse"
   }
  ],
- "modified": "2020-02-18 02:09:39.158817",
+ "modified": "2020-02-23 23:49:35.449274",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",
