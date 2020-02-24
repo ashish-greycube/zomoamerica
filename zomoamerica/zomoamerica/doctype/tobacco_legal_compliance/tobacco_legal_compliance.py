@@ -33,7 +33,7 @@ class TobaccoLegalCompliance(Document):
     tlc.legal_head as 'topmostSubform[0].Page1[0].contactname[0]',
     MTIW.mti_w + PRW.p_weight  as 'topmostSubform[0].Page2[0].voimport12[0]',
     PRTAX.ptax+ MTTAX.TAX_7501 as 'topmostSubform[0].Page2[0].volimport12[0]',
-    'OWNER' as 'topmostSubform[0].Page2[0].title[0]',
+    tlc.title as 'topmostSubform[0].Page2[0].title[0]',
     DATE_FORMAT(CURDATE(), '%%m/%%d/%%Y') as 'topmostSubform[0].Page2[0].dateprepared[0]'
 	FROM
     `tabTobacco Legal Compliance` tlc,
@@ -164,7 +164,7 @@ class TobaccoLegalCompliance(Document):
     domesticsales.total_tobacco_weight_lbs  + tlc.opening_stock +  MTIW.mti_w + PRW.p_weight  - domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g20 TOTAL',
     DATE_FORMAT(CURDATE(), '%%m/%%d/%%Y') as '22 DATE',
     tlc.email as '23 EMAIL ADDRESS',
-    'OWNER' as '24 TITLE OR STATUS State whether individual owner partner member of a limited liability company or if officer of corporation give title',
+    tlc.title  as '24 TITLE OR STATUS State whether individual owner partner member of a limited liability company or if officer of corporation give title',
     SUBSTR( tlc.phone FROM 1 FOR 3 ) as '25 TELEPHONE NUMBER.0',
     SUBSTR( tlc.phone FROM 3 FOR 3 ) as '25 TELEPHONE NUMBER.1',
     SUBSTR( tlc.phone FROM -3 ) as '25 TELEPHONE NUMBER.2'

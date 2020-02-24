@@ -23,6 +23,7 @@
   "legal_head",
   "email",
   "phone",
+  "title",
   "section_break_19",
   "opening_stock",
   "column_break_21",
@@ -162,9 +163,16 @@
    "fieldtype": "Link",
    "label": "Company Warehouse",
    "options": "Warehouse"
+  },
+  {
+   "default": "OWNER",
+   "fieldname": "title",
+   "fieldtype": "Data",
+   "label": "Title",
+   "reqd": 1
   }
  ],
- "modified": "2020-02-23 23:49:35.449274",
+ "modified": "2020-02-24 00:13:26.221122",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",
