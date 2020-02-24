@@ -15,19 +15,30 @@
   "company_address",
   "address_line1",
   "address_line2",
+  "city",
   "zipcode",
   "us_state",
-  "permit_number",
+  "state_tax_percent",
+  "legal_company",
   "column_break_8",
   "employer_identification_number",
   "legal_head",
   "email",
   "phone",
   "title",
+  "permit_number",
+  "tax_payer_id",
   "section_break_19",
   "opening_stock",
+  "preparer_address",
+  "preparer_address_line1",
+  "preparer_address_line2",
+  "preparer_state",
   "column_break_21",
-  "company_warehouse"
+  "company_warehouse",
+  "preparer_id",
+  "preparer_city",
+  "preparer_zipcode"
  ],
  "fields": [
   {
@@ -170,9 +181,84 @@
    "fieldtype": "Data",
    "label": "Title",
    "reqd": 1
+  },
+  {
+   "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
+   "fetch_from": "company.tax_payer_id_cf",
+   "fieldname": "tax_payer_id",
+   "fieldtype": "Data",
+   "label": "Tax Payer ID"
+  },
+  {
+   "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
+   "fetch_from": "company.preparer_address_cf",
+   "fieldname": "preparer_address",
+   "fieldtype": "Link",
+   "label": "Preparer Address",
+   "options": "Address"
+  },
+  {
+   "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
+   "fetch_from": "preparer_address.address_line1",
+   "fieldname": "preparer_address_line1",
+   "fieldtype": "Data",
+   "label": "Preparer Address Line1"
+  },
+  {
+   "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
+   "fetch_from": "preparer_address.address_line2",
+   "fieldname": "preparer_address_line2",
+   "fieldtype": "Data",
+   "label": "Preparer Address Line2"
+  },
+  {
+   "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
+   "fetch_from": "preparer_address.state",
+   "fieldname": "preparer_state",
+   "fieldtype": "Data",
+   "label": "Preparer State"
+  },
+  {
+   "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
+   "fetch_from": "company.preparer_id_cf",
+   "fieldname": "preparer_id",
+   "fieldtype": "Data",
+   "label": "Preparer ID"
+  },
+  {
+   "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
+   "fetch_from": "preparer_address.city",
+   "fieldname": "preparer_city",
+   "fieldtype": "Data",
+   "label": "Preparer City"
+  },
+  {
+   "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
+   "fetch_from": "preparer_address.pincode",
+   "fieldname": "preparer_zipcode",
+   "fieldtype": "Data",
+   "label": "Preparer ZipCode"
+  },
+  {
+   "fetch_from": "company.legal_company_name_cf",
+   "fieldname": "legal_company",
+   "fieldtype": "Data",
+   "label": "Legal Company"
+  },
+  {
+   "fetch_from": "company_address.city",
+   "fieldname": "city",
+   "fieldtype": "Data",
+   "label": "City"
+  },
+  {
+   "fetch_from": "us_state.tax_percent",
+   "fieldname": "state_tax_percent",
+   "fieldtype": "Percent",
+   "label": "State Tax Percent"
   }
  ],
- "modified": "2020-02-24 00:13:26.221122",
+ "modified": "2020-02-24 02:43:40.738126",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",
