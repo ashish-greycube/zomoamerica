@@ -250,7 +250,7 @@ class TobaccoLegalCompliance(Document):
 
 def get_tpt10(self):
     field_dictionary = frappe.db.sql("""SELECT
-    CASE month 
+    CASE tlc.month 
     when 'January' THEN 1 
     WHEN 'February' THEN 2
     when 'March' THEN 3
@@ -263,8 +263,7 @@ def get_tpt10(self):
     WHEN 'October' THEN 10
     WHEN 'November' THEN 11
     WHEN 'December' THEN 12
-    ELSE 0
-    END as 'Month',
+    ELSE 0 END as 'Month',
     tlc.year as 'Year',
     tlc.employer_identification_number as 'Federal ID Number',
     tlc.title as 'Title',
@@ -273,7 +272,7 @@ def get_tpt10(self):
     tlc.phone as 'Telephone Number' ,
     tlc.tax_payer_id as 'Taxpayer ID',
     CONCAT_WS(
-            '\n',
+            ',',
             tlc.preparer_address_line1,
             tlc.preparer_address_line2,
             tlc.preparer_city,
@@ -282,27 +281,23 @@ def get_tpt10(self):
         ) AS 'Preparer s Address',
     tlc.preparer_id as 'Preparer s ID',
     tlc.legal_company as 'Taxpayer Name',
-    CONCAT_WS(
-            '\n',
-            tlc.address_line1,
-            tlc.address_line2) as 'Address',
-    CONCAT_WS(' ',tlc.city ,tlc.zipcode ,tlc.us_state ) as 'City State Zip Code',
-    0.0 as '1A',
-    MTA.mt_total_amt+ PRA.p_total AS 2A,
-    MTA.mt_total_amt+ PRA.p_total  AS 7A,
+    tlc.address_line1 as 'Address',
+    0 as 1A,
+    (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)) AS 2A,
+    COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)  AS 7A,
     TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales as  8A,
     TOTAL_SALES.total_sales - NJSALES.nj_sales as 10A,
     (TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) as 11A,
-    0.0 AS 12A,
+    0 AS 12A,
     NJSAMPLES.nj_sample_sales AS 13A,
-    0.0 AS 14A,
+    0 AS 14A,
     NJSAMPLES.nj_sample_sales  AS 15A,
     (TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales AS 16A,
     round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 18A,
     round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 19A,
-    0.0 AS 20A,
+    0 AS 20A,
     round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 21A
-    from `tabTobacco Legal Compliance` tlc ,
+    from `tabTobacco Legal Compliance` AS tlc ,
     (select  SUM(total_amount)   as mt_total_amt
         from `tabStock Entry` as SE 
         WHERE SE.purpose = 'Material Transfer'
@@ -319,7 +314,7 @@ def get_tpt10(self):
             where
                 parent_item_group = 'TOBACCO'
         ))
-        ) as MTA, -- MATERIAL TRANSFER AMOUNT   
+        ) as MTA,   
         (select 
         SUM(rounded_total) AS p_total
         from `tabPurchase Receipt` PR 
@@ -359,7 +354,7 @@ def get_tpt10(self):
         AND si.customer in ('SAMPLE/TASTING','SAMPLE/EVENT')
         AND MONTHNAME(si.posting_date) = %s 
         and year(si.posting_date) =  %s 
-    and si.company =  %s ) 
+        and si.company =  %s ) 
         )as NJSAMPLES,
         (SELECT  sum(amount)as nj_sales from  `tabSales Invoice Item` 
                                 where item_group in
@@ -372,7 +367,7 @@ def get_tpt10(self):
         and si.is_return <> 1 
         AND MONTHNAME(si.posting_date) = %s 
         and year(si.posting_date) =  %s   
-    and si.company =  %s ) 
+        and si.company =  %s ) 
         )as NJSALES
     where tlc.name = %s""", ( self.company_warehouse,self.month,self.year, self.company_warehouse,self.month,self.year,self.month,self.year,self.company,self.month,self.year,self.company,self.month,self.year,self.company,self.name), as_dict=True)
     return field_dictionary and field_dictionary[0] or {}
