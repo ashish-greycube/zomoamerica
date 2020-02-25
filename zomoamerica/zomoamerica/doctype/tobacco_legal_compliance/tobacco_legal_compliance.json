@@ -137,18 +137,21 @@
   },
   {
    "fetch_from": "company_address.address_line1",
+   "fetch_if_empty": 1,
    "fieldname": "address_line1",
    "fieldtype": "Data",
    "label": "Address Line 1"
   },
   {
    "fetch_from": "company_address.address_line2",
+   "fetch_if_empty": 1,
    "fieldname": "address_line2",
    "fieldtype": "Data",
    "label": "Address Line 2"
   },
   {
    "fetch_from": "company_address.pincode",
+   "fetch_if_empty": 1,
    "fieldname": "zipcode",
    "fieldtype": "Data",
    "label": "ZipCode"
@@ -200,6 +203,7 @@
   {
    "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
    "fetch_from": "preparer_address.address_line1",
+   "fetch_if_empty": 1,
    "fieldname": "preparer_address_line1",
    "fieldtype": "Data",
    "label": "Preparer Address Line1"
@@ -207,6 +211,7 @@
   {
    "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
    "fetch_from": "preparer_address.address_line2",
+   "fetch_if_empty": 1,
    "fieldname": "preparer_address_line2",
    "fieldtype": "Data",
    "label": "Preparer Address Line2"
@@ -228,6 +233,7 @@
   {
    "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
    "fetch_from": "preparer_address.city",
+   "fetch_if_empty": 1,
    "fieldname": "preparer_city",
    "fieldtype": "Data",
    "label": "Preparer City"
@@ -235,6 +241,7 @@
   {
    "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
    "fetch_from": "preparer_address.pincode",
+   "fetch_if_empty": 1,
    "fieldname": "preparer_zipcode",
    "fieldtype": "Data",
    "label": "Preparer ZipCode"
@@ -247,18 +254,20 @@
   },
   {
    "fetch_from": "company_address.city",
+   "fetch_if_empty": 1,
    "fieldname": "city",
    "fieldtype": "Data",
    "label": "City"
   },
   {
    "fetch_from": "us_state.tax_percent",
+   "fetch_if_empty": 1,
    "fieldname": "state_tax_percent",
    "fieldtype": "Percent",
    "label": "State Tax Percent"
   }
  ],
- "modified": "2020-02-24 02:43:40.738126",
+ "modified": "2020-02-25 01:20:02.095176",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",

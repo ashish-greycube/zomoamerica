@@ -271,7 +271,7 @@ class TobaccoLegalCompliance(Document):
         tlc.phone as 'Telephone Number' ,
         tlc.tax_payer_id as 'Taxpayer ID',
         CONCAT_WS(
-                ',',
+                '\n',
                 tlc.preparer_address_line1,
                 tlc.preparer_address_line2,
                 tlc.preparer_city,
@@ -280,7 +280,8 @@ class TobaccoLegalCompliance(Document):
             ) AS 'Preparer s Address',
         tlc.preparer_id as 'Preparer s ID',
         tlc.legal_company as 'Taxpayer Name',
-        tlc.address_line1 as 'Address',
+        TRIM(tlc.address_line1) as 'Address',
+        'PATERSON NJ 07053' as 'City',
         0 as 1A,
         (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)) AS 2A,
         COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)  AS 7A,
