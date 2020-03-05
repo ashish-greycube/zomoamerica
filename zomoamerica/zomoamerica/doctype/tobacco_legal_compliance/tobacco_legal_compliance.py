@@ -142,7 +142,7 @@ class TobaccoLegalCompliance(Document):
             self.month, '%B').tm_mon, self.year)
 
         field_dictionary = frappe.db.sql("""SELECT
-    tlc.company as '1 NAME OF IMPORTER',
+    tlc.legal_company as '1 NAME OF IMPORTER',
     tlc.permit_number as '4 PERMIT NUMBER',
     SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ) as '5 EMPLOYER IDENTIFICATION NUMBER EIN',
     tlc.phone as '(Enter the telephone number including area code.)',
