@@ -88,6 +88,7 @@
   },
   {
    "fetch_from": "company.email",
+   "fetch_if_empty": 1,
    "fieldname": "email",
    "fieldtype": "Data",
    "label": "Email",
@@ -99,6 +100,7 @@
   },
   {
    "fetch_from": "company.employer_identification_number_cf",
+   "fetch_if_empty": 1,
    "fieldname": "employer_identification_number",
    "fieldtype": "Data",
    "label": "Employer Identification Number",
@@ -106,6 +108,7 @@
   },
   {
    "fetch_from": "company.legal_head_cf",
+   "fetch_if_empty": 1,
    "fieldname": "legal_head",
    "fieldtype": "Data",
    "label": "Legal Head",
@@ -113,6 +116,7 @@
   },
   {
    "fetch_from": "company.phone_no",
+   "fetch_if_empty": 1,
    "fieldname": "phone",
    "fieldtype": "Data",
    "label": "Phone",
@@ -127,6 +131,7 @@
   },
   {
    "fetch_from": "us_state.permit_number",
+   "fetch_if_empty": 1,
    "fieldname": "permit_number",
    "fieldtype": "Data",
    "label": "Permit Number"
@@ -173,6 +178,7 @@
   },
   {
    "fetch_from": "company.company_warehouse_cf",
+   "fetch_if_empty": 1,
    "fieldname": "company_warehouse",
    "fieldtype": "Link",
    "label": "Company Warehouse",
@@ -188,6 +194,7 @@
   {
    "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
    "fetch_from": "company.tax_payer_id_cf",
+   "fetch_if_empty": 1,
    "fieldname": "tax_payer_id",
    "fieldtype": "Data",
    "label": "Tax Payer ID"
@@ -195,6 +202,7 @@
   {
    "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
    "fetch_from": "company.preparer_address_cf",
+   "fetch_if_empty": 1,
    "fieldname": "preparer_address",
    "fieldtype": "Link",
    "label": "Preparer Address",
@@ -219,6 +227,7 @@
   {
    "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
    "fetch_from": "preparer_address.state",
+   "fetch_if_empty": 1,
    "fieldname": "preparer_state",
    "fieldtype": "Data",
    "label": "Preparer State"
@@ -226,6 +235,7 @@
   {
    "depends_on": "eval:doc.report_type == 'NJ TPT-10'",
    "fetch_from": "company.preparer_id_cf",
+   "fetch_if_empty": 1,
    "fieldname": "preparer_id",
    "fieldtype": "Data",
    "label": "Preparer ID"
@@ -248,6 +258,7 @@
   },
   {
    "fetch_from": "company.legal_company_name_cf",
+   "fetch_if_empty": 1,
    "fieldname": "legal_company",
    "fieldtype": "Data",
    "label": "Legal Company"
@@ -267,7 +278,7 @@
    "label": "State Tax Percent"
   }
  ],
- "modified": "2020-02-25 22:13:49.464011",
+ "modified": "2020-03-04 23:13:56.888891",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",
