@@ -138,7 +138,7 @@ class TobaccoLegalCompliance(Document):
 # return field_dictionary
 
     def get_55206(self):
-        month_and_year = "%s %s" % (time.strptime(
+        month_and_year = "%s / %s" % (time.strptime(
             self.month, '%B').tm_mon, self.year)
 
         field_dictionary = frappe.db.sql("""SELECT
