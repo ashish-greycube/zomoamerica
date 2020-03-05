@@ -160,7 +160,7 @@ class TobaccoLegalCompliance(Document):
     as 'PIPE TOBACCO Pounds g7 Imported and Released from Customs Custody into the United States',
     coalesce(tlc.opening_stock,0) +  coalesce(MTIW.mti_w,0) + coalesce(PRW.p_weight,0)  as 'PIPE TOBACCO Pounds g11 TOTAL',
     coalesce(domesticsales.total_tobacco_weight_lbs,0)  as 'PIPE TOBACCO Pounds g13 Transferred to Domestic Customers',
-    tlc.opening_stock +  MTIW.mti_w + PRW.p_weight  - domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g19 On Hand End of Month',
+    coalesce(tlc.opening_stock,0) +  coalesce(MTIW.mti_w,0) + coalesce(PRW.p_weight,0)  - coalesce(domesticsales.total_tobacco_weight_lbs,0)  as 'PIPE TOBACCO Pounds g19 On Hand End of Month',
     coalesce(domesticsales.total_tobacco_weight_lbs,0)  + coalesce(tlc.opening_stock,0) +  coalesce(MTIW.mti_w,0) + coalesce(PRW.p_weight,0)  - coalesce(domesticsales.total_tobacco_weight_lbs,0)  as 'PIPE TOBACCO Pounds g20 TOTAL',
     DATE_FORMAT(CURDATE(), '%%m/%%d/%%Y') as '22 DATE',
     tlc.email as '23 EMAIL ADDRESS',
