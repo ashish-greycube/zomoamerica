@@ -18,21 +18,21 @@ class TobaccoLegalCompliance(Document):
         field_dictionary = frappe.db.sql("""
                 SELECT
     tlc.permit_number as 'topmostSubform[0].Page1[0].TTBpermit[0]',
-    tlc.phone as 'topmostSubform[0].Page1[0].Phone[0]',
-    tlc.employer_identification_number as 'topmostSubform[0].Page1[0].empID[0]',
+    CONCAT('(',SUBSTR(tlc.phone FROM 1 FOR 3), ')', SUBSTR(tlc.phone FROM 4 FOR 3), ' ' ,SUBSTR(tlc.phone FROM 7))as 'topmostSubform[0].Page1[0].Phone[0]',
+    CONCAT(SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ),'-', SUBSTR( tlc.employer_identification_number FROM 3)) as 'topmostSubform[0].Page1[0].empID[0]',
     tlc.email as 'topmostSubform[0].Page1[0].emailaddress[0]',
     tlc.month as 'topmostSubform[0].Page1[0].month[0]',
     tlc.year as 'topmostSubform[0].Page1[0].activityyear[0]',
     CONCAT_WS(
-        '\n',
+        '\n', 
+        tlc.legal_company,
         tlc.address_line1,
         tlc.city,
-        tlc.zipcode,
-        tlc.us_state
+        CONCAT(tlc.us_state ,' ',tlc.zipcode)
     ) as 'topmostSubform[0].Page1[0].compname[0]',
     tlc.legal_head as 'topmostSubform[0].Page1[0].contactname[0]',
-    MTIW.mti_w + PRW.p_weight  as 'topmostSubform[0].Page2[0].voimport12[0]',
-    PRTAX.ptax+ MTTAX.TAX_7501 as 'topmostSubform[0].Page2[0].volimport12[0]',
+    coalesce(MTIW.mti_w,0) + coalesce(PRW.p_weight,0)  as 'topmostSubform[0].Page2[0].voimport12[0]',
+    coalesce(PRTAX.ptax,0)+ coalesce(MTTAX.TAX_7501,0) as 'topmostSubform[0].Page2[0].volimport12[0]',
     tlc.title as 'topmostSubform[0].Page2[0].title[0]',
     DATE_FORMAT(CURDATE(), '%%m/%%d/%%Y') as 'topmostSubform[0].Page2[0].dateprepared[0]'
 	FROM
@@ -156,12 +156,12 @@ class TobaccoLegalCompliance(Document):
         tlc.us_state
     ) as '2 PRINCIPAL BUSINESS ADDRESS Number Street City State and ZIP Code',
     tlc.opening_stock as 'PIPE TOBACCO Pounds g6 On Hand Beginning of Month', 
-     MTIW.mti_w + PRW.p_weight 
+     coalesce(MTIW.mti_w,0) + coalesce(PRW.p_weight,0) 
     as 'PIPE TOBACCO Pounds g7 Imported and Released from Customs Custody into the United States',
-    tlc.opening_stock +  MTIW.mti_w + PRW.p_weight  as 'PIPE TOBACCO Pounds g11 TOTAL',
-    domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g13 Transferred to Domestic Customers',
+    coalesce(tlc.opening_stock,0) +  coalesce(MTIW.mti_w,0) + coalesce(PRW.p_weight,0)  as 'PIPE TOBACCO Pounds g11 TOTAL',
+    coalesce(domesticsales.total_tobacco_weight_lbs,0)  as 'PIPE TOBACCO Pounds g13 Transferred to Domestic Customers',
     tlc.opening_stock +  MTIW.mti_w + PRW.p_weight  - domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g19 On Hand End of Month',
-    domesticsales.total_tobacco_weight_lbs  + tlc.opening_stock +  MTIW.mti_w + PRW.p_weight  - domesticsales.total_tobacco_weight_lbs  as 'PIPE TOBACCO Pounds g20 TOTAL',
+    coalesce(domesticsales.total_tobacco_weight_lbs,0)  + coalesce(tlc.opening_stock,0) +  coalesce(MTIW.mti_w,0) + coalesce(PRW.p_weight,0)  - coalesce(domesticsales.total_tobacco_weight_lbs,0)  as 'PIPE TOBACCO Pounds g20 TOTAL',
     DATE_FORMAT(CURDATE(), '%%m/%%d/%%Y') as '22 DATE',
     tlc.email as '23 EMAIL ADDRESS',
     tlc.title  as '24 TITLE OR STATUS State whether individual owner partner member of a limited liability company or if officer of corporation give title',
@@ -286,17 +286,17 @@ class TobaccoLegalCompliance(Document):
         (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)) AS 2A,
         COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)  AS 7A,
         COALESCE(TOTAL_SALES.total_sales,0) - COALESCE(NJSAMPLES.nj_sample_sales,0) as  8A,
-        TOTAL_SALES.total_sales - NJSALES.nj_sales as 10A,
-        (TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) as 11A,
+        coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0) as 10A,
+        (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSAMPLES.nj_sample_sales,0)) - (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0)) as 11A,
         0 AS 12A,
-        NJSAMPLES.nj_sample_sales AS 13A,
+        coalesce(NJSAMPLES.nj_sample_sales,0) AS 13A,
         0 AS 14A,
-        NJSAMPLES.nj_sample_sales  AS 15A,
-        (TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales AS 16A,
-        round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 18A,
-        round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 19A,
+        coalesce(NJSAMPLES.nj_sample_sales,0)  AS 15A,
+        (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSAMPLES.nj_sample_sales,0)) - (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0)) +  coalesce(NJSAMPLES.nj_sample_sales,0) AS 16A,
+        round(((coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSAMPLES.nj_sample_sales,0)) - (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0)) +  coalesce(NJSAMPLES.nj_sample_sales,0) )* coalesce(tlc.state_tax_percent,0)/100,2) as 18A,
+        round(((coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSAMPLES.nj_sample_sales,0)) - (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0)) +  coalesce(NJSAMPLES.nj_sample_sales,0) )* coalesce(tlc.state_tax_percent,0)/100,2) as 19A,
         0 AS 20A,
-        round(((TOTAL_SALES.total_sales - NJSAMPLES.nj_sample_sales) - (TOTAL_SALES.total_sales - NJSALES.nj_sales) +  NJSAMPLES.nj_sample_sales )* tlc.state_tax_percent,2) as 21A
+        round(((coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSAMPLES.nj_sample_sales,0)) - (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0)) +  coalesce(NJSAMPLES.nj_sample_sales,0) )* coalesce(tlc.state_tax_percent,0)/100,2) as 21A
         from `tabTobacco Legal Compliance` AS tlc ,
         (select  SUM(total_amount)   as mt_total_amt
             from `tabStock Entry` as SE 
