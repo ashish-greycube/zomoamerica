@@ -35,10 +35,10 @@ class TobaccoLegalCompliance(Document):
     coalesce(PRTAX.ptax,0)+ coalesce(MTTAX.TAX_7501,0) as 'topmostSubform[0].Page2[0].volimport12[0]',
     tlc.title as 'topmostSubform[0].Page2[0].title[0]',
     DATE_FORMAT(CURDATE(), '%%m/%%d/%%Y') as 'topmostSubform[0].Page2[0].dateprepared[0]'
-	FROM
+    FROM
     `tabTobacco Legal Compliance` tlc,
     (SELECT 
-  	SUM(coalesce(LCT.amount, 0))
+      SUM(coalesce(LCT.amount, 0))
     as TAX_7501
     FROM `tabLanded Cost Taxes and Charges` AS LCT 
     where LCT.expense_account IN (SELECT distinct name from tabAccount as AC1 where AC1.account_type = 'Tax') 
@@ -59,10 +59,10 @@ class TobaccoLegalCompliance(Document):
     and year(SE.posting_date) = %s ) )) as MTTAX,
     (SELECT 
     SUM(coalesce(PTC.base_tax_amount, 0)) as ptax
- 	from
- 	`tabPurchase Taxes and Charges` AS PTC 
- 	INNER JOIN `tabPurchase Receipt` PR 
- 	ON PR.name = PTC.parent 
+     from
+     `tabPurchase Taxes and Charges` AS PTC 
+     INNER JOIN `tabPurchase Receipt` PR 
+     ON PR.name = PTC.parent 
     AND PR.docstatus = 1
     and PR.set_warehouse = %s
     and MONTHNAME(PR.posting_date) =  %s 
@@ -101,8 +101,8 @@ class TobaccoLegalCompliance(Document):
     )) as MTIW,   
     (select 
     round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462,2) AS p_weight
- 	from `tabPurchase Receipt` PR 
- 	where PR.docstatus = 1
+     from `tabPurchase Receipt` PR 
+     where PR.docstatus = 1
     and PR.set_warehouse = %s 
     and MONTHNAME(PR.posting_date) = %s 
     and year(PR.posting_date) = %s
@@ -192,8 +192,8 @@ class TobaccoLegalCompliance(Document):
     )) as MTIW,     
     (select 
     round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462,2) AS p_weight
- 	from `tabPurchase Receipt` PR 
- 	where PR.docstatus = 1
+     from `tabPurchase Receipt` PR 
+     where PR.docstatus = 1
     and PR.set_warehouse = %s 
     and MONTHNAME(PR.posting_date) = %s 
     and year(PR.posting_date) = %s 
@@ -206,7 +206,7 @@ class TobaccoLegalCompliance(Document):
         where
             parent_item_group = 'TOBACCO'
     ) )) as PRW,
-  	(select sum(round(coalesce(item.total_weight,0)*2.20462,2)) as total_tobacco_weight_lbs from `tabSales Invoice` si
+      (select sum(round(coalesce(item.total_weight,0)*2.20462,2)) as total_tobacco_weight_lbs from `tabSales Invoice` si
     LEFT JOIN (SELECT sum(total_weight)as total_weight, parent from (select CASE weight_uom
                             WHEN 'Gram' then sum(total_weight/1000)
                             ELSE sum(total_weight)
@@ -372,6 +372,32 @@ class TobaccoLegalCompliance(Document):
         where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
+def get_scheduleB(self):
+        field_dictionary = frappe.db.sql("""SELECT name, month, year,
+        tlc.employer_identification_number as 'FederalIDNo',
+        tlc.legal_company as 'TaxpayerName',
+        TRIM(tlc.address_line1) as 'Address',
+        'PATERSON NJ 07053' as 'CityStateZip',
+        TrData.customer_name,TrData.Address,TrData.City,TrData.State,TrData.zipcode,TrData.TobaccoGrossTotal
+        from `tabTobacco Legal Compliance` AS tlc,
+        (select tsi.customer_name,
+        SUBSTR(tsi.customer_address,1,LOCATE('-',tsi.customer_address)-1) as "CustomerProfile",
+        concat_ws('', ta.address_line1, ta.address_line2) as "Address",
+        coalesce(ta.City,'') as "City",
+        coalesce(ta.State,'') as "State",
+        coalesce(ta.pincode,'') as "zipcode",
+        (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as "TobaccoGrossTotal"
+        from `tabSales Invoice` tsi 
+        left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item` where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') group by parent) CGT on CGT.parent=tsi.name
+        inner join tabCustomer c on c.name = tsi.customer
+        left outer join tabAddress ta on ta.name = tsi.customer_address
+        where tsi.docstatus=1  
+        AND ta.State <> 'NJ' AND tsi.customer_name not like 'SAMPLE%' and ta.country = 'United States'
+        and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s) as TrData
+        where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True)
+        return field_dictionary and field_dictionary[0] or {}
+
+
 
 def touch_random_file():
     fname = os.path.join(
@@ -406,8 +432,14 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
         pdfreport = pypdftk.fill_form(
             ttbf_template, doc.get_55206(), out_file=touch_random_file())
     elif doc.report_type == "NJ TPT-10":
-        pdfreport = pypdftk.fill_form(
-            tpt10_template, doc.get_tpt10(), out_file=touch_random_file())
+        from frappe.utils import get_site_url
+        base_url = get_site_url(frappe.local.site)
+        from frappe.utils.pdf import get_pdf
+        html = frappe.render_template('zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_b_hc.html', {"base_url": base_url,"body": "html", "title": "Report Card"})
+        from six import BytesIO, string_types
+        sch_b_report = BytesIO(get_pdf(html))
+        pdfreport = pypdftk.fill_form(tpt10_template, doc.get_tpt10(), out_file=touch_random_file())
+        merged_file = pypdftk.concat([sch_b_report, pdfreport], touch_random_file())
     else:
         pass
 
@@ -419,7 +451,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
     # print(merged_file)
     # return merged_file
 
-    with open(pdfreport, "rb") as fileobj:
+    with open(merged_file, "rb") as fileobj:
         filedata = fileobj.read()
         frappe.local.response.filename = file_name
         frappe.local.response.filecontent = filedata
