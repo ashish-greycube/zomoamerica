@@ -11,6 +11,10 @@ import pypdftk
 from frappe.utils import touch_file
 from pprint import pprint
 import time
+from PyPDF2 import PdfFileWriter
+from io import StringIO
+from frappe.utils import get_site_url
+from frappe.utils.pdf import get_pdf
 
 
 class TobaccoLegalCompliance(Document):
@@ -372,37 +376,41 @@ class TobaccoLegalCompliance(Document):
         where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
-def get_scheduleB(self):
+    def get_scheduleB(self):
         field_dictionary = frappe.db.sql("""SELECT name, month, year,
-        tlc.employer_identification_number as 'FederalIDNo',
-        tlc.legal_company as 'TaxpayerName',
-        TRIM(tlc.address_line1) as 'Address',
-        'PATERSON NJ 07053' as 'CityStateZip',
-        TrData.customer_name,TrData.Address,TrData.City,TrData.State,TrData.zipcode,TrData.TobaccoGrossTotal
-        from `tabTobacco Legal Compliance` AS tlc,
-        (select tsi.customer_name,
-        SUBSTR(tsi.customer_address,1,LOCATE('-',tsi.customer_address)-1) as "CustomerProfile",
-        concat_ws('', ta.address_line1, ta.address_line2) as "Address",
-        coalesce(ta.City,'') as "City",
-        coalesce(ta.State,'') as "State",
-        coalesce(ta.pincode,'') as "zipcode",
-        (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as "TobaccoGrossTotal"
-        from `tabSales Invoice` tsi 
-        left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item` where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') group by parent) CGT on CGT.parent=tsi.name
-        inner join tabCustomer c on c.name = tsi.customer
-        left outer join tabAddress ta on ta.name = tsi.customer_address
-        where tsi.docstatus=1  
-        AND ta.State <> 'NJ' AND tsi.customer_name not like 'SAMPLE%' and ta.country = 'United States'
-        and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s) as TrData
-        where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True)
-        return field_dictionary and field_dictionary[0] or {}
+            tlc.employer_identification_number as 'FederalIDNo',
+            tlc.legal_company as 'TaxpayerName',
+            TRIM(tlc.address_line1) as 'Address',
+            'PATERSON NJ 07053' as 'CityStateZip',
+            TrData.customer_name,TrData.Address,TrData.City,TrData.State,TrData.zipcode,TrData.TobaccoGrossTotal
+            from `tabTobacco Legal Compliance` AS tlc,
+            (select tsi.customer_name,
+            SUBSTR(tsi.customer_address,1,LOCATE('-',tsi.customer_address)-1) as "CustomerProfile",
+            concat_ws('', ta.address_line1, ta.address_line2) as "Address",
+            coalesce(ta.City,'') as "City",
+            coalesce(ta.State,'') as "State",
+            coalesce(ta.pincode,'') as "zipcode",
+            (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as "TobaccoGrossTotal"
+            from `tabSales Invoice` tsi 
+            left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item` 
+            where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') group by parent) CGT on CGT.parent=tsi.name
+            inner join tabCustomer c on c.name = tsi.customer
+            left outer join tabAddress ta on ta.name = tsi.customer_address
+            where tsi.docstatus=1  
+            AND ta.State <> 'NJ' AND tsi.customer_name not like 'SAMPLE%%' and ta.country = 'United States'
+            and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s) as TrData
+            where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
+        return field_dictionary or {}
 
 
-
-def touch_random_file():
+def touch_random_file(output=None):
     fname = os.path.join(
         "/tmp", "{0}.pdf".format(frappe.generate_hash(length=10)))
     touch_file(fname)
+
+    if output:
+        output.write(open(fname, "wb"))
+
     return fname
 
 
@@ -432,14 +440,21 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
         pdfreport = pypdftk.fill_form(
             ttbf_template, doc.get_55206(), out_file=touch_random_file())
     elif doc.report_type == "NJ TPT-10":
-        from frappe.utils import get_site_url
-        base_url = get_site_url(frappe.local.site)
-        from frappe.utils.pdf import get_pdf
-        html = frappe.render_template('zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_b_hc.html', {"base_url": base_url,"body": "html", "title": "Report Card"})
-        from six import BytesIO, string_types
-        sch_b_report = BytesIO(get_pdf(html))
-        pdfreport = pypdftk.fill_form(tpt10_template, doc.get_tpt10(), out_file=touch_random_file())
-        merged_file = pypdftk.concat([sch_b_report, pdfreport], touch_random_file())
+        pdfreport = pypdftk.fill_form(
+            tpt10_template, doc.get_tpt10(), out_file=touch_random_file())
+
+        # create schedule b
+        context = {"data": doc.get_scheduleB()}
+        context['base_url'] = get_site_url(frappe.local.site)
+        template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_b_hc.html'
+        html = frappe.render_template(template_path, context)
+        output = PdfFileWriter()
+        sch_b_report = get_pdf(html, output=output)
+        sch_b_report = touch_random_file(output)
+
+        # merge report and schedule
+        merged_file = pypdftk.concat(
+            [pdfreport, sch_b_report], touch_random_file())
     else:
         pass
 
@@ -447,8 +462,6 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
         frappe.throw("No format found for report type %s" % doc.report_type)
 
     # merged_file = pypdftk.concat([fda, ttbf], touch_random_file())
-
-    # print(merged_file)
     # return merged_file
 
     with open(merged_file, "rb") as fileobj:

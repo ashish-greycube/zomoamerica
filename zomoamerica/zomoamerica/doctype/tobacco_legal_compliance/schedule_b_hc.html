@@ -1,90 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link
-      href="{{ base_url }}/assets/frappe/css/bootstrap.css"
-      rel="stylesheet"
-    />
-    <link
-      type="text/css"
-      rel="stylesheet"
-      href="{{ base_url }}/assets/frappe/css/font-awesome.css"
-    />
-    <meta name="pdfkit-orientation" content="landscape" />
-    </head>
- 
+
+<head>
+  <meta charset="utf-8" />
+  <link href="{{ base_url }}/assets/frappe/css/bootstrap.css" rel="stylesheet" />
+  <link type="text/css" rel="stylesheet" href="{{ base_url }}/assets/frappe/css/font-awesome.css" />
+  <meta name="pdfkit-orientation" content="landscape" />
+</head>
+
 <body>
 
 
-<table class="table table-responsive" style="margin: 0;" >
+  <table class="table table-responsive" style="margin: 0;">
     <tbody style="width: 100%;">
-    <tr style="width: 100%;">
-    <td style="text-align:left; font-size: 22px; vertical-align: bottom;">Schedule B</td>
-    <td style="text-align:center; font-size: 22px; vertical-align: bottom;">Tobacco Products Sold</td>
-    <td style="text-align:right; font-size: 16px; vertical-align: bottom;">rev 07 - 08</td>
-    </tr>
-    <tr style="width: 100%;">
-    <td colspan="3" style="height: 10px; background: #000; padding: 0;"> </td>
-    </tr>	
-    </tbody>	
-    </table>
-    
-    <table class="table table-responsive table-bordered" style="margin: 0;">
+      <tr style="width: 100%;">
+        <td style="text-align:left; font-size: 22px; vertical-align: bottom;">Schedule B</td>
+        <td style="text-align:center; font-size: 22px; vertical-align: bottom;">Tobacco Products Sold</td>
+        <td style="text-align:right; font-size: 16px; vertical-align: bottom;">rev 07 - 08</td>
+      </tr>
+      <tr style="width: 100%;">
+        <td colspan="3" style="height: 10px; background: #000; padding: 0;"> </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-responsive table-bordered" style="margin: 0;">
     <tbody style="width: 100%;">
-    <tr style="width: 100%;">
-    <td><small>Federal ID Number</small> <br> <span style="font-size: 20px;"> 82-5123531 </span> </td>
-    <td><small>Taxpayer Name</small> <br> <span style="font-size: 20px; text-transform: uppercase;"> Mawgroup LLC </span></td>
-    <td><small>Address</small> <br> <span style="font-size: 20px; text-transform: uppercase;"> 138-140 MICHIGAN AVENUE </span></td>
-    <td><small>City      State      Zipcode</small> <br> <span style="font-size: 20px; text-transform: uppercase;"> Paterson, NJ 07503 </span> </td>
-    </tr>
-    <tr style="width: 100%;">
-    <td colspan="4" style="height: 10px; background: #000; padding: 0;"> </td>
-    </tr>	
-    </tbody>	
-    </table>	
-    
-    <table class="table table-responsive table-bordered" >
-    <tbody style="width: 100%;">
-    <tr style="width: 100%;">
-    <td style="text-align:center;">Name and Address of Purchaser</td>
-    <td style="text-align:center;">Tobacco Products (excluding Liquid Nicotine, Moist Snuff & Roll - Your-Own)</td>
-    <td style="text-align:center;">Liquid Nicotine (Fluid Milliliter)</td>
-    <td style="text-align:center;">Moist Snuff (ounces) </td>
-    <td style="text-align:center;">Roll-Your-Own Tobbacco </td>
-    </tr>
-    <tr style="width: 100%;">
-    <td colspan="5" style="height: 10px; background: #000; padding: 0;"> </td>
-    </tr>	
-    <tr style="width: 100%;">
-    <td style="text-transform: uppercase;">Sampling Event</td>
-    <td>5.45</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    </tr>
-    <tr style="width: 100%;">
-    <td style="text-transform: uppercase;">124 Main St</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    </tr>
-    <tr style="width: 100%;">
-    <td style="text-transform: uppercase;">Manhattan, NY 10044</td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    </tr>
-    <tr style="width: 100%;">
-    <td ></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    <td></td>
-    </tr>
-    </tbody>	
-    </table> 
-    </body>
-    </html>
+      <tr style="width: 100%;">
+        <td><small>Federal ID Number</small> <br> <span style="font-size: 20px;"> {{ data[0]["FederalIDNo"]}} </span>
+        </td>
+        <td><small>Taxpayer Name</small> <br> <span style="font-size: 20px; text-transform: uppercase;">
+            {{ data[0]["TaxpayerName"]}}</span></td>
+        <td><small>Address</small> <br> <span style="font-size: 20px; text-transform: uppercase;">
+            {{ data[0]["Address"]}}</span></td>
+        <td><small>City State Zipcode</small> <br> <span style="font-size: 20px; text-transform: uppercase;">
+            {{ data[0]["CityStateZip"]}} </span> </td>
+      </tr>
+      <tr style="width: 100%;">
+        <td colspan="4" style="height: 10px; background: #000; padding: 0;"> </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table table-responsive table-bordered">
+    <thead style="width: 100%;">
+      <tr style="width: 100%;">
+        <th style="text-align:center;">Name and Address of Purchaser
+        </th>
+        <th style="text-align:center;">Tobacco Products (excluding Liquid Nicotine, Moist Snuff &amp; Roll - Your-Own)
+        </th>
+        <th style="text-align:center;">Liquid Nicotine (Fluid Milliliter)
+        </th>
+        <th style="text-align:center;">Moist Snuff (ounces)
+        </th>
+        <th style="text-align:center;">Roll-Your-Own Tobbacco
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for d in data %}
+      <tr>
+        <td>{{ d["customer_name"] }}</td>
+        <td>{{ d["TobaccoGrossTotal"] }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>{{ d["CustAddress"] }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>{{ d["City"] }} {{ d["State"] }} {{ d["zipcode"] }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</body>
+
+</html>
