@@ -446,7 +446,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
         # create schedule b
         context = {"data": doc.get_scheduleB()}
         context['base_url'] = get_site_url(frappe.local.site)
-        template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_b_hc.html'
+        template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_b.html'
         html = frappe.render_template(template_path, context)
         output = PdfFileWriter()
         sch_b_report = get_pdf(html, output=output)
