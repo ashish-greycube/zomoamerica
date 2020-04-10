@@ -454,6 +454,51 @@ class TobaccoLegalCompliance(Document):
             where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
         return field_dictionary or {}
 
+    def get_scheduleI(self):
+        field_dictionary = frappe.db.sql("""SELECT name, month, year,
+            CONCAT(SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ),'-', SUBSTR( tlc.employer_identification_number FROM 3)) as 'FederalIDNo',
+            tlc.legal_company as 'TaxpayerName',
+            TRIM(tlc.address_line1) as 'Address',
+            'PATERSON NJ 07053' as 'CityStateZip',
+            (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)) AS 2A_Total
+            from `tabTobacco Legal Compliance` AS tlc ,
+            (select  SUM(total_amount)   as mt_total_amt
+            from `tabStock Entry` as SE 
+            WHERE SE.purpose = 'Material Transfer'
+            and SE.docstatus = 1
+            and SE.from_warehouse like '%%bond%%' and SE.to_warehouse  = %s
+            and MONTHNAME(SE.posting_date) = %s 
+            and year(SE.posting_date) =  %s 
+            and SE.name IN (SELECT DISTINCT parent from  `tabStock Entry Detail` AS SED 
+            where SED.item_group in (
+                select
+                    distinct name
+                from
+                    `tabItem Group`
+                where
+                    parent_item_group = 'TOBACCO'
+            ))
+            ) as MTA,   
+            (select 
+            SUM(rounded_total) AS p_total
+            from `tabPurchase Receipt` PR 
+            where PR.docstatus = 1
+            and PR.set_warehouse =  %s  
+            and MONTHNAME(PR.posting_date) =  %s  
+            and year(PR.posting_date) =  %s 
+            and name in (select distinct parent from `tabPurchase Receipt Item` PRI
+            where  PRI.item_group in (
+                select
+                    distinct name
+                from
+                    `tabItem Group`
+                where
+                    parent_item_group = 'TOBACCO'))
+            ) as PRA
+            where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.name), as_dict=True)
+        return field_dictionary and field_dictionary[0] or {}
+
+
 def touch_random_file(output=None):
     fname = os.path.join(
         "/tmp", "{0}.pdf".format(frappe.generate_hash(length=10)))
@@ -501,6 +546,17 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
 
         context = {'base_url' : get_site_url()}
 
+
+        # create schedule I
+        dataI = doc.get_scheduleI()
+        if dataI:
+                context["data"] = dataI
+                template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_i.html'
+                html = frappe.render_template(template_path, context)
+                output = PdfFileWriter()
+                sch_i_report = get_pdf(html, output=output)
+                sch_i_report = touch_random_file(output)
+
          # create schedule B
         dataB = doc.get_scheduleB()
         if dataB:
@@ -511,15 +567,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 sch_b_report = get_pdf(html, output=output)
                 sch_b_report = touch_random_file(output)
 
-         # create schedule D
-        # context = {"data": doc.get_scheduleD()}
-        # context['base_url'] = get_site_url()
-        # template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_d.html'
-        # html = frappe.render_template(template_path, context)
-        # output = PdfFileWriter()
-        # sch_d_report = get_pdf(html, output=output)
-        # sch_d_report = touch_random_file(output)
-
+        # create Schedule D
         dataD = doc.get_scheduleD()
         if dataD:
                 context["data"] = dataD
@@ -541,7 +589,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
 
         # merge report and schedule
         pdfreport = pypdftk.concat(
-            [pdfreport, sch_b_report,sch_d_report,sch_f_report], touch_random_file())
+            [pdfreport,sch_i_report, sch_b_report,sch_d_report,sch_f_report], touch_random_file())
     else:
         pass
 
