@@ -378,15 +378,15 @@ class TobaccoLegalCompliance(Document):
 
     def get_scheduleB(self):
         field_dictionary = frappe.db.sql("""SELECT name, month, year,
-            tlc.employer_identification_number as 'FederalIDNo',
+            CONCAT(SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ),'-', SUBSTR( tlc.employer_identification_number FROM 3)) as 'FederalIDNo',
             tlc.legal_company as 'TaxpayerName',
             TRIM(tlc.address_line1) as 'Address',
             'PATERSON NJ 07053' as 'CityStateZip',
-            TrData.customer_name,TrData.Address,TrData.City,TrData.State,TrData.zipcode,TrData.TobaccoGrossTotal
+            TrData.customer_name,TrData.CustAddress,TrData.City,TrData.State,TrData.zipcode,TrData.TobaccoGrossTotal
             from `tabTobacco Legal Compliance` AS tlc,
             (select tsi.customer_name,
             SUBSTR(tsi.customer_address,1,LOCATE('-',tsi.customer_address)-1) as "CustomerProfile",
-            concat_ws('', ta.address_line1, ta.address_line2) as "Address",
+            coalesce(concat_ws('', coalesce(ta.address_line1,''), coalesce(ta.address_line2,'')),'') as "CustAddress",
             coalesce(ta.City,'') as "City",
             coalesce(ta.State,'') as "State",
             coalesce(ta.pincode,'') as "zipcode",
@@ -397,11 +397,62 @@ class TobaccoLegalCompliance(Document):
             inner join tabCustomer c on c.name = tsi.customer
             left outer join tabAddress ta on ta.name = tsi.customer_address
             where tsi.docstatus=1  
-            AND ta.State <> 'NJ' AND tsi.customer_name not like 'SAMPLE%%' and ta.country = 'United States'
+            AND NOT (ta.State = 'NJ' AND tsi.customer_name like 'SAMPLE%%') and ta.country = 'United States'
             and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s) as TrData
             where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
         return field_dictionary or {}
 
+    def get_scheduleD(self):
+        field_dictionary = frappe.db.sql("""SELECT name, month, year,
+            CONCAT(SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ),'-', SUBSTR( tlc.employer_identification_number FROM 3)) as 'FederalIDNo',
+            tlc.legal_company as 'TaxpayerName',
+            TRIM(tlc.address_line1) as 'Address',
+            'PATERSON NJ 07053' as 'CityStateZip',
+            TrData.customer_name,TrData.CustAddress,TrData.City,TrData.State,TrData.zipcode,TrData.TobaccoGrossTotal
+            from `tabTobacco Legal Compliance` AS tlc,
+            (select tsi.customer_name,
+            SUBSTR(tsi.customer_address,1,LOCATE('-',tsi.customer_address)-1) as "CustomerProfile",
+            coalesce(concat_ws('', coalesce(ta.address_line1,''), coalesce(ta.address_line2,'')),'') as "CustAddress",
+            coalesce(ta.City,'') as "City",
+            coalesce(ta.State,'') as "State",
+            coalesce(ta.pincode,'') as "zipcode",
+            (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as "TobaccoGrossTotal"
+            from `tabSales Invoice` tsi 
+            left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item` 
+            where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') group by parent) CGT on CGT.parent=tsi.name
+            inner join tabCustomer c on c.name = tsi.customer
+            left outer join tabAddress ta on ta.name = tsi.customer_address
+            where tsi.docstatus=1  
+            AND ta.State <> 'NJ' and ta.country = 'United States'
+            and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s) as TrData
+            where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
+        return field_dictionary or {}
+
+    def get_scheduleF(self):
+        field_dictionary = frappe.db.sql("""SELECT name, month, year,
+            CONCAT(SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ),'-', SUBSTR( tlc.employer_identification_number FROM 3)) as 'FederalIDNo',
+            tlc.legal_company as 'TaxpayerName',
+            TRIM(tlc.address_line1) as 'Address',
+            'PATERSON NJ 07053' as 'CityStateZip',
+            TrData.customer_name,TrData.CustAddress,TrData.City,TrData.State,TrData.zipcode,TrData.TobaccoGrossTotal
+            from `tabTobacco Legal Compliance` AS tlc,
+            (select tsi.customer_name,
+            SUBSTR(tsi.customer_address,1,LOCATE('-',tsi.customer_address)-1) as "CustomerProfile",
+            coalesce(concat_ws('', coalesce(ta.address_line1,''), coalesce(ta.address_line2,'')),'') as "CustAddress",
+            coalesce(ta.City,'') as "City",
+            coalesce(ta.State,'') as "State",
+            coalesce(ta.pincode,'') as "zipcode",
+            (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as "TobaccoGrossTotal"
+            from `tabSales Invoice` tsi 
+            left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item` 
+            where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') group by parent) CGT on CGT.parent=tsi.name
+            inner join tabCustomer c on c.name = tsi.customer
+            left outer join tabAddress ta on ta.name = tsi.customer_address
+            where tsi.docstatus=1  
+            AND ta.State = 'NJ' AND tsi.customer_name like 'SAMPLE%%' and ta.country = 'United States'
+            and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s) as TrData
+            where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
+        return field_dictionary or {}
 
 def touch_random_file(output=None):
     fname = os.path.join(
@@ -442,19 +493,55 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
     elif doc.report_type == "NJ TPT-10":
         pdfreport = pypdftk.fill_form(
             tpt10_template, doc.get_tpt10(), out_file=touch_random_file())
+         
+        def get_site_url():
+            from frappe.integrations.oauth2 import urlparse
+            request_url = urlparse(frappe.request.url)
+            return request_url.scheme + "://" + request_url.netloc
 
-        # create schedule b
-        context = {"data": doc.get_scheduleB()}
-        context['base_url'] = get_site_url(frappe.local.site)
-        template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_b.html'
-        html = frappe.render_template(template_path, context)
-        output = PdfFileWriter()
-        sch_b_report = get_pdf(html, output=output)
-        sch_b_report = touch_random_file(output)
+        context = {'base_url' : get_site_url()}
+
+         # create schedule B
+        dataB = doc.get_scheduleB()
+        if dataB:
+                context["data"] = dataB
+                template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_b.html'
+                html = frappe.render_template(template_path, context)
+                output = PdfFileWriter()
+                sch_b_report = get_pdf(html, output=output)
+                sch_b_report = touch_random_file(output)
+
+         # create schedule D
+        # context = {"data": doc.get_scheduleD()}
+        # context['base_url'] = get_site_url()
+        # template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_d.html'
+        # html = frappe.render_template(template_path, context)
+        # output = PdfFileWriter()
+        # sch_d_report = get_pdf(html, output=output)
+        # sch_d_report = touch_random_file(output)
+
+        dataD = doc.get_scheduleD()
+        if dataD:
+                context["data"] = dataD
+                template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_d.html'
+                html = frappe.render_template(template_path, context)
+                output = PdfFileWriter()
+                sch_d_report = get_pdf(html, output=output)
+                sch_d_report = touch_random_file(output)
+
+         # create schedule F
+        dataF = doc.get_scheduleF()
+        if dataF:
+                context["data"] = dataF
+                template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_f.html'
+                html = frappe.render_template(template_path, context)
+                output = PdfFileWriter()
+                sch_f_report = get_pdf(html, output=output)
+                sch_f_report = touch_random_file(output)
 
         # merge report and schedule
-        merged_file = pypdftk.concat(
-            [pdfreport, sch_b_report], touch_random_file())
+        pdfreport = pypdftk.concat(
+            [pdfreport, sch_b_report,sch_d_report,sch_f_report], touch_random_file())
     else:
         pass
 
@@ -464,7 +551,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
     # merged_file = pypdftk.concat([fda, ttbf], touch_random_file())
     # return merged_file
 
-    with open(merged_file, "rb") as fileobj:
+    with open(pdfreport, "rb") as fileobj:
         filedata = fileobj.read()
         frappe.local.response.filename = file_name
         frappe.local.response.filecontent = filedata
