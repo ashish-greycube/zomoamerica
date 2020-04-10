@@ -65,7 +65,8 @@
       </tr>
     </thead>
     <tbody style="font-size:12px;">
-      {% for d in data %}
+      {% for ds in data | batch(4) %}
+      {% for d in ds  %}
       <tr>
         <td>{{ d["customer_name"] }}</td>
         <td>{{ d["TobaccoGrossTotal"] }}</td>
@@ -93,16 +94,30 @@
         <td></td>
         <td></td>
         <td></td>
-
       </tr>
       {% endfor %}
       <tr>
-        <td>Total</td>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>
         <td></td>
       </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="text-align: right;">Total </td>
+        <td> {{ ds|sum(attribute='TobaccoGrossTotal') }} </td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      {%- endfor %}
     </tbody>
   </table>
 
