@@ -112,7 +112,7 @@
       </tr>
       <tr>
         <td style="text-align: right;">Total </td>
-        <td> {{ ds|sum(attribute='TobaccoGrossTotal') }} </td>
+        <td> {{ ds|sum(attribute='TobaccoGrossTotal')|round(2,'floor') }}</td>
         <td></td>
         <td></td>
         <td></td>
