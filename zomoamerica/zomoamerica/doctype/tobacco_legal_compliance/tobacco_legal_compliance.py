@@ -556,6 +556,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 output = PdfFileWriter()
                 sch_i_report = get_pdf(html, output=output)
                 sch_i_report = touch_random_file(output)
+                pdfreport = pypdftk.concat([pdfreport,sch_i_report], touch_random_file())
 
          # create schedule B
         dataB = doc.get_scheduleB()
@@ -566,7 +567,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 output = PdfFileWriter()
                 sch_b_report = get_pdf(html, output=output)
                 sch_b_report = touch_random_file(output)
-
+                pdfreport = pypdftk.concat([pdfreport,sch_b_report], touch_random_file())
         # create Schedule D
         dataD = doc.get_scheduleD()
         if dataD:
@@ -576,7 +577,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 output = PdfFileWriter()
                 sch_d_report = get_pdf(html, output=output)
                 sch_d_report = touch_random_file(output)
-
+                pdfreport = pypdftk.concat([pdfreport,sch_d_report], touch_random_file())
          # create schedule F
         dataF = doc.get_scheduleF()
         if dataF:
@@ -586,10 +587,10 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 output = PdfFileWriter()
                 sch_f_report = get_pdf(html, output=output)
                 sch_f_report = touch_random_file(output)
-
-        # merge report and schedule
-        pdfreport = pypdftk.concat(
-            [pdfreport,sch_i_report, sch_b_report,sch_d_report,sch_f_report], touch_random_file())
+                pdfreport = pypdftk.concat([pdfreport,sch_f_report], touch_random_file())
+        # # merge report and schedule
+        # pdfreport = pypdftk.concat(
+        #     [pdfreport,sch_i_report, sch_b_report,sch_d_report,sch_f_report], touch_random_file())
     else:
         pass
 
