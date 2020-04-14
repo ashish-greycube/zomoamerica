@@ -30,6 +30,7 @@
   "tax_payer_id",
   "section_break_19",
   "opening_stock",
+  "fetch_opening_stock",
   "preparer_address",
   "preparer_address_line1",
   "preparer_address_line2",
@@ -277,9 +278,15 @@
    "fieldname": "state_tax_percent",
    "fieldtype": "Percent",
    "label": "State Tax Percent"
+  },
+  {
+   "depends_on": "eval:doc.report_type=='TTB-5220'",
+   "fieldname": "fetch_opening_stock",
+   "fieldtype": "Button",
+   "label": "Fetch Opening Stock"
   }
  ],
- "modified": "2020-04-14 07:37:42.606401",
+ "modified": "2020-04-14 08:04:55.649543",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",
