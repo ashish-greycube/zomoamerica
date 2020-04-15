@@ -24,5 +24,14 @@ frappe.ui.form.on("Tobacco Legal Compliance", {
       frappe.msgprint(__("Please enable pop-ups"));
       return;
     }
+  },
+  fetch_opening_stock:function(frm) {
+    if (frm.doc.month && frm.doc.year) {
+      frappe.show_alert({message:__("Opening stock set for  {0},{1} successfully", [frm.doc.month,frm.doc.year]), indicator:'green'});
+      return frm.call('set_opening_stock');
+    }else{
+      let message='Month & Year is required to fetch opening stock'
+      frappe.show_alert({message:__(message), indicator:'red'});
+    }
   }
 });

@@ -15,6 +15,7 @@ from PyPDF2 import PdfFileWriter
 from io import StringIO
 from frappe.utils import get_site_url
 from frappe.utils.pdf import get_pdf
+import datetime
 
 
 class TobaccoLegalCompliance(Document):
@@ -498,7 +499,34 @@ class TobaccoLegalCompliance(Document):
             where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
+    def month_converter(self,month):
+        months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+        return months.index(month) + 1
 
+    def set_opening_stock(self):
+        year=int(self.year)
+        month_name=self.month
+        month=int(self.month_converter(month_name))
+        date = datetime.date(year, month, 1)
+        opening_stock = frappe.db.sql("""
+select round(coalesce(sum(OpeningWeigth),0)*2.20462,2)	 AS OpeningBalance
+			from 
+(SELECT CASE sle.stock_uom 
+			WHEN 'BOX' THEN SUM(0.25*actual_qty)
+			WHEN 'MASTER CASE' THEN SUM(6*actual_qty)
+			WHEN 'CARTON' THEN SUM(actual_qty*0.5)
+			ELSE 0 
+			END AS OpeningWeigth
+		FROM `tabStock Ledger Entry` sle
+		INNER JOIN `tabItem` AS TI 
+		ON sle.item_code = TI.item_code
+		WHERE posting_date < %s
+		AND TI.item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO')
+		group by sle.stock_uom ) as OW	
+        """, (date))
+        if len(opening_stock)>0:
+            self.opening_stock=opening_stock[0][0]
+            
 def touch_random_file(output=None):
     fname = os.path.join(
         "/tmp", "{0}.pdf".format(frappe.generate_hash(length=10)))
