@@ -526,6 +526,7 @@ select round(coalesce(sum(OpeningWeigth),0)*2.20462,2)	 AS OpeningBalance
         """, (date))
         if len(opening_stock)>0:
             self.opening_stock=opening_stock[0][0]
+            self.save()
             
 def touch_random_file(output=None):
     fname = os.path.join(
