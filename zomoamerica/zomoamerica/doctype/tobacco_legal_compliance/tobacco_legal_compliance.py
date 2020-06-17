@@ -286,7 +286,7 @@ class TobaccoLegalCompliance(Document):
         tlc.preparer_id as 'Preparer s ID',
         tlc.legal_company as 'Taxpayer Name',
         TRIM(tlc.address_line1) as 'Address',
-        'PATERSON NJ 07053' as 'City',
+        'PATERSON NJ 07053' as 'City State Zip Code',
         0 as 1A,
         (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)) AS 2A,
         COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)  AS 7A,
