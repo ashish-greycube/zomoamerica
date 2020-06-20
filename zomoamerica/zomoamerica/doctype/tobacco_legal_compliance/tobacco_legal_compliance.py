@@ -290,20 +290,21 @@ class TobaccoLegalCompliance(Document):
         0 as 1A,
         (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)) AS 2A,
         COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)  AS 7A,
-        COALESCE(TOTAL_SALES.total_sales,0) - COALESCE(NJSAMPLES.nj_sample_sales,0) as  8A,
-        coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0) as 10A,
-        (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSAMPLES.nj_sample_sales,0)) - (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0)) as 11A,
-        0 AS 12A,
-        coalesce(NJSAMPLES.nj_sample_sales,0) AS 13A,
-        0 AS 14A,
-        coalesce(NJSAMPLES.nj_sample_sales,0)  AS 15A,
-        (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSAMPLES.nj_sample_sales,0)) - (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0)) +  coalesce(NJSAMPLES.nj_sample_sales,0) AS 16A,
-        round(((coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSAMPLES.nj_sample_sales,0)) - (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0)) +  coalesce(NJSAMPLES.nj_sample_sales,0) )* coalesce(tlc.state_tax_percent,0)/100,2) as 18A,
-        round(((coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSAMPLES.nj_sample_sales,0)) - (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0)) +  coalesce(NJSAMPLES.nj_sample_sales,0) )* coalesce(tlc.state_tax_percent,0)/100,2) as 19A,
-        0 AS 20A,
-        round(((coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSAMPLES.nj_sample_sales,0)) - (coalesce(TOTAL_SALES.total_sales,0) - coalesce(NJSALES.nj_sales,0)) +  coalesce(NJSAMPLES.nj_sample_sales,0) )* coalesce(tlc.state_tax_percent,0)/100,2) as 21A
+        COALESCE (TOTAL_SALES.total_sales,0) - COALESCE (NJSAMPLES.nj_sample_sales,0) as  8A,
+        COALESCE(NJSALES_NOTAX.nj_sales,0) as 9A,
+        COALESCE(TOTAL_SALES.total_sales,0) - COALESCE(NJSALES.nj_sales,0) as 10A,
+        (COALESCE (TOTAL_SALES.total_sales,0) - COALESCE (NJSAMPLES.nj_sample_sales,0)) - (COALESCE(NJSALES_NOTAX.nj_sales,0) + (COALESCE(TOTAL_SALES.total_sales,0) - COALESCE(NJSALES.nj_sales,0))) as 11A,
+        0.0 AS 12A,
+        COALESCE(NJSAMPLES.nj_sample_sales,0) AS 13A,
+        0.0 AS 14A,
+        COALESCE(NJSAMPLES.nj_sample_sales,0)  AS 15A,
+        (COALESCE (TOTAL_SALES.total_sales,0) - COALESCE (NJSAMPLES.nj_sample_sales,0)) - (COALESCE(NJSALES_NOTAX.nj_sales,0) + (COALESCE(TOTAL_SALES.total_sales,0) - COALESCE(NJSALES.nj_sales,0))) + COALESCE(NJSAMPLES.nj_sample_sales,0) AS 16A,
+        round(((COALESCE (TOTAL_SALES.total_sales,0) - COALESCE (NJSAMPLES.nj_sample_sales,0)) - (COALESCE(NJSALES_NOTAX.nj_sales,0) + (COALESCE(TOTAL_SALES.total_sales,0) - COALESCE(NJSALES.nj_sales,0))) + COALESCE(NJSAMPLES.nj_sample_sales,0)) * tlc.state_tax_percent/100,2) as 18A,
+        round(((COALESCE (TOTAL_SALES.total_sales,0) - COALESCE (NJSAMPLES.nj_sample_sales,0)) - (COALESCE(NJSALES_NOTAX.nj_sales,0) + (COALESCE(TOTAL_SALES.total_sales,0) - COALESCE(NJSALES.nj_sales,0))) + COALESCE(NJSAMPLES.nj_sample_sales,0)) * tlc.state_tax_percent/100,2) as 19A,
+        0.0 AS 20A,
+        round(((COALESCE (TOTAL_SALES.total_sales,0) - COALESCE (NJSAMPLES.nj_sample_sales,0)) - (COALESCE(NJSALES_NOTAX.nj_sales,0) + (COALESCE(TOTAL_SALES.total_sales,0) - COALESCE(NJSALES.nj_sales,0))) + COALESCE(NJSAMPLES.nj_sample_sales,0)) * tlc.state_tax_percent/100,2) as 21A
         from `tabTobacco Legal Compliance` AS tlc ,
-        (select  SUM(total_amount)   as mt_total_amt
+            (select  SUM(total_amount)   as mt_total_amt
             from `tabStock Entry` as SE 
             WHERE SE.purpose = 'Material Transfer'
             and SE.docstatus = 1
@@ -373,8 +374,30 @@ class TobaccoLegalCompliance(Document):
             AND MONTHNAME(si.posting_date) = %s 
             and year(si.posting_date) =  %s   
             and si.company =  %s ) 
-            )as NJSALES
-        where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
+            )as NJSALES,
+            (SELECT sum(amount)as nj_sales 
+    						from  `tabSales Invoice Item` 
+                            where item_group in
+                            (select distinct name from `tabItem Group` 
+                            where parent_item_group = 'TOBACCO') 
+                            and parent in (select distinct si.name
+                            from `tabSales Invoice` si 
+                            inner JOIN tabAddress  AS CA ON 
+  						 	si.customer_address = CA.name and CA.state = 'NJ'
+							left outer join (
+							select parent, sum(coalesce(base_tax_amount,0)) tax
+							from `tabSales Taxes and Charges` st
+							where account_head like 'Shipping%%'
+							group by parent
+							) shipping on  shipping.parent = si.name
+							where si.docstatus=1
+						    and si.is_return <> 1 
+						    AND MONTHNAME(si.posting_date) =%s  
+						    and year(si.posting_date) = %s  
+						    and si.company = %s 
+						    and coalesce(coalesce(si.base_total_taxes_and_charges,0)-coalesce(shipping.tax,0),0) <= 0) 
+    )as NJSALES_NOTAX
+        where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
     def get_scheduleB(self):
@@ -401,6 +424,39 @@ class TobaccoLegalCompliance(Document):
             AND NOT (ta.State = 'NJ' AND tsi.customer_name like 'SAMPLE%%') and ta.country = 'United States'
             and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s) as TrData
             where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
+        return field_dictionary or {}
+
+    def get_scheduleC(self):
+        field_dictionary = frappe.db.sql("""SELECT name, month, year,
+            CONCAT(SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ),'-', SUBSTR( tlc.employer_identification_number FROM 3)) as 'FederalIDNo',
+            tlc.legal_company as 'TaxpayerName',
+            TRIM(tlc.address_line1) as 'Address',
+            'PATERSON NJ 07053' as 'CityStateZip',
+            TrData.customer_name,TrData.CustAddress,TrData.City,TrData.State,TrData.zipcode,TrData.TobaccoGrossTotal
+            from `tabTobacco Legal Compliance` AS tlc,
+            (select si.customer_name,
+			SUBSTR(si.customer_address,1,LOCATE('-',si.customer_address)-1) as "CustomerProfile",
+ 			coalesce(concat_ws('', coalesce(ta.address_line1,''), coalesce(ta.address_line2,'')),'') as "CustAddress",
+            coalesce(ta.City,'') as "City",
+            coalesce(ta.State,'') as "State",
+            coalesce(ta.pincode,'') as "zipcode",
+            (si.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as "TobaccoGrossTotal"
+			from `tabSales Invoice` si
+			left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item` where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') group by parent) CGT on CGT.parent=si.name
+			inner join tabCustomer c on c.name = si.customer
+			left outer join tabAddress ta on ta.name = si.customer_address
+			left outer join (
+			select parent, sum(coalesce(base_tax_amount,0)) tax
+			from `tabSales Taxes and Charges` st
+			where account_head like 'Shipping%%'
+			group by parent
+			) shipping on  shipping.parent = si.name
+			WHERE si.docstatus=1 and si.is_return <> 1 and si.name in (select distinct parent from `tabSales Invoice Item` where item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO'))
+			AND MONTHNAME(si.posting_date) = %s and YEAR(si.posting_date) = %s
+			AND coalesce(coalesce(si.base_total_taxes_and_charges,0)-coalesce(shipping.tax,0),0) <= 0
+				AND coalesce(ta.State,'')='NJ'
+			            ) as TrData
+			            where tlc.name =%s""", (self.month, self.year, self.name), as_dict=True, debug=True)
         return field_dictionary or {}
 
     def get_scheduleD(self):
@@ -597,6 +653,18 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 sch_b_report = get_pdf(html, output=output)
                 sch_b_report = touch_random_file(output)
                 pdfreport = pypdftk.concat([pdfreport,sch_b_report], touch_random_file())
+        
+        # create Schedule C
+        dataC = doc.get_scheduleC()
+        if dataC:
+                context["data"] = dataC
+                template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_c.html'
+                html = frappe.render_template(template_path, context)
+                output = PdfFileWriter()
+                sch_c_report = get_pdf(html, output=output)
+                sch_c_report = touch_random_file(output)
+                pdfreport = pypdftk.concat([pdfreport,sch_c_report], touch_random_file())
+
         # create Schedule D
         dataD = doc.get_scheduleD()
         if dataD:
