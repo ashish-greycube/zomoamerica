@@ -422,7 +422,8 @@ class TobaccoLegalCompliance(Document):
             left outer join tabAddress ta on ta.name = tsi.customer_address
             where tsi.docstatus=1  
             AND NOT (ta.State = 'NJ' AND tsi.customer_name like 'SAMPLE%%') and ta.country = 'United States'
-            and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s) as TrData
+            and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
+            and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
             where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
         return field_dictionary or {}
 
@@ -454,8 +455,8 @@ class TobaccoLegalCompliance(Document):
 			WHERE si.docstatus=1 and si.is_return <> 1 and si.name in (select distinct parent from `tabSales Invoice Item` where item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO'))
 			AND MONTHNAME(si.posting_date) = %s and YEAR(si.posting_date) = %s
 			AND coalesce(coalesce(si.base_total_taxes_and_charges,0)-coalesce(shipping.tax,0),0) <= 0
-				AND coalesce(ta.State,'')='NJ'
-			            ) as TrData
+			AND coalesce(ta.State,'')='NJ'
+			AND (si.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0 ) as TrData
 			            where tlc.name =%s""", (self.month, self.year, self.name), as_dict=True, debug=True)
         return field_dictionary or {}
 
@@ -481,7 +482,8 @@ class TobaccoLegalCompliance(Document):
             left outer join tabAddress ta on ta.name = tsi.customer_address
             where tsi.docstatus=1  
             AND ta.State <> 'NJ' and ta.country = 'United States'
-            and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s) as TrData
+            and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
+            and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
             where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
         return field_dictionary or {}
 
@@ -507,7 +509,8 @@ class TobaccoLegalCompliance(Document):
             left outer join tabAddress ta on ta.name = tsi.customer_address
             where tsi.docstatus=1  
             AND ta.State = 'NJ' AND tsi.customer_name like 'SAMPLE%%' and ta.country = 'United States'
-            and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s) as TrData
+            and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
+            and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
             where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
         return field_dictionary or {}
 
