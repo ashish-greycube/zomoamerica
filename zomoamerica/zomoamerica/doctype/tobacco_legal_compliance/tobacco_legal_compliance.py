@@ -287,9 +287,9 @@ class TobaccoLegalCompliance(Document):
         tlc.legal_company as 'Taxpayer Name',
         TRIM(tlc.address_line1) as 'Address',
         'PATERSON NJ 07053' as 'City State Zip Code',
-        0 as 1A,
+        COALESCE(PR_LOCAL.pr_local_total,0) as 1A,
         (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)) AS 2A,
-        COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)  AS 7A,
+        (COALESCE(PR_LOCAL.pr_local_total,0)+ COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0))  AS 7A,
         COALESCE (TOTAL_SALES.total_sales,0) - COALESCE (NJSAMPLES.nj_sample_sales,0) as  8A,
         COALESCE(NJSALES_NOTAX.nj_sales,0) as 9A,
         COALESCE(TOTAL_SALES.total_sales,0) - COALESCE(NJSALES.nj_sales,0) as 10A,
@@ -337,6 +337,23 @@ class TobaccoLegalCompliance(Document):
                 where
                     parent_item_group = 'TOBACCO'))
             ) as PRA,
+            (select 
+            SUM(rounded_total) AS pr_local_total
+            from `tabPurchase Receipt` PR 
+            where PR.docstatus = 1
+            and PR.set_warehouse =  %s  
+            and MONTHNAME(PR.posting_date) =  %s  
+            and year(PR.posting_date) =  %s 
+            AND PR.supplier in ( select ts.name from tabSupplier ts WHERE ts.country = 'United States' )
+            and name in (select distinct parent from `tabPurchase Receipt Item` PRI
+            where  PRI.item_group in (
+                select
+                    distinct name
+                from
+                    `tabItem Group`
+                where
+                    parent_item_group = 'TOBACCO'))
+            ) as PR_LOCAL,
             (SELECT  sum(amount) AS total_sales from  `tabSales Invoice Item` 
                                     where item_group in
                                     (select distinct name from `tabItem Group` 
@@ -397,8 +414,51 @@ class TobaccoLegalCompliance(Document):
 						    and si.company = %s 
 						    and coalesce(coalesce(si.base_total_taxes_and_charges,0)-coalesce(shipping.tax,0),0) <= 0) 
     )as NJSALES_NOTAX
-        where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
+        where tlc.name = %s""", (self.company_warehouse, self.month, self.year,self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
+
+    def get_scheduleA(self):
+        field_dictionary = frappe.db.sql("""SELECT 
+			tlc.name, tlc.month, tlc.year,
+            CONCAT(SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ),'-', SUBSTR( tlc.employer_identification_number FROM 3)) as 'FederalIDNo',
+            tlc.legal_company as 'TaxpayerName',
+            TRIM(tlc.address_line1) as 'Address',
+            'PATERSON NJ 07053' as 'CityStateZip',
+           	COALESCE(PR_LOC_TrData.pr_local_total,0) as "TobaccoGrossTotal",
+           	PR_LOC_TrData.supplier, 
+            PR_LOC_TrData.supplier_name,
+            PR_LOC_TrData.SuppAddress,
+            PR_LOC_TrData.City, 
+            PR_LOC_TrData.State,
+            PR_LOC_TrData.zipcode
+            from `tabTobacco Legal Compliance` AS tlc ,
+            (select supplier, supplier_name,
+            coalesce(concat_ws('', coalesce(ta.address_line1,''), coalesce(ta.address_line2,'')),'') as "SuppAddress",
+            coalesce(ta.City,'') as "City",
+            coalesce(ta.State,'') as "State",
+            coalesce(ta.pincode,'') as "zipcode",
+            SUM(rounded_total) AS pr_local_total
+         	from `tabPurchase Receipt` PR 
+         	left outer join tabAddress ta on ta.name = PR.supplier_address
+            where PR.docstatus = 1
+            and PR.set_warehouse = %s
+           	and MONTHNAME(PR.posting_date) = %s
+            and year(PR.posting_date) =  %s
+            AND PR.supplier in ( select ts.name from tabSupplier ts WHERE ts.country = 'United States' )
+            and PR.name in (select distinct parent from `tabPurchase Receipt Item` PRI
+            where  PRI.item_group in (
+                select
+                    distinct name
+                from
+                    `tabItem Group`
+                where
+                    parent_item_group = 'TOBACCO'))
+            group by supplier, supplier_name,
+            coalesce(concat_ws('', coalesce(ta.address_line1,''), coalesce(ta.address_line2,'')),''),
+                coalesce(ta.City,''),coalesce(ta.State,'') , coalesce(ta.pincode,'')
+            ) as PR_LOC_TrData
+            where tlc.name = %s""", (self.company_warehouse, self.month, self.year,self.name), as_dict=True)
+        return field_dictionary or {}
 
     def get_scheduleB(self):
         field_dictionary = frappe.db.sql("""SELECT name, month, year,
@@ -634,6 +694,17 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
 
         context = {'base_url' : get_site_url()}
 
+        # create schedule A
+        dataA = doc.get_scheduleA()
+        if dataA:
+                context["data"] = dataA
+                template_path = 'zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/schedule_a.html'
+                html = frappe.render_template(template_path, context)
+                output = PdfFileWriter()
+                sch_a_report = get_pdf(html, output=output)
+                sch_a_report = touch_random_file(output)
+                pdfreport = pypdftk.concat([pdfreport,sch_a_report], touch_random_file())
+
 
         # create schedule I
         dataI = doc.get_scheduleI()
@@ -646,6 +717,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 sch_i_report = touch_random_file(output)
                 pdfreport = pypdftk.concat([pdfreport,sch_i_report], touch_random_file())
 
+        
          # create schedule B
         dataB = doc.get_scheduleB()
         if dataB:

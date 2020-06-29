@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link href="{{ base_url }}/assets/frappe/css/bootstrap.css" rel="stylesheet" />
+  <link type="text/css" rel="stylesheet" href="{{ base_url }}/assets/frappe/css/font-awesome.css" />
+  <meta name="pdfkit-orientation" content="landscape" />
+</head>
+
+<body>
+  <table class="table table-responsive table-bordered table-condensed" style="margin: 0; font-family:Tahoma, Geneva, Verdana, sans-serif;">
+    <thead style="width: 100%;">
+      <tr style="width: 100%;">
+        <td style="text-align:left; font-size: 18px; vertical-align: bottom;">Schedule A</td>
+        <td colspan="2" style="text-align:center; font-size: 18px; vertical-align: bottom;">Tobacco Products Purchased in New Jersey</td>
+        <td style="text-align:right; font-size: 12px; vertical-align: bottom;">rev 07 - 18</td>
+      </tr>
+      <tr style="width: 100%;">
+        <td colspan="4" style="height: 10px; background: #000; padding: 0;"> </td>
+      </tr>
+
+      <tr style="width: 100%;">
+        <td colspan="4" >
+          <div style="float: left;
+          width: 15%;border-right-style: groove;">
+                         <small>Federal ID Number</small> <br> <span style="font-size: 16px;"> {{ data[0]["FederalIDNo"]}} </span>
+                      </div>
+      
+      
+                      <div style="float: left;
+          width: 25%;border-right-style: groove;">
+                        <small>Taxpayer Name</small> <br> <span style="font-size: 16px; text-transform: uppercase;">
+                          {{ data[0]["TaxpayerName"]}}</span>
+                      </div>
+                      <div style="float: left;
+          width: 35%;border-right-style: groove;">
+                          <small>Address</small> <br> <span style="font-size: 16px; text-transform: uppercase;">
+                            {{ data[0]["Address"]}}</span>
+                      </div>
+                      <div style="float: right;
+          width: 25%;"><small>City &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;State &nbsp; &nbsp;Zipcode</small> <br> <span style="font-size: 16px; text-transform: uppercase;">
+            {{ data[0]["CityStateZip"]}} </span>
+                      </div>
+          
+          
+         </td>
+      </tr>
+      <tr style="width: 100%;">
+        <td colspan="5" style="height: 10px; background: #000; padding: 0;"> </td>
+      </tr>
+   
+    
+      <tr style="width: 100%;">
+        <td style="text-align:center;width:40%;font-size:14px;"> <strong>Name and Address of Supplier</strong>
+        </td>
+        <td style="text-align:center;width:20%;font-size:14px;"><strong>Tobacco Products <small>(excluding Liquid Nicotine, Moist Snuff &amp; Roll - Your-Own)</small></strong>
+        </td>
+        <td style="text-align:center;width:20%;font-size:14px;"><strong>Nicotine (Fluid Milliliter)</strong> 
+        </td>
+        <td style="text-align:center;width:20%;font-size:14px;"><strong>Snuff (ounces)</strong> 
+        </td>
+      </tr>
+    </thead>
+    <tbody style="font-size:12px;">
+      {% for ds in data | batch(4) %}
+      {% for d in ds  %}
+      <tr>
+        <td>{{ d["supplier_name"] }}</td>
+        <td>{{ d["TobaccoGrossTotal"] }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>{{ d["SupplierAddress"] or ''}}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>{{ d["City"] }} {{ d["State"] }} {{ d["zipcode"] }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td style="text-align: right;">Total </td>
+        <td> {{ ds|sum(attribute='TobaccoGrossTotal')|round(2,'floor') }}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      {%- endfor %}
+    </tbody>
+  </table>
+
+</body>
+
+</html>
