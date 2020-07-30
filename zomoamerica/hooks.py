@@ -28,6 +28,7 @@ app_license = "MIT"
 # include js in doctype views
 doctype_js = {
     "Sales Order": "public/js/sales_order.js",
+    "Material Request": "public/js/material_request.js",
     "Sales Invoice": "public/js/item_uom_reset.js",
     "Delivery Note": "public/js/item_uom_reset.js",
     "Purchase Order": "public/js/item_uom_reset.js",
