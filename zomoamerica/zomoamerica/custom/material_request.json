@@ -353,7 +353,7 @@
    "modified_by": "Administrator",
    "name": "Material Request-total_amount_cf",
    "no_copy": 0,
-   "options": null,
+   "options": "Company:company:default_currency",
    "owner": "Administrator",
    "parent": null,
    "parentfield": null,
