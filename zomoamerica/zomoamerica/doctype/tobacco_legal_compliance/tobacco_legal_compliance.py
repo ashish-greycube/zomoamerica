@@ -62,20 +62,17 @@ class TobaccoLegalCompliance(Document):
     and SE.docstatus = 1
     and MONTHNAME(SE.posting_date) = %s 
     and year(SE.posting_date) = %s ) )) as MTTAX,
-    (SELECT 
-    SUM(coalesce(PTC.base_tax_amount, 0)) as ptax
-     from
-     `tabPurchase Taxes and Charges` AS PTC 
-     INNER JOIN `tabPurchase Receipt` PR 
-     ON PR.name = PTC.parent 
-    AND PR.docstatus = 1
-    and PR.set_warehouse = %s
-    and MONTHNAME(PR.posting_date) =  %s 
-    and year(PR.posting_date) = %s
-    INNER JOIN tabAccount as AC 
-    on PTC.account_head = AC.name
-     and AC.account_type = 'Tax'
-    AND PR.name in (select distinct parent from  `tabPurchase Receipt Item` PRI 
+    (SELECT sum(COALESCE (total_taxes_and_charges,0)) as ptax
+     FROM `tabLanded Cost Voucher` tlcv 
+     INNER JOIN `tabLanded Cost Purchase Receipt`tlcpr on tlcv.name = tlcpr.parent
+     and tlcpr.receipt_document_type = 'Purchase Receipt' and tlcpr.receipt_document
+     in
+     (SELECT distinct name from `tabPurchase Receipt` PR  where 
+     PR.docstatus = 1
+    and PR.set_warehouse =  %s 
+    and MONTHNAME(PR.posting_date) =   %s 
+    and year(PR.posting_date) = %s 
+    and name in  (select distinct parent from  `tabPurchase Receipt Item` PRI 
     where PRI.item_group in (
         select
             distinct name
@@ -83,7 +80,7 @@ class TobaccoLegalCompliance(Document):
             `tabItem Group`
         where
             parent_item_group = 'TOBACCO'
-    ))) AS PRTAX,
+    )))) AS PRTAX,
     (select  coalesce(round(SUM(coalesce(coalesce(I.weight_per_unit,0) * coalesce(SED.qty,0), 0)) * 2.20462,2),0)  as mti_w
     from `tabStock Entry Detail` SED 
     INNER JOIN tabItem  as I 
