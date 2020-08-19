@@ -4,6 +4,10 @@ import frappe
 from frappe import scrub
 from textwrap import wrap
 from frappe.utils import add_to_date, nowdate
+from datetime import timedelta
+from frappe.model.mapper import get_mapped_doc
+from frappe.utils import flt
+from frappe import _
 
 @frappe.whitelist()
 def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number,territory,source=None,organization_lead=None,notes=None):
@@ -162,3 +166,43 @@ def update_delivery_note_workflow_state(self,method):
 	if self.status == 'Completed' and self.workflow_state != 'Completed':
 		self.db_set('workflow_state', self.status, update_modified = True)
 
+
+def delete_connected_stock_entry(self,method):
+	if frappe.db.exists("Stock Entry", self.stock_entry_cf):
+		frappe.delete_doc("Stock Entry", self.stock_entry_cf)
+		frappe.msgprint(_("Stock Entry  {0} connected with this Delivery Note is deleted.").format(self.stock_entry_cf))		
+
+@frappe.whitelist()
+def create_stock_entry(source_name, target_doc=None):
+	found_item=False
+	delivery_note=frappe.get_doc('Delivery Note',source_name)
+	stock_entry=frappe.new_doc("Stock Entry")
+	stock_entry.stock_entry_type = "Repack"
+	stock_entry.posting_date= delivery_note.posting_date
+	stock_entry.set_posting_time=1
+	stock_entry.posting_time=delivery_note.posting_time + timedelta(minutes=1)
+
+	for source_item in delivery_note.get("items"):
+		master_case_item_cf=frappe.db.get_value('Item', source_item.item_code, 'master_case_item_cf')
+		if source_item.qty > source_item.actual_qty and master_case_item_cf:
+			target_item_master = stock_entry.append('items', {})
+			target_item_master.item_code=master_case_item_cf
+			target_item_master.s_warehouse = source_item.warehouse
+			target_item_master.qty=flt(1)	
+			target_item = stock_entry.append('items', {})
+			target_item.item_code=source_item.item_code
+			target_item.t_warehouse = source_item.warehouse
+			if source_item.uom=="BOX" and source_item.item_name.find("250GM"):
+				target_item.qty=flt(24)
+			elif source_item.uom=="CARTON" and source_item.item_name.find("50GM"):
+				target_item.qty=flt(12)
+			found_item=True
+	if found_item==True:
+		stock_entry.run_method("set_missing_values")
+		stock_entry.run_method("calculate_rate_and_amount")
+		stock_entry.save()
+		delivery_note.stock_entry_cf=stock_entry.name
+		delivery_note.save()
+		return stock_entry	
+	else:
+		return "There are no eligibile items for making stock entry."

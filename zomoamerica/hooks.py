@@ -30,7 +30,7 @@ doctype_js = {
     "Sales Order": "public/js/sales_order.js",
     "Material Request": "public/js/material_request.js",
     "Sales Invoice": "public/js/item_uom_reset.js",
-    "Delivery Note": "public/js/item_uom_reset.js",
+    "Delivery Note": "public/js/delivery_note.js",
     "Purchase Order": "public/js/item_uom_reset.js",
     "Purchase Invoice": "public/js/item_uom_reset.js",
     "Tobacco Legal Compliance": "public/js/tobacco.js",
@@ -97,7 +97,8 @@ doc_events = {
     },
     "Delivery Note": {
         "validate": "zomoamerica.api.calculate_total_tobacco_weight",
-        "on_change": "zomoamerica.api.update_delivery_note_workflow_state"
+        "on_change": "zomoamerica.api.update_delivery_note_workflow_state",
+        "before_cancel": "zomoamerica.api.delete_connected_stock_entry",
     },
 }
 
