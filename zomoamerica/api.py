@@ -3,11 +3,12 @@ from __future__ import unicode_literals
 import frappe
 from frappe import scrub
 from textwrap import wrap
-from frappe.utils import add_to_date, nowdate
+from frappe.utils import add_to_date, nowdate,nowtime
 from datetime import timedelta
 from frappe.model.mapper import get_mapped_doc
 from frappe.utils import flt
 from frappe import _
+# from erpnext.accounts.utils import get_fiscal_year, now
 
 @frappe.whitelist()
 def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number,territory,source=None,organization_lead=None,notes=None):
@@ -178,9 +179,8 @@ def create_stock_entry(source_name, target_doc=None):
 	delivery_note=frappe.get_doc('Delivery Note',source_name)
 	stock_entry=frappe.new_doc("Stock Entry")
 	stock_entry.stock_entry_type = "Repack"
-	stock_entry.posting_date= delivery_note.posting_date
-	stock_entry.set_posting_time=1
-	stock_entry.posting_time=delivery_note.posting_time + timedelta(minutes=1)
+	stock_entry.posting_date= nowdate()
+	stock_entry.posting_time=nowtime()
 
 	for source_item in delivery_note.get("items"):
 		master_case_item_cf=frappe.db.get_value('Item', source_item.item_code, 'master_case_item_cf')

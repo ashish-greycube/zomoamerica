@@ -1,6 +1,6 @@
 frappe.ui.form.on("Delivery Note", {
 	refresh: function(frm) {
-        if (frm.is_new()=== undefined ){
+        if (frm.is_new()=== undefined && frm.doc.docstatus < 1 ){
         frm.add_custom_button(__('Repack'), function() {
             frappe.call({
                 method: "zomoamerica.api.create_stock_entry",
