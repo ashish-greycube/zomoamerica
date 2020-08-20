@@ -1,4 +1,18 @@
 frappe.ui.form.on("Delivery Note", {
+    after_save: function(frm) {
+        if (frm.doc.customer) {
+            frappe.db.get_value('Customer', frm.doc.customer, 'customer_delivery_instruction_cf')
+            .then(r => {
+                if (r.message.customer_delivery_instruction_cf) {
+                    frappe.msgprint({
+                        title: __('Customer Delivery Instruction.'),
+                        indicator: 'green',
+                        message: __('{0}',[r.message.customer_delivery_instruction_cf])
+                    });
+                }
+            })         
+        }
+    },
 	refresh: function(frm) {
         if (frm.is_new()=== undefined && frm.doc.docstatus < 1 ){
         frm.add_custom_button(__('Repack'), function() {
