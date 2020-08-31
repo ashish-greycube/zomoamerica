@@ -191,7 +191,7 @@ def create_stock_entry(source_name, target_doc=None):
 					master_case_item_exists_in_source_table=True
 					master_case_item_qty_status=flt(check_source_item.actual_qty-check_source_item.qty)
 					break
-			if master_case_item_exists_in_source_table==True and master_case_item_qty_status>1:
+			if(master_case_item_exists_in_source_table==True and master_case_item_qty_status>1) or (master_case_item_exists_in_source_table==False):
 				target_item_master = stock_entry.append('items', {})
 				target_item_master.item_code=master_case_item_cf
 				target_item_master.s_warehouse = source_item.warehouse
