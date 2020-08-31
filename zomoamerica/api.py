@@ -185,18 +185,25 @@ def create_stock_entry(source_name, target_doc=None):
 	for source_item in delivery_note.get("items"):
 		master_case_item_cf=frappe.db.get_value('Item', source_item.item_code, 'master_case_item_cf')
 		if source_item.qty > source_item.actual_qty and master_case_item_cf:
-			target_item_master = stock_entry.append('items', {})
-			target_item_master.item_code=master_case_item_cf
-			target_item_master.s_warehouse = source_item.warehouse
-			target_item_master.qty=flt(1)	
-			target_item = stock_entry.append('items', {})
-			target_item.item_code=source_item.item_code
-			target_item.t_warehouse = source_item.warehouse
-			if source_item.uom=="BOX" and source_item.item_name.find("250GM"):
-				target_item.qty=flt(24)
-			elif source_item.uom=="CARTON" and source_item.item_name.find("50GM"):
-				target_item.qty=flt(12)
-			found_item=True
+			master_case_item_exists_in_source_table=False
+			for check_source_item in delivery_note.get("items"):
+				if check_source_item.item_code==master_case_item_cf:
+					master_case_item_exists_in_source_table=True
+					master_case_item_qty_status=flt(check_source_item.actual_qty-check_source_item.qty)
+					break
+			if master_case_item_exists_in_source_table==True and master_case_item_qty_status>1:
+				target_item_master = stock_entry.append('items', {})
+				target_item_master.item_code=master_case_item_cf
+				target_item_master.s_warehouse = source_item.warehouse
+				target_item_master.qty=flt(1)	
+				target_item = stock_entry.append('items', {})
+				target_item.item_code=source_item.item_code
+				target_item.t_warehouse = source_item.warehouse
+				if source_item.uom=="BOX" and source_item.item_name.find("250GM"):
+					target_item.qty=flt(24)
+				elif source_item.uom=="CARTON" and source_item.item_name.find("50GM"):
+					target_item.qty=flt(12)
+				found_item=True
 	if found_item==True:
 		stock_entry.run_method("set_missing_values")
 		stock_entry.run_method("calculate_rate_and_amount")
