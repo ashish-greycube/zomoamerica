@@ -1,7 +1,7 @@
 frappe.ui.form.on('Stock Entry', {
-	refresh(frm) {
+	refresh: function(frm) {
 		if (frm.doc.docstatus === 0) {
-			frm.add_custom_button(__('Material Request : Withdrawal Request'), function () {
+			frm.add_custom_button(__('Material Request:Withdrawal Request'), function () {
 				erpnext.utils.map_current_doc({
 					method: "zomoamerica.api.make_stock_entry",
 					source_doctype: "Material Request",
