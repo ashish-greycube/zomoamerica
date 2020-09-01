@@ -225,8 +225,10 @@ def make_stock_entry(source_name, target_doc=None):
 		target.transfer_qty = qty * obj.conversion_factor
 		target.conversion_factor = obj.conversion_factor
 
-		if source_parent.material_request_type == "Material Transfer" or source_parent.material_request_type == "Customer Provided"  or source_parent.material_request_type == "Withdrawal Request" :
+		if source_parent.material_request_type == "Material Transfer" or source_parent.material_request_type == "Customer Provided" :
 			target.t_warehouse = obj.warehouse
+		elif source_parent.material_request_type == "Withdrawal Request":
+			target.t_warehouse = frappe.db.get_single_value('Stock Settings', 'default_warehouse')
 		else:
 			target.s_warehouse = obj.warehouse
 
