@@ -31,7 +31,13 @@ def get_data():
 					"name":"Tobacco In Out",
 					"is_query_report":True,
 					"doctype": "File"
-				}
+				},
+ 				{
+                                        "type":"report",
+                                        "name":"Zomo Total Stock Summary",
+                                        "is_query_report":True,
+                                        "doctype": "Stock Entry"
+                                }
 			]
 		},
 		{
