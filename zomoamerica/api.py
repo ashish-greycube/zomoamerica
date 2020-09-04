@@ -173,6 +173,11 @@ def delete_connected_stock_entry(self,method):
 		frappe.delete_doc("Stock Entry", self.stock_entry_cf)
 		frappe.msgprint(_("Stock Entry  {0} connected with this Delivery Note is deleted.").format(self.stock_entry_cf))		
 
+
+# def delink_connected_stock_entry(self,method):
+# 	if self.stock_entry_cf:
+# 		frappe.db.set_value('Delivery Note', self.name, 'stock_entry_cf', '')
+
 @frappe.whitelist()
 def create_stock_entry(source_name, target_doc=None):
 	found_item=False

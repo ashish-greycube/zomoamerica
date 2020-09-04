@@ -100,6 +100,7 @@ doc_events = {
         "validate": "zomoamerica.api.calculate_total_tobacco_weight",
         "on_change": "zomoamerica.api.update_delivery_note_workflow_state",
         "before_cancel": "zomoamerica.api.delete_connected_stock_entry",
+        # "on_trash": "zomoamerica.api.delink_connected_stock_entry",
     }
     # ,
     # "Material Request": {
