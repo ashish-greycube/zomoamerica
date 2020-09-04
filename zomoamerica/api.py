@@ -271,3 +271,9 @@ def make_stock_entry(source_name, target_doc=None):
 	}, target_doc, set_missing_values)
 
 	return doclist		
+
+# def set_title_for_material_request(self,method):
+# 	if self.material_request_type == 'Withdrawal Request':
+# 		self.title = _('Material Withdrawal INV {0}').format(self.sales_invoice_cf)[:100]
+# 	if self.material_request_type == 'Withdrawal Request':
+# 		self.title = _('Material Withdrawal INV {0}').format(self.sales_invoice_cf)[:100]		
