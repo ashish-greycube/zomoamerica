@@ -24,7 +24,10 @@ frappe.ui.form.on("Delivery Note", {
                 var shift_item=frm.add_child("items_not_shipped_and_invoiced")
                 shift_item.item_code=item.item_code
                 shift_item.qty=shift_qty
-                shift_item.uom=item.uom                
+                shift_item.uom=item.uom
+                if (item.qty==0) {
+                    frm.get_field("items").grid.grid_rows[index].remove();  
+                }                
             }
             
         }
