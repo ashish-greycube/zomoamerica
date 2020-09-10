@@ -16,6 +16,7 @@ frappe.ui.form.on("Delivery Note", {
     shift_unavailable_items_cf: function(frm) {
         frm.refresh_field("items");
         let items=frm.doc.items;
+        let rows_to_be_removed=[];
         for (let index = 0; index < items.length; index++) {
             const item = items[index];
             if (item.actual_qty < item.qty) {
@@ -26,12 +27,16 @@ frappe.ui.form.on("Delivery Note", {
                 shift_item.qty=shift_qty
                 shift_item.uom=item.uom
                 if (item.qty==0) {
-                    frm.get_field("items").grid.grid_rows[index].remove();  
+                    rows_to_be_removed.push(item.name)
                 }                
             }
-            
         }
-        // frm.refresh_field("items");
+        cur_frm.doc["items"] = cur_frm.doc["items"].filter(
+            (i) => !rows_to_be_removed.includes(i["name"])
+        );      
+        frm.refresh_field("items");  
+        // reorder idx of df.data
+        frm.doc.items.forEach((row, index) => row.idx = index + 1);
         // frm.refresh_field("items_not_shipped_and_invoiced");
         frm.save();
     },
