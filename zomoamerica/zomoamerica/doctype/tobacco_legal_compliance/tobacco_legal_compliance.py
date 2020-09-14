@@ -484,7 +484,7 @@ class TobaccoLegalCompliance(Document):
             inner join tabCustomer c on c.name = tsi.customer
             left outer join tabAddress ta on ta.name = tsi.customer_address
             where tsi.docstatus=1  
-            AND NOT (ta.State = 'NJ' AND tsi.customer in ('SAMPLE/TASTING','SAMPLE/EVENT')) 
+            AND NOT (coalesce(ta.State,'') = 'NJ' AND tsi.customer in ('SAMPLE/TASTING','SAMPLE/EVENT')) 
             and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
             and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
             where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
@@ -544,7 +544,7 @@ class TobaccoLegalCompliance(Document):
             inner join tabCustomer c on c.name = tsi.customer
             left outer join tabAddress ta on ta.name = tsi.customer_address
             where tsi.docstatus=1  
-            AND ta.State <> 'NJ'
+            AND coalesce(ta.State,'') <> 'NJ'
             and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
             and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
             where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
@@ -571,7 +571,7 @@ class TobaccoLegalCompliance(Document):
             inner join tabCustomer c on c.name = tsi.customer
             left outer join tabAddress ta on ta.name = tsi.customer_address
             where tsi.docstatus=1  
-            AND ta.State = 'NJ' AND tsi.customer_name like 'SAMPLE%%' and ta.country = 'United States'
+            AND coalesce(ta.State,'') = 'NJ' AND tsi.customer_name like 'SAMPLE%%' and ta.country = 'United States'
             and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
             and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
             where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
