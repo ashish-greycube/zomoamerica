@@ -9,6 +9,7 @@ from frappe.model.mapper import get_mapped_doc
 from frappe.utils import flt
 from frappe import _
 # from erpnext.accounts.utils import get_fiscal_year, now
+from erpnext.setup.doctype.item_group.item_group import get_child_item_groups
 
 @frappe.whitelist()
 def create_lead(business_name,first_name,last_name,address,city,state,zipcode,website,email_address,telephone_number,territory,source=None,organization_lead=None,notes=None):
@@ -282,3 +283,19 @@ def make_stock_entry(source_name, target_doc=None):
 # 		self.title = _('Material Withdrawal INV {0}').format(self.sales_invoice_cf)[:100]
 # 	if self.material_request_type == 'Withdrawal Request':
 # 		self.title = _('Material Withdrawal INV {0}').format(self.sales_invoice_cf)[:100]		
+
+@frappe.whitelist()
+def stock_entry_calculate_total_tobacoo_weight(doc):
+	doc=frappe._dict(frappe.parse_json(doc))
+	valid_item_groups=get_child_item_groups('TOBACCO')
+	stock_entry= frappe.get_doc('Stock Entry', doc.name)
+	se_items=stock_entry.get("items")
+	total_tobacco_weight_cf=0
+	if stock_entry.purpose =='Material Transfer':
+		for item in se_items:
+			if item.item_group in valid_item_groups:
+				weight_per_unit = frappe.db.get_value('Item', item.item_code, 'weight_per_unit')
+				total_tobacco_weight_cf+=flt(item.qty*weight_per_unit)
+		stock_entry.total_tobacco_weight_cf=total_tobacco_weight_cf
+		stock_entry.save()
+		return 1

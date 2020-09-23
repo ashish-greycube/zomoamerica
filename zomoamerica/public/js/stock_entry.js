@@ -1,4 +1,22 @@
 frappe.ui.form.on('Stock Entry', {
+    after_save: function (frm) {
+		if (frm.doc.purpose==='Material Transfer') {
+			frappe.call({
+				method: 'zomoamerica.api.stock_entry_calculate_total_tobacoo_weight',
+				args: {
+					'doc': frm.doc,
+				},
+				async: false,
+				callback: (r) => {
+					frm.reload_doc()
+				},
+				error: (r) => {
+					// on error
+				}
+			})			
+		}
+
+},	
 	refresh: function(frm) {
 		if (frm.doc.docstatus === 0) {
 			frm.add_custom_button(__('Material Request:Withdrawal Request'), function () {
