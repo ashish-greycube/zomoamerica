@@ -325,13 +325,14 @@ class TobaccoLegalCompliance(Document):
             ))
             ) as MTA,   
             (select 
-            SUM(rounded_total) AS p_total
+            COALESCE (SUM(COALESCE (rounded_total,0)),0) AS p_total
             from `tabPurchase Receipt` PR 
+            INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States'
             where PR.docstatus = 1
             and PR.set_warehouse =  %s  
             and MONTHNAME(PR.posting_date) =  %s  
             and year(PR.posting_date) =  %s 
-            and name in (select distinct parent from `tabPurchase Receipt Item` PRI
+            and PR.name in (select distinct parent from `tabPurchase Receipt Item` PRI
             where  PRI.item_group in (
                 select
                     distinct name
@@ -603,13 +604,14 @@ class TobaccoLegalCompliance(Document):
             ))
             ) as MTA,   
             (select 
-            SUM(rounded_total) AS p_total
+            COALESCE (SUM(COALESCE (rounded_total,0)),0) AS p_total
             from `tabPurchase Receipt` PR 
+            INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States'
             where PR.docstatus = 1
             and PR.set_warehouse =  %s  
             and MONTHNAME(PR.posting_date) =  %s  
             and year(PR.posting_date) =  %s 
-            and name in (select distinct parent from `tabPurchase Receipt Item` PRI
+            and PR.name in (select distinct parent from `tabPurchase Receipt Item` PRI
             where  PRI.item_group in (
                 select
                     distinct name
