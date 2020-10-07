@@ -110,6 +110,7 @@ class TobaccoLegalCompliance(Document):
     (select 
     round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462,2) AS p_weight
      from `tabPurchase Receipt` PR 
+    INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States'
      where PR.docstatus = 1
     and PR.set_warehouse = %s 
     and MONTHNAME(PR.posting_date) = %s 
