@@ -1,4 +1,8 @@
 frappe.ui.form.on('Stock Entry', {
+	stock_entry_type : function (frm) {
+		frm.toggle_reqd('from_warehouse', frm.doc.stock_entry_type==='Material Transfer');
+		frm.toggle_reqd('to_warehouse', frm.doc.stock_entry_type==='Material Transfer');
+	},
     after_save: function (frm) {
 		if (frm.doc.purpose==='Material Transfer') {
 			frappe.call({
