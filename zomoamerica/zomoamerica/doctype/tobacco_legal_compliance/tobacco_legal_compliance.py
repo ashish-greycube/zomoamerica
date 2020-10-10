@@ -293,7 +293,7 @@ class TobaccoLegalCompliance(Document):
         TRIM(tlc.address_line1) as 'Address',
         'PATERSON NJ 07053' as 'City State Zip Code',
         COALESCE(PR_LOCAL.pr_local_total,0) as 1A,
-        (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0)) AS 2A,
+        (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0) + COALESCE(PRLCV.totalcost,0)) AS 2A,
         (COALESCE(PR_LOCAL.pr_local_total,0)+ COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0))  AS 7A,
         COALESCE (TOTAL_SALES.total_sales,0) - COALESCE (NJSAMPLES.nj_sample_sales,0) as  8A,
         COALESCE(NJSALES_NOTAX.nj_sales,0) as 9A,
@@ -343,6 +343,30 @@ class TobaccoLegalCompliance(Document):
                 where
                     parent_item_group = 'TOBACCO'))
             ) as PRA,
+            ( SELECT sum(COALESCE(tlctc.amount,0)) as totalcost
+            FROM `tabLanded Cost Voucher` tlcv 
+            INNER JOIN `tabLanded Cost Purchase Receipt`tlcpr on tlcv.name = tlcpr.parent
+            and tlcpr.receipt_document_type = 'Purchase Receipt' and tlcpr.receipt_document
+            in
+            (SELECT distinct name from `tabPurchase Receipt` PR  where 
+            PR.docstatus = 1
+            and PR.set_warehouse = %s  
+            and MONTHNAME(PR.posting_date) =   %s  
+            and year(PR.posting_date) = %s  
+            and name in  (select distinct parent from  `tabPurchase Receipt Item` PRI 
+            where PRI.item_group in (
+                select
+                    distinct name
+                from
+                    `tabItem Group`
+                where
+                    parent_item_group = 'TOBACCO'
+            )))
+            INNER JOIN `tabLanded Cost Taxes and Charges` tlctc on tlcv.name = tlctc.parent
+            and tlctc.parenttype = "Landed Cost Voucher" 
+            INNER JOIN  tabAccount  as ac on 
+            tlctc.expense_account =  ac.name 
+            and ac.account_type='Tax') as PRLCV,
             (select 
             SUM(rounded_total) AS pr_local_total
             from `tabPurchase Receipt` PR 
@@ -420,7 +444,7 @@ class TobaccoLegalCompliance(Document):
 						    and si.company = %s 
 						    and coalesce(coalesce(si.base_total_taxes_and_charges,0)-coalesce(shipping.tax,0),0) <= 0) 
     )as NJSALES_NOTAX
-        where tlc.name = %s""", (self.company_warehouse, self.month, self.year,self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
+        where tlc.name = %s""", (self.company_warehouse, self.month, self.year,self.company_warehouse, self.month, self.year,self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
     def get_scheduleA(self):
