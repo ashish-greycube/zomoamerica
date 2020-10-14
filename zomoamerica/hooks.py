@@ -90,8 +90,7 @@ doctype_js = {
 
 doc_events = {
     "Sales Invoice": {
-        "validate": "zomoamerica.api.calculate_total_tobacco_weight",
-        "validate": "zomoamerica.api.copy_shipping_details_from_item_to_SI"
+        "validate": "zomoamerica.api.zomo_sales_invoice_validate"
     },
     "Sales Order": {
         "validate": "zomoamerica.api.calculate_total_tobacco_weight"

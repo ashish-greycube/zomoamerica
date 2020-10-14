@@ -164,6 +164,10 @@ def calculate_total_tobacco_weight(self,method):
 				if parent_tobacco_group:
 					self.total_tobacco_weight_za+=item.total_weight
 
+	if self.is_return == 1 and self.total_tobacco_weight_za > 0:
+		self.total_tobacco_weight_za = self.total_tobacco_weight_za * -1
+	
+
 def update_delivery_note_workflow_state(self,method):
 	if self.status == 'Completed' and self.workflow_state != 'Completed':
 		self.db_set('workflow_state', self.status, update_modified = True)
@@ -299,3 +303,8 @@ def stock_entry_calculate_total_tobacoo_weight(doc):
 		stock_entry.total_tobacco_weight_cf=total_tobacco_weight_cf
 		stock_entry.save()
 		return 1
+
+@frappe.whitelist()
+def zomo_sales_invoice_validate(self,method):
+	calculate_total_tobacco_weight(self,method)
+	copy_shipping_details_from_item_to_SI(self,method)
