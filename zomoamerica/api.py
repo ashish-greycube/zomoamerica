@@ -163,8 +163,8 @@ def calculate_total_tobacco_weight(self,method):
 				parent_tobacco_group=parent_groups[0][0]
 				if parent_tobacco_group:
 					self.total_tobacco_weight_za+=item.total_weight
-
-	
+	if self.doctype =='Sales Invoice' and self.is_return == 1 and self.total_tobacco_weight_za > 0:
+		self.total_tobacco_weight_za = self.total_tobacco_weight_za * -1	
 
 def update_delivery_note_workflow_state(self,method):
 	if self.status == 'Completed' and self.workflow_state != 'Completed':
