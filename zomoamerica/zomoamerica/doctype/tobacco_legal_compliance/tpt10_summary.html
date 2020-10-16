@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link href="{{ base_url }}/assets/frappe/css/bootstrap.css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" href="{{ base_url }}/assets/frappe/css/font-awesome.css" />
+    <meta name="pdfkit-orientation" content="landscape" />
+</head>
+<style>
+    body {
+        font-family: Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 11px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    .text-right {
+        text-align: right;
+    }
+
+    .text-bold {
+        font-weight: bold;
+        border-top: 1px solid #cccccc;
+    }
+
+    .sub-heading {
+        background-color: #efefef;
+        font-weight: bold;
+        padding: 5px 15px;
+    }
+</style>
+
+{% set groups = ("NJSAMPLES", "NJSALES", "NJSALES_NOTAX", "TOTAL_SALES")%}
+
+<body>
+    <!-- <p class="text-center small page-number visible-pdf" style="float:right">
+        {{ _("Page {0} of {1}").format('<span class="page"></span>', '<span class="topage"></span>') }}
+    </p> -->
+    <center>
+        <h2>{{docname}}</h2>
+    </center>
+    {% for g in groups %}
+    <div style="page-break-after:always;">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <td colspan="10" class="sub-heading">{{g}}</td>
+                </tr>
+                <tr>
+                    <td>Invoice Date</td>
+                    <td>Invoice</td>
+                    <td>Customer Profile</td>
+                    <td>Name</td>
+                    <td>City</td>
+                    <td>State</td>
+                    <td>Country</td>
+                    <td>Tobacco Gross Total</td>
+                    <td>WGT.KG</td>
+                    <td>WGT.LB</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for d in data | selectattr("grp", "eq", g) %}
+                <tr>
+                    <td>{{ d.invoice_date }}</td>
+                    <td>{{ d.invoice }}</td>
+                    <td>{{ d.customer_profile }}</td>
+                    <td>{{ d.name }}</td>
+                    <td>{{ d.city }}</td>
+                    <td>{{ d.state }}</td>
+                    <td>{{ d.country }}</td>
+                    <td class="text-right">{{ d.tobacco_gross_total }}</td>
+                    <td class="text-right">{{ d.weight_kg }}</td>
+                    <td class="text-right">{{ d.weight_lb }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="text-bold text-right">Total</td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold text-right">
+                        {{ data |selectattr("grp", "eq", g)| sum(attribute = "tobacco_gross_total") | round(2,"common") }}
+                    </td>
+                    <td class="text-bold text-right">
+                        {{ data |selectattr("grp", "eq", g)| sum(attribute = "weight_kg") | round(2,"common")}}</td>
+                    <td class="text-bold text-right">
+                        {{ data |selectattr("grp", "eq", g)| sum(attribute = "weight_lb") | round(2,"common")}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endfor %}
+
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <td colspan="10" class="sub-heading">STATEWISE </td>
+                </tr>
+                <tr>
+                    <td>Invoice Date</td>
+                    <td>Invoice</td>
+                    <td>Customer Profile</td>
+                    <td>Name</td>
+                    <td>City</td>
+                    <td>State</td>
+                    <td>Country</td>
+                    <td>Tobacco Gross Total</td>
+                    <td>WGT.KG</td>
+                    <td>WGT.LB</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for state, items in data | selectattr("grp", "eq", "NON-NJ STATEWISE SALES") | groupby("state") %}
+                <tr>
+                    <td colspan="10">{{state}}</td>
+                </tr>
+                {% for d in items %}
+                <tr>
+                    <td>{{ d.invoice_date }}</td>
+                    <td>{{ d.invoice }}</td>
+                    <td>{{ d.customer_profile }}</td>
+                    <td>{{ d.name }}</td>
+                    <td>{{ d.city }}</td>
+                    <td>{{ d.state }}</td>
+                    <td>{{ d.country }}</td>
+                    <td class="text-right">{{ d.tobacco_gross_total }}</td>
+                    <td class="text-right">{{ d.weight_kg }}</td>
+                    <td class="text-right">{{ d.weight_lb }}</td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td class="text-bold text-right">Total {{state}}</td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold"></td>
+                    <td class="text-bold text-right">
+                        {{ items| sum(attribute = "tobacco_gross_total") | round(2,"common") }}
+                    </td>
+                    <td class="text-bold text-right">
+                        {{ items | sum(attribute = "weight_kg") | round(2,"common")}}</td>
+                    <td class="text-bold text-right">
+                        {{ items | sum(attribute = "weight_lb") | round(2,"common")}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

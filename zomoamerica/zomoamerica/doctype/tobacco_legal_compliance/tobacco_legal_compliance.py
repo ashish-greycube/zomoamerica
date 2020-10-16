@@ -146,6 +146,7 @@ class TobaccoLegalCompliance(Document):
 
 # return field_dictionary
 
+
     def get_55206(self):
         month_and_year = "%s / %s" % (time.strptime(
             self.month, '%B').tm_mon, self.year)
@@ -446,7 +447,7 @@ class TobaccoLegalCompliance(Document):
 						    and si.company = %s 
 						    and coalesce(coalesce(si.base_total_taxes_and_charges,0)-coalesce(shipping.tax,0),0) <= 0) 
     )as NJSALES_NOTAX
-        where tlc.name = %s""", (self.company_warehouse, self.month, self.year,self.company_warehouse, self.month, self.year,self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
+        where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
     def get_scheduleA(self):
@@ -489,7 +490,7 @@ class TobaccoLegalCompliance(Document):
             coalesce(concat_ws('', coalesce(ta.address_line1,''), coalesce(ta.address_line2,'')),''),
                 coalesce(ta.City,''),coalesce(ta.State,'') , coalesce(ta.pincode,'')
             ) as PR_LOC_TrData
-            where tlc.name = %s""", (self.company_warehouse, self.month, self.year,self.name), as_dict=True)
+            where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.name), as_dict=True)
         return field_dictionary or {}
 
     def get_scheduleB(self):
@@ -674,17 +675,17 @@ class TobaccoLegalCompliance(Document):
             INNER JOIN  tabAccount  as ac on 
             tlctc.expense_account =  ac.name 
             and ac.account_type='Tax') as PRLCV
-            where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year,self.company_warehouse, self.month, self.year, self.name), as_dict=True)
+            where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
-    def month_converter(self,month):
-        months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+    def month_converter(self, month):
+        months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
         return months.index(month) + 1
 
     def set_opening_stock(self):
-        year=int(self.year)
-        month_name=self.month
-        month=int(self.month_converter(month_name))
+        year = int(self.year)
+        month_name = self.month
+        month = int(self.month_converter(month_name))
         date = datetime.date(year, month, 1)
         opening_stock = frappe.db.sql("""
 select round(coalesce(sum(OpeningWeigth),0)*2.20462,2)	 AS OpeningBalance
@@ -702,10 +703,10 @@ select round(coalesce(sum(OpeningWeigth),0)*2.20462,2)	 AS OpeningBalance
 		AND TI.item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO')
 		group by sle.stock_uom ) as OW	
         """, (date))
-        if len(opening_stock)>0:
-            self.opening_stock=opening_stock[0][0]
+        if len(opening_stock) > 0:
+            self.opening_stock = opening_stock[0][0]
             self.save()
-            
+
 def touch_random_file(output=None):
     fname = os.path.join(
         "/tmp", "{0}.pdf".format(frappe.generate_hash(length=10)))
@@ -745,13 +746,13 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
     elif doc.report_type == "NJ TPT-10":
         pdfreport = pypdftk.fill_form(
             tpt10_template, doc.get_tpt10(), out_file=touch_random_file())
-         
+
         def get_site_url():
             from frappe.integrations.oauth2 import urlparse
             request_url = urlparse(frappe.request.url)
             return request_url.scheme + "://" + request_url.netloc
 
-        context = {'base_url' : get_site_url()}
+        context = {'base_url': get_site_url()}
 
         # create schedule A
         dataA = doc.get_scheduleA()
@@ -762,8 +763,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 output = PdfFileWriter()
                 sch_a_report = get_pdf(html, output=output)
                 sch_a_report = touch_random_file(output)
-                pdfreport = pypdftk.concat([pdfreport,sch_a_report], touch_random_file())
-
+                pdfreport = pypdftk.concat([pdfreport, sch_a_report], touch_random_file())
 
         # create schedule I
         dataI = doc.get_scheduleI()
@@ -774,9 +774,8 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 output = PdfFileWriter()
                 sch_i_report = get_pdf(html, output=output)
                 sch_i_report = touch_random_file(output)
-                pdfreport = pypdftk.concat([pdfreport,sch_i_report], touch_random_file())
+                pdfreport = pypdftk.concat([pdfreport, sch_i_report], touch_random_file())
 
-        
          # create schedule B
         dataB = doc.get_scheduleB()
         if dataB:
@@ -786,8 +785,8 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 output = PdfFileWriter()
                 sch_b_report = get_pdf(html, output=output)
                 sch_b_report = touch_random_file(output)
-                pdfreport = pypdftk.concat([pdfreport,sch_b_report], touch_random_file())
-        
+                pdfreport = pypdftk.concat([pdfreport, sch_b_report], touch_random_file())
+
         # create Schedule C
         dataC = doc.get_scheduleC()
         if dataC:
@@ -797,7 +796,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 output = PdfFileWriter()
                 sch_c_report = get_pdf(html, output=output)
                 sch_c_report = touch_random_file(output)
-                pdfreport = pypdftk.concat([pdfreport,sch_c_report], touch_random_file())
+                pdfreport = pypdftk.concat([pdfreport, sch_c_report], touch_random_file())
 
         # create Schedule D
         dataD = doc.get_scheduleD()
@@ -808,7 +807,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 output = PdfFileWriter()
                 sch_d_report = get_pdf(html, output=output)
                 sch_d_report = touch_random_file(output)
-                pdfreport = pypdftk.concat([pdfreport,sch_d_report], touch_random_file())
+                pdfreport = pypdftk.concat([pdfreport, sch_d_report], touch_random_file())
          # create schedule F
         dataF = doc.get_scheduleF()
         if dataF:
@@ -818,7 +817,7 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
                 output = PdfFileWriter()
                 sch_f_report = get_pdf(html, output=output)
                 sch_f_report = touch_random_file(output)
-                pdfreport = pypdftk.concat([pdfreport,sch_f_report], touch_random_file())
+                pdfreport = pypdftk.concat([pdfreport, sch_f_report], touch_random_file())
         # # merge report and schedule
         # pdfreport = pypdftk.concat(
         #     [pdfreport,sch_i_report, sch_b_report,sch_d_report,sch_f_report], touch_random_file())
@@ -836,3 +835,110 @@ def download_tlc(docname="FDA-3852-January-year-Zomo America"):
         frappe.local.response.filename = file_name
         frappe.local.response.filecontent = filedata
         frappe.local.response.type = "download"
+
+
+@frappe.whitelist()
+def get_tpt10_summary(docname):
+    doc = frappe.get_doc("Tobacco Legal Compliance", docname)
+
+    data = frappe.db.sql("""
+with fn as
+(
+select 
+si.posting_date as invoice_date,
+si.name as invoice,
+si.customer as customer_profile,
+SUBSTR(si.customer_address,1,LOCATE('-',si.customer_address)-1) as name,
+concat_ws('', ta.address_line1, ta.address_line2) as address,
+coalesce(ta.City,'') as city,
+coalesce(ta.State,'') as state,
+coalesce(ta.country,'') as country,
+if(coalesce(si.base_total_taxes_and_charges-coalesce(shipping.tax,0),0) > 0,'YES','NO') as tax_collected,
+coalesce(c.customers_license,'N/A') as license,
+(si.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as tobacco_gross_total,
+st.head sales_tax, 
+st.tax sales_tax_amt, 
+tt.head tobacco_tax, 
+tt.tax as tobacco_tax_amt,
+round(coalesce(item.total_weight,0),2) as weight_kg,
+round(coalesce(item.total_weight,0)*2.20462,2) as weight_lb
+from `tabSales Invoice` si
+left outer join 
+(
+	select sum(base_net_amount) CharcolNetTotal,parent
+	from `tabSales Invoice Item` 
+	where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') 
+	group by parent
+) CGT on CGT.parent=si.name
+left outer join 
+(
+SELECT sum(total_weight)as total_weight, parent 
+from 
+(
+	select CASE weight_uom
+	WHEN 'Gram' then sum(total_weight/1000)
+	ELSE sum(total_weight)
+	END as total_weight,
+	parent 
+	from `tabSales Invoice Item` 
+	where item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO') group by parent,weight_uom) as t group by parent) item on item.parent=si.name
+	inner join tabCustomer c on c.name = si.customer
+	left outer join tabAddress ta on ta.name = si.customer_address
+	left outer join (
+	select parent, group_concat(account_head separator ',') head, sum(coalesce(base_tax_amount,0)) tax
+	from `tabSales Taxes and Charges` st
+	where account_head like 'Sales.Tax%%'
+	group by parent
+) st on st.parent = si.name
+left outer join (
+select parent, group_concat(account_head separator ',') head, sum(coalesce(base_tax_amount,0)) tax
+from `tabSales Taxes and Charges` st
+where account_head like 'Tobacco.Tax%%'
+group by parent
+) tt on tt.parent = si.name
+left outer join (
+	select parent, sum(coalesce(base_tax_amount,0)) tax
+	from `tabSales Taxes and Charges` st
+	where account_head like 'Shipping%%'
+	group by parent
+) shipping on  shipping.parent = si.name
+WHERE 
+	si.docstatus=1 
+	and si.is_return <> 1 
+	and si.name in 
+		(select distinct parent from `tabSales Invoice Item` where item_group in 
+			(select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO'))
+	and si.posting_date >= str_to_date(concat(%(year)s,%(month)s,'01'),'%%Y%%M%%d')
+	and si.posting_date <= last_day(str_to_date(concat(%(year)s,%(month)s,'01'),'%%Y%%M%%d'))
+	and si.company = %(company)s
+)
+select 'NJSAMPLES' grp, fn.* from fn
+where state = 'NJ' and customer_profile in ('SAMPLE/TASTING','SAMPLE/EVENT')
+union all
+select 'NJSALES' grp, fn.* from fn
+where state = 'NJ' 
+union all
+select 'NJSALES_NOTAX' grp, fn.* from fn
+where state = 'NJ' 
+union all
+select 'TOTAL_SALES' grp, fn.* from fn
+union all
+select 'NON-NJ STATEWISE SALES' grp, fn.* from fn
+where state <> 'NJ' 
+    """, dict(
+    month=doc.month,
+    year=doc.year,
+    company=doc.company), as_dict=1, debug=True)
+
+    html = frappe.render_template("zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/tpt10_summary.html", dict(data=data, docname=docname))
+    pdf = get_pdf(html, {
+        "margin-left": "3mm",
+        "margin-right": "3mm",
+        "margin-top": "50mm",
+        "margin-bottom": "40mm",
+        "orientation": "Landscape"
+    })
+    file_name = "%s.pdf" % doc.name
+    frappe.local.response.filename = file_name
+    frappe.local.response.filecontent = pdf
+    frappe.local.response.type = "download"

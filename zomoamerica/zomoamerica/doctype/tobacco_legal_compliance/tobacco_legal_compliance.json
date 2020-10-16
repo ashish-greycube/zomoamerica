@@ -8,6 +8,7 @@
  "field_order": [
   "company",
   "report_type",
+  "get_tpt10_summary",
   "column_break_3",
   "year",
   "month",
@@ -284,9 +285,15 @@
    "fieldname": "fetch_opening_stock",
    "fieldtype": "Button",
    "label": "Fetch Opening Stock"
+  },
+  {
+   "depends_on": "eval:doc.report_type=='NJ TPT-10'",
+   "fieldname": "get_tpt10_summary",
+   "fieldtype": "Button",
+   "label": "Get TPT10 Summary"
   }
  ],
- "modified": "2020-04-14 08:04:55.649543",
+ "modified": "2020-10-15 22:17:09.269601",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",
