@@ -295,7 +295,7 @@ class TobaccoLegalCompliance(Document):
         'PATERSON NJ 07053' as 'City State Zip Code',
         COALESCE(PR_LOCAL.pr_local_total,0) as 1A,
         (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0) + COALESCE(PRLCV.totalcost,0)) AS 2A,
-        (COALESCE(PR_LOCAL.pr_local_total,0)+ COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0))  AS 7A,
+        (COALESCE(PR_LOCAL.pr_local_total,0)+ COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0) + COALESCE(PRLCV.totalcost,0))  AS 7A,
         COALESCE (TOTAL_SALES.total_sales,0) - COALESCE (NJSAMPLES.nj_sample_sales,0) as  8A,
         COALESCE(NJSALES_NOTAX.nj_sales,0) as 9A,
         COALESCE(TOTAL_SALES.total_sales,0) - COALESCE(NJSALES.nj_sales,0) as 10A,
