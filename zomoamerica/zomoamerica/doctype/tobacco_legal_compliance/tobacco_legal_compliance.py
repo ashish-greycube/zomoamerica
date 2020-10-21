@@ -437,7 +437,7 @@ class TobaccoLegalCompliance(Document):
 							left outer join (
 							select parent, sum(coalesce(base_tax_amount,0)) tax
 							from `tabSales Taxes and Charges` st
-							where account_head like 'Shipping%%'
+							where account_head like '%%Shipping%%'
 							group by parent
 							) shipping on  shipping.parent = si.name
 							where si.docstatus=1
@@ -542,7 +542,7 @@ class TobaccoLegalCompliance(Document):
 			left outer join (
 			select parent, sum(coalesce(base_tax_amount,0)) tax
 			from `tabSales Taxes and Charges` st
-			where account_head like 'Shipping%%'
+			where account_head like '%%Shipping%%'
 			group by parent
 			) shipping on  shipping.parent = si.name
 			WHERE si.docstatus=1 and si.is_return <> 1 and si.name in (select distinct parent from `tabSales Invoice Item` where item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO'))
@@ -899,7 +899,7 @@ group by parent
 left outer join (
 	select parent, sum(coalesce(base_tax_amount,0)) tax
 	from `tabSales Taxes and Charges` st
-	where account_head like 'Shipping%%'
+	where account_head like '%%Shipping%%'
 	group by parent
 ) shipping on  shipping.parent = si.name
 WHERE 
