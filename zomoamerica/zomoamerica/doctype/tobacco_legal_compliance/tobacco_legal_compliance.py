@@ -425,26 +425,30 @@ class TobaccoLegalCompliance(Document):
             and year(si.posting_date) =  %s   
             and si.company =  %s ) 
             )as NJSALES,
-            (SELECT sum(amount)as nj_sales 
-    						from  `tabSales Invoice Item` 
-                            where item_group in
-                            (select distinct name from `tabItem Group` 
-                            where parent_item_group = 'TOBACCO') 
-                            and parent in (select distinct si.name
-                            from `tabSales Invoice` si 
-                            inner JOIN tabAddress  AS CA ON 
-  						 	si.customer_address = CA.name and CA.state = 'NJ'
-							where si.docstatus=1
-						    and si.is_return <> 1 
-						    AND MONTHNAME(si.posting_date) =%s  
-						    and year(si.posting_date) = %s  
-						    and si.company = %s 
-                            and not exists (
-                                select 1 
-                                from `tabSales Taxes and Charges` st
-                                where account_head like 'Tobacco.Tax%%'
-                                and parent = si.name)
-    )as NJSALES_NOTAX
+            (
+            SELECT sum(amount)as nj_sales
+                    from `tabSales Invoice Item`
+                    where item_group in 
+                    (
+                        select distinct name
+                        from `tabItem Group`
+                        where parent_item_group = 'TOBACCO'
+                    )
+                    and parent in 
+                    (
+                        select distinct si.name
+                        from `tabSales Invoice` si
+                        inner JOIN tabAddress AS CA ON
+                        si.customer_address = CA.name
+                        and CA.state = 'NJ'
+                        where si.docstatus = 1
+                        and si.is_return <> 1
+                        AND MONTHNAME(si.posting_date) = %s
+                        and year(si.posting_date) = %s
+                        and si.company = %s
+                        and not exists (select 1 from `tabSales Taxes and Charges` x where x.parent = si.name and x.account_head like 'Tobacco.Tax%%')
+                    )                         
+            ) as NJSALES_NOTAX
         where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
@@ -851,7 +855,7 @@ concat_ws('', ta.address_line1, ta.address_line2) as address,
 coalesce(ta.City,'') as city,
 coalesce(ta.State,'') as state,
 coalesce(ta.country,'') as country,
-if(coalesce(si.base_total_taxes_and_charges-coalesce(shipping.tax,0),0) > 0,'YES','NO') as tax_collected,
+if(tt.parent is not null,'YES','NO') as tax_collected,
 coalesce(c.customers_license,'N/A') as license,
 (si.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as tobacco_gross_total,
 st.head sales_tax, 
@@ -894,12 +898,6 @@ from `tabSales Taxes and Charges` st
 where account_head like 'Tobacco.Tax%%'
 group by parent
 ) tt on tt.parent = si.name
-left outer join (
-	select parent, sum(coalesce(base_tax_amount,0)) tax
-	from `tabSales Taxes and Charges` st
-	where account_head like '%%Shipping%%'
-	group by parent
-) shipping on  shipping.parent = si.name
 WHERE 
 	si.docstatus=1 
 	and si.is_return <> 1 
