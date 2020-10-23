@@ -434,18 +434,16 @@ class TobaccoLegalCompliance(Document):
                             from `tabSales Invoice` si 
                             inner JOIN tabAddress  AS CA ON 
   						 	si.customer_address = CA.name and CA.state = 'NJ'
-							left outer join (
-							select parent, sum(coalesce(base_tax_amount,0)) tax
-							from `tabSales Taxes and Charges` st
-							where account_head like '%%Shipping%%'
-							group by parent
-							) shipping on  shipping.parent = si.name
 							where si.docstatus=1
 						    and si.is_return <> 1 
 						    AND MONTHNAME(si.posting_date) =%s  
 						    and year(si.posting_date) = %s  
 						    and si.company = %s 
-						    and coalesce(coalesce(si.base_total_taxes_and_charges,0)-coalesce(shipping.tax,0),0) <= 0) 
+                            and not exists (
+                                select 1 
+                                from `tabSales Taxes and Charges` st
+                                where account_head like 'Tobacco.Tax%%'
+                                and parent = si.name)
     )as NJSALES_NOTAX
         where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
@@ -540,14 +538,14 @@ class TobaccoLegalCompliance(Document):
 			inner join tabCustomer c on c.name = si.customer
 			left outer join tabAddress ta on ta.name = si.customer_address
 			left outer join (
-			select parent, sum(coalesce(base_tax_amount,0)) tax
+			select parent
 			from `tabSales Taxes and Charges` st
-			where account_head like '%%Shipping%%'
+			where account_head like 'Tobacco.Tax%%'
 			group by parent
-			) shipping on  shipping.parent = si.name
+			) tob_tax on  tob_tax.parent = si.name
 			WHERE si.docstatus=1 and si.is_return <> 1 and si.name in (select distinct parent from `tabSales Invoice Item` where item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO'))
 			AND MONTHNAME(si.posting_date) = %s and YEAR(si.posting_date) = %s
-			AND coalesce(coalesce(si.base_total_taxes_and_charges,0)-coalesce(shipping.tax,0),0) <= 0
+			AND tob_tax.parent is not null
 			AND coalesce(ta.State,'')='NJ'
 			AND (si.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0 ) as TrData
 			            where tlc.name =%s""", (self.month, self.year, self.name), as_dict=True, debug=True)
