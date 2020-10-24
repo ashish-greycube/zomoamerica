@@ -915,7 +915,7 @@ select 'NJSALES' grp, fn.* from fn
 where state = 'NJ' 
 union all
 select 'NJSALES_NOTAX' grp, fn.* from fn
-where state = 'NJ' 
+where state = 'NJ' and tax_collected = 'NO'
 union all
 select 'TOTAL_SALES' grp, fn.* from fn
 union all
