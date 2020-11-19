@@ -146,6 +146,7 @@ class TobaccoLegalCompliance(Document):
 
 # return field_dictionary
 
+
     def get_55206(self):
         month_and_year = "%s / %s" % (time.strptime(
             self.month, '%B').tm_mon, self.year)
@@ -702,34 +703,6 @@ select round(coalesce(sum(OpeningWeigth),0)*2.20462,2)	 AS OpeningBalance
             self.opening_stock = opening_stock[0][0]
             self.save()
 
-    def set_opening_stock_from_previous_closing_stock(self):
-        pass
-#         year = int(self.year)
-#         month_name = self.month
-#         month = int(self.month_converter(month_name))
-#         date = datetime.date(year, month, 1)
-#         opening_stock = frappe.db.sql("""
-# select round(coalesce(sum(OpeningWeigth),0)*2.20462,2)	 AS OpeningBalance
-# 			from
-# (SELECT CASE sle.stock_uom
-# 			WHEN 'BOX' THEN SUM(0.25*actual_qty)
-# 			WHEN 'MASTER CASE' THEN SUM(6*actual_qty)
-# 			WHEN 'CARTON' THEN SUM(actual_qty*0.5)
-# 			ELSE 0
-# 			END AS OpeningWeigth
-# 		FROM `tabStock Ledger Entry` sle
-# 		INNER JOIN `tabItem` AS TI
-# 		ON sle.item_code = TI.item_code
-# 		WHERE posting_date < %s
-# 		AND TI.item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO')
-# 		group by sle.stock_uom ) as OW
-#         """, (date))
-#         if len(opening_stock) > 0:
-#             self.opening_stock = opening_stock[0][0]
-            # self.opening_stock = 2234
-            # self.save()
-
-
 def touch_random_file(output=None):
     fname = os.path.join(
         "/tmp", "{0}.pdf".format(frappe.generate_hash(length=10)))
@@ -962,3 +935,48 @@ where state <> 'NJ' and country = 'UNITED STATES'
     frappe.local.response.filename = file_name
     frappe.local.response.filecontent = pdf
     frappe.local.response.type = "download"
+
+@frappe.whitelist()
+def set_opening_stock_from_previous_closing_stock(docname):
+    doc = frappe.get_doc("Tobacco Legal Compliance", docname)
+    from_date = datetime.datetime.strptime("{}{}".format(doc.month, doc.year), "%B%Y")
+    to_date = frappe.utils.get_last_day(from_date)
+    opening_stock = frappe.db.sql("""
+    with ig as (
+        select name from `tabItem Group`
+        where parent_item_group = 'TOBACCO'
+    ),
+    mtiw as (
+        select round(coalesce(sum(I.weight_per_unit*SED.qty)*2.20462,0),2) mtiw
+        from `tabStock Entry` SE
+        inner join `tabStock Entry Detail` SED on SED.parent =  SE.name
+        inner join tabItem I on I.item_code = SED.item_code
+        inner join ig on ig.name = SED.item_group
+        and SED.s_warehouse like '%%bond%%'
+        and SED.t_warehouse = %(warehouse)s
+        where SE.purpose = 'Material Transfer' and SE.docstatus = 1
+        and SE.posting_date between %(from_date)s and %(to_date)s
+    ),
+    prw as (
+        select coalesce(round(SUM(PR.total_net_weight * 2.20462),2),0) AS p_weight
+        from `tabPurchase Receipt` PR
+        INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States' 
+        where PR.docstatus = 1
+        and PR.set_warehouse = %(warehouse)s
+        and PR.posting_date between %(from_date)s and %(to_date)s
+        and exists (select 1 from `tabPurchase Receipt Item` x 
+        where x.parent = PR.name and x.item_group in (select name from ig))
+    ),
+    domestic_sales as (
+        select coalesce(round(sum(total_weight * if(weight_uom='Gram',1/1000,1) * 2.20462),2),0) total_tobacco_weight_lbs
+        from `tabSales Invoice` SI
+        inner join `tabSales Invoice Item` SIT on SIT.parent = SI.name
+        inner join ig on ig.name = SIT.item_group
+        where SI.docstatus = 1 and SI.is_return <> 1
+        and SI.posting_date between %(from_date)s and %(to_date)s
+    )    
+    select coalesce(tlc.opening_stock,0) + coalesce(mtiw.mtiw,0) + coalesce(prw.p_weight,0) - coalesce(domestic_sales.total_tobacco_weight_lbs,0)  as 'PIPE TOBACCO Pounds g19 On Hand End of Month'
+    from `tabTobacco Legal Compliance` tlc , mtiw, prw, domestic_sales
+    where tlc.name = %(docname)s""", dict(docname=doc.name, from_date=from_date, to_date=to_date, warehouse=doc.company_warehouse, company=doc.company))
+
+    return opening_stock and opening_stock[0][0] or 0

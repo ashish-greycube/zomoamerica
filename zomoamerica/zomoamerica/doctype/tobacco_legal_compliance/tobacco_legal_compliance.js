@@ -57,21 +57,19 @@ frappe.ui.form.on("Tobacco Legal Compliance", {
   },
 
   fetch_closing_stock_from_previous_month_ttb: function (frm) {
-    return;
-    //
     if (frm.doc.month && frm.doc.year) {
-      frappe.show_alert({
-        message: __("Opening stock set for  {0},{1} successfully", [
-          frm.doc.month,
-          frm.doc.year,
-        ]),
-        indicator: "green",
+      frappe.call({
+        method:
+          "zomoamerica.zomoamerica.doctype.tobacco_legal_compliance.tobacco_legal_compliance.set_opening_stock_from_previous_closing_stock",
+        args: { docname: frm.doc.name },
+        async: false,
+        callback: (r) => {
+          frm.set_value("opening_stock", r.message);
+        },
       });
-      return frm.call("set_opening_stock_from_previous_closing_stock");
     } else {
       let message = "Month & Year is required to fetch opening stock";
       frappe.show_alert({ message: __(message), indicator: "red" });
     }
-    //
   },
 });
