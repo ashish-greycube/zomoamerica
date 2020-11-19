@@ -541,15 +541,9 @@ class TobaccoLegalCompliance(Document):
 			left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item` where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') group by parent) CGT on CGT.parent=si.name
 			inner join tabCustomer c on c.name = si.customer
 			left outer join tabAddress ta on ta.name = si.customer_address
-			left outer join (
-			select parent
-			from `tabSales Taxes and Charges` st
-			where account_head like 'Tobacco.Tax%%'
-			group by parent
-			) tob_tax on  tob_tax.parent = si.name
 			WHERE si.docstatus=1 and si.is_return <> 1 and si.name in (select distinct parent from `tabSales Invoice Item` where item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO'))
 			AND MONTHNAME(si.posting_date) = %s and YEAR(si.posting_date) = %s
-			AND tob_tax.parent is not null
+			and not exists (select 1 from `tabSales Taxes and Charges` x where x.parent = si.name and x.account_head like 'Tobacco.Tax%%')
 			AND coalesce(ta.State,'')='NJ'
 			AND (si.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0 ) as TrData
 			            where tlc.name =%s""", (self.month, self.year, self.name), as_dict=True, debug=True)
