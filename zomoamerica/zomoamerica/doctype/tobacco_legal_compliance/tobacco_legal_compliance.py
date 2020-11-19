@@ -146,7 +146,6 @@ class TobaccoLegalCompliance(Document):
 
 # return field_dictionary
 
-
     def get_55206(self):
         month_and_year = "%s / %s" % (time.strptime(
             self.month, '%B').tm_mon, self.year)
@@ -703,6 +702,34 @@ select round(coalesce(sum(OpeningWeigth),0)*2.20462,2)	 AS OpeningBalance
             self.opening_stock = opening_stock[0][0]
             self.save()
 
+    def set_opening_stock_from_previous_closing_stock(self):
+        pass
+#         year = int(self.year)
+#         month_name = self.month
+#         month = int(self.month_converter(month_name))
+#         date = datetime.date(year, month, 1)
+#         opening_stock = frappe.db.sql("""
+# select round(coalesce(sum(OpeningWeigth),0)*2.20462,2)	 AS OpeningBalance
+# 			from
+# (SELECT CASE sle.stock_uom
+# 			WHEN 'BOX' THEN SUM(0.25*actual_qty)
+# 			WHEN 'MASTER CASE' THEN SUM(6*actual_qty)
+# 			WHEN 'CARTON' THEN SUM(actual_qty*0.5)
+# 			ELSE 0
+# 			END AS OpeningWeigth
+# 		FROM `tabStock Ledger Entry` sle
+# 		INNER JOIN `tabItem` AS TI
+# 		ON sle.item_code = TI.item_code
+# 		WHERE posting_date < %s
+# 		AND TI.item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO')
+# 		group by sle.stock_uom ) as OW
+#         """, (date))
+#         if len(opening_stock) > 0:
+#             self.opening_stock = opening_stock[0][0]
+            # self.opening_stock = 2234
+            # self.save()
+
+
 def touch_random_file(output=None):
     fname = os.path.join(
         "/tmp", "{0}.pdf".format(frappe.generate_hash(length=10)))
@@ -849,13 +876,13 @@ concat_ws('', ta.address_line1, ta.address_line2) as address,
 coalesce(ta.City,'') as city,
 coalesce(ta.State,'') as state,
 coalesce(ta.country,'') as country,
-if(tt.parent is not null,'YES','NO') as tax_collected,
+if(tt.head is not null,'YES','NO') as tax_collected,
 coalesce(c.customers_license,'N/A') as license,
 (si.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as tobacco_gross_total,
 st.head sales_tax, 
 st.tax sales_tax_amt, 
 tt.head tobacco_tax, 
-tt.tax as tobacco_tax_amt,
+coalesce(tt.tax,0) as tobacco_tax_amt,
 round(coalesce(item.total_weight,0),2) as weight_kg,
 round(coalesce(item.total_weight,0)*2.20462,2) as weight_lb
 from `tabSales Invoice` si
@@ -902,19 +929,22 @@ WHERE
 	and si.posting_date <= last_day(str_to_date(concat(%(year)s,%(month)s,'01'),'%%Y%%M%%d'))
 	and si.company = %(company)s
 )
-select 'NJSAMPLES' grp, fn.* from fn
+select 'SCHEDULE F [NJ SAMPLES]' grp, fn.* from fn
 where state = 'NJ' and customer_profile in ('SAMPLE/TASTING','SAMPLE/EVENT')
 union all
-select 'NJSALES' grp, fn.* from fn
-where state = 'NJ' 
+select 'NJ SALES TAXABLE' grp, fn.* from fn
+where state = 'NJ' and fn.tax_collected = 'YES'
 union all
-select 'NJSALES_NOTAX' grp, fn.* from fn
-where state = 'NJ' and tax_collected = 'NO'
+select 'SCHEDULE C - [NJ SALES NO TAX]' grp, fn.* from fn
+where state = 'NJ' and fn.tax_collected = 'NO'
 union all
-select 'TOTAL_SALES' grp, fn.* from fn
+select 'NJ SAMPLE EXCLUDED [TOTAL_SALES]' grp, fn.* from fn
+union all
+select 'INTERNATIONAL SALES' grp, fn.* from fn
+where country <> 'UNITED STATES' 
 union all
 select 'NON-NJ STATEWISE SALES' grp, fn.* from fn
-where state <> 'NJ' 
+where state <> 'NJ' and country = 'UNITED STATES' 
     """, dict(
     month=doc.month,
     year=doc.year,

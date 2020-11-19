@@ -32,6 +32,7 @@
   "section_break_19",
   "opening_stock",
   "fetch_opening_stock",
+  "fetch_closing_stock_from_previous_month_ttb",
   "preparer_address",
   "preparer_address_line1",
   "preparer_address_line2",
@@ -291,9 +292,15 @@
    "fieldname": "get_tpt10_summary",
    "fieldtype": "Button",
    "label": "Get TPT10 Summary"
+  },
+  {
+   "depends_on": "eval:doc.report_type=='TTB-5220'",
+   "fieldname": "fetch_closing_stock_from_previous_month_ttb",
+   "fieldtype": "Button",
+   "label": "Fetch Closing Stock from Previous Month TTB"
   }
  ],
- "modified": "2020-10-15 22:17:09.269601",
+ "modified": "2020-11-19 11:15:35.660419",
  "modified_by": "Administrator",
  "module": "ZomoAmerica",
  "name": "Tobacco Legal Compliance",

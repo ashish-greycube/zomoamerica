@@ -17,6 +17,18 @@
         width: 100%;
     }
 
+    thead {
+        display: table-header-group
+    }
+
+    tfoot {
+        display: table-row-group
+    }
+
+    tr {
+        page-break-inside: avoid
+    }
+
     .text-right {
         text-align: right;
     }
@@ -31,9 +43,13 @@
         font-weight: bold;
         padding: 5px 15px;
     }
+
+    .total {
+        background-color: #efefef;
+    }
 </style>
 
-{% set groups = ("NJSAMPLES", "NJSALES", "NJSALES_NOTAX", "TOTAL_SALES")%}
+{% set groups = ("SCHEDULE F [NJ SAMPLES]", "NJ SALES TAXABLE", "SCHEDULE C - [NJ SALES NO TAX]", "NJ SAMPLE EXCLUDED [TOTAL_SALES]", "INTERNATIONAL SALES")%}
 
 <body>
     <!-- <p class="text-center small page-number visible-pdf" style="float:right">
@@ -45,21 +61,35 @@
     {% for g in groups %}
     <div style="page-break-after:always;">
         <table class="table table-bordered">
+            <colgroup>
+                <col style="width:9%;">
+                <col style="width:9%;">
+                <col style="width:15%;">
+                <col style="width:15%;">
+                <col style="width:8%;">
+                <col style="width:4%;">
+                <col style="width:8%;">
+                <col style="width:8%;">
+                <col style="width:8%;">
+                <col style="width:8%;">
+                <col style="width:8%;">
+            </colgroup>
             <thead>
                 <tr>
-                    <td colspan="10" class="sub-heading">{{g}}</td>
+                    <td colspan="11" class="sub-heading">{{g}}</td>
                 </tr>
                 <tr>
-                    <td>Invoice Date</td>
-                    <td>Invoice</td>
-                    <td>Customer Profile</td>
-                    <td>Name</td>
-                    <td>City</td>
-                    <td>State</td>
-                    <td>Country</td>
-                    <td>Tobacco Gross Total</td>
-                    <td>WGT.KG</td>
-                    <td>WGT.LB</td>
+                    <th>Invoice Date</th>
+                    <th>Invoice</th>
+                    <th>Customer Profile</th>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
+                    <th class="text-right">Tobacco Gross Total</th>
+                    <th class="text-right">WGT.KG</th>
+                    <th class="text-right">WGT.LB</th>
+                    <th class="text-right">Tobacco Tax</th>
                 </tr>
             </thead>
             <tbody>
@@ -75,6 +105,7 @@
                     <td class="text-right">{{ d.tobacco_gross_total }}</td>
                     <td class="text-right">{{ d.weight_kg }}</td>
                     <td class="text-right">{{ d.weight_lb }}</td>
+                    <td class="text-right">{{ d.tobacco_tax_amt }}</td>
                 </tr>
                 {% endfor %}
                 <tr>
@@ -92,35 +123,53 @@
                         {{ data |selectattr("grp", "eq", g)| sum(attribute = "weight_kg") | round(2,"common")}}</td>
                     <td class="text-bold text-right">
                         {{ data |selectattr("grp", "eq", g)| sum(attribute = "weight_lb") | round(2,"common")}}</td>
+                    <td class="text-bold text-right">
+                        {{ data |selectattr("grp", "eq", g)| sum(attribute = "tobacco_tax_amt") | round(2,"common")}}
+                    </td>
+
                 </tr>
             </tbody>
         </table>
     </div>
     {% endfor %}
 
-    <div>
+    <div style="page-break-after:always;">
         <table class="table table-bordered">
+            <colgroup>
+                <col style="width:9%;">
+                <col style="width:9%;">
+                <col style="width:15%;">
+                <col style="width:15%;">
+                <col style="width:8%;">
+                <col style="width:4%;">
+                <col style="width:8%;">
+                <col style="width:8%;">
+                <col style="width:8%;">
+                <col style="width:8%;">
+                <col style="width:8%;">
+            </colgroup>
             <thead>
                 <tr>
-                    <td colspan="10" class="sub-heading">STATEWISE </td>
+                    <td colspan="11" class="sub-heading">STATEWISE</td>
                 </tr>
                 <tr>
-                    <td>Invoice Date</td>
-                    <td>Invoice</td>
-                    <td>Customer Profile</td>
-                    <td>Name</td>
-                    <td>City</td>
-                    <td>State</td>
-                    <td>Country</td>
-                    <td>Tobacco Gross Total</td>
-                    <td>WGT.KG</td>
-                    <td>WGT.LB</td>
+                    <th>Invoice Date</th>
+                    <th>Invoice</th>
+                    <th>Customer Profile</th>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Country</th>
+                    <th class="text-right">Tobacco Gross Total</th>
+                    <th class="text-right">WGT.KG</th>
+                    <th class="text-right">WGT.LB</th>
+                    <th class="text-right">Tobacco Tax</th>
                 </tr>
             </thead>
             <tbody>
                 {% for state, items in data | selectattr("grp", "eq", "NON-NJ STATEWISE SALES") | groupby("state") %}
                 <tr>
-                    <td colspan="10">{{state}}</td>
+                    <td colspan="11">{{state}}</td>
                 </tr>
                 {% for d in items %}
                 <tr>
@@ -134,9 +183,10 @@
                     <td class="text-right">{{ d.tobacco_gross_total }}</td>
                     <td class="text-right">{{ d.weight_kg }}</td>
                     <td class="text-right">{{ d.weight_lb }}</td>
+                    <td class="text-right">{{ d.tobacco_tax_amt }}</td>
                 </tr>
                 {% endfor %}
-                <tr>
+                <tr class="total">
                     <td class="text-bold text-right">Total {{state}}</td>
                     <td class="text-bold"></td>
                     <td class="text-bold"></td>
@@ -151,8 +201,46 @@
                         {{ items | sum(attribute = "weight_kg") | round(2,"common")}}</td>
                     <td class="text-bold text-right">
                         {{ items | sum(attribute = "weight_lb") | round(2,"common")}}</td>
+                    <td class="text-bold text-right">
+                        {{ items | sum(attribute = "tobacco_tax_amt") | round(2,"common")}}</td>
+                </tr>
+                <tr>
+                    <td colspan="11">&nbsp;</td>
                 </tr>
                 {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!--  -->
+    <div>
+        <table class="table table-bordered" style="width: 25%;">
+            <colgroup>
+                <col style="width:50%;">
+                <col style="width:50%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th colspan="11" class="sub-heading">Total Tobacco Taxes Per State</th>
+                </tr>
+                <tr>
+                    <th>State</th>
+                    <th class="text-right">Tobacco Tax</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for state, items in data | selectattr("grp", "in", ["NON-NJ STATEWISE SALES", "NJ SALES TAXABLE"]) | groupby("state") %}
+                <tr>
+                    <td>{{state}}</td>
+                    <td class="text-right">
+                        {{ items | sum(attribute = "tobacco_tax_amt") | round(2,"common")}}</td>
+                </tr>
+                {% endfor %}
+                <tr class="total">
+                    <td class="text-bold">Total</td>
+                    <td class="text-bold text-right">
+                        {{ data | selectattr("grp", "eq", "NON-NJ STATEWISE SALES") | sum(attribute = "tobacco_tax_amt") | round(2,"common") }}
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
