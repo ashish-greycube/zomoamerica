@@ -29,7 +29,7 @@ class TobaccoLegalCompliance(Document):
     tlc.month as 'topmostSubform[0].Page1[0].month[0]',
     tlc.year as 'topmostSubform[0].Page1[0].activityyear[0]',
     CONCAT_WS(
-        '\n', 
+        '\n',
         tlc.legal_company,
         tlc.address_line1,
         tlc.city,
@@ -42,12 +42,12 @@ class TobaccoLegalCompliance(Document):
     DATE_FORMAT(CURDATE(), '%%m/%%d/%%Y') as 'topmostSubform[0].Page2[0].dateprepared[0]'
     FROM
     `tabTobacco Legal Compliance` tlc,
-    (SELECT 
+    (SELECT
       SUM(coalesce(LCT.amount, 0))
     as TAX_7501
-    FROM `tabLanded Cost Taxes and Charges` AS LCT 
-    where LCT.expense_account IN (SELECT distinct name from tabAccount as AC1 where AC1.account_type = 'Tax') 
-    AND LCT.PARENT IN (select distinct parent from `tabStock Entry Detail` SED 
+    FROM `tabLanded Cost Taxes and Charges` AS LCT
+    where LCT.expense_account IN (SELECT distinct name from tabAccount as AC1 where AC1.account_type = 'Tax')
+    AND LCT.PARENT IN (select distinct parent from `tabStock Entry Detail` SED
     where SED.s_warehouse like '%%bonded%%' and SED.t_warehouse  = %s
     AND SED.item_group in (
         select
@@ -57,22 +57,22 @@ class TobaccoLegalCompliance(Document):
         where
             parent_item_group = 'TOBACCO'
     )
-    and SED.parent in (select distinct name from `tabStock Entry` as SE 
+    and SED.parent in (select distinct name from `tabStock Entry` as SE
     WHERE SE.purpose = 'Material Transfer'
     and SE.docstatus = 1
-    and MONTHNAME(SE.posting_date) = %s 
+    and MONTHNAME(SE.posting_date) = %s
     and year(SE.posting_date) = %s ) )) as MTTAX,
     (SELECT sum(COALESCE(tlctc.amount,0)) as ptax
-     FROM `tabLanded Cost Voucher` tlcv 
+     FROM `tabLanded Cost Voucher` tlcv
      INNER JOIN `tabLanded Cost Purchase Receipt`tlcpr on tlcv.name = tlcpr.parent
      and tlcpr.receipt_document_type = 'Purchase Receipt' and tlcpr.receipt_document
      in
-     (SELECT distinct name from `tabPurchase Receipt` PR  where 
+     (SELECT distinct name from `tabPurchase Receipt` PR  where
      PR.docstatus = 1
-    and PR.set_warehouse =  %s 
-    and MONTHNAME(PR.posting_date) =   %s 
-    and year(PR.posting_date) = %s 
-    and name in  (select distinct parent from  `tabPurchase Receipt Item` PRI 
+    and PR.set_warehouse =  %s
+    and MONTHNAME(PR.posting_date) =   %s
+    and year(PR.posting_date) = %s
+    and name in  (select distinct parent from  `tabPurchase Receipt Item` PRI
     where PRI.item_group in (
         select
             distinct name
@@ -82,17 +82,17 @@ class TobaccoLegalCompliance(Document):
             parent_item_group = 'TOBACCO'
     )))
     INNER JOIN `tabLanded Cost Taxes and Charges` tlctc on tlcv.name = tlctc.parent
-     and tlctc.parenttype = "Landed Cost Voucher" 
-     INNER JOIN  tabAccount  as ac on 
-     tlctc.expense_account =  ac.name 
+     and tlctc.parenttype = "Landed Cost Voucher"
+     INNER JOIN  tabAccount  as ac on
+     tlctc.expense_account =  ac.name
      and ac.account_type='Tax'
     ) AS PRTAX,
     (select  coalesce(round(SUM(coalesce(coalesce(I.weight_per_unit,0) * coalesce(SED.qty,0), 0)) * 2.20462,2),0)  as mti_w
-    from `tabStock Entry Detail` SED 
-    INNER JOIN tabItem  as I 
+    from `tabStock Entry Detail` SED
+    INNER JOIN tabItem  as I
     ON I.item_code= SED.item_code
-    where SED.s_warehouse 
-    like '%%bond%%' and SED.t_warehouse  = %s 
+    where SED.s_warehouse
+    like '%%bond%%' and SED.t_warehouse  = %s
     AND SED.item_group in (
         select
             distinct name
@@ -101,19 +101,19 @@ class TobaccoLegalCompliance(Document):
         where
             parent_item_group = 'TOBACCO'
     )
-    and SED.parent in (select distinct name from `tabStock Entry` as SE 
+    and SED.parent in (select distinct name from `tabStock Entry` as SE
     WHERE SE.purpose = 'Material Transfer'
     and SE.docstatus = 1
-    and MONTHNAME(SE.posting_date) = %s 
-    and year(SE.posting_date) = %s 
-    )) as MTIW,   
-    (select 
+    and MONTHNAME(SE.posting_date) = %s
+    and year(SE.posting_date) = %s
+    )) as MTIW,
+    (select
     round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462,2) AS p_weight
-     from `tabPurchase Receipt` PR 
+     from `tabPurchase Receipt` PR
     INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States'
      where PR.docstatus = 1
-    and PR.set_warehouse = %s 
-    and MONTHNAME(PR.posting_date) = %s 
+    and PR.set_warehouse = %s
+    and MONTHNAME(PR.posting_date) = %s
     and year(PR.posting_date) = %s
     AND PR.name in (select distinct parent  from `tabPurchase Receipt Item` PRI
     where  PRI.item_group in (
@@ -146,7 +146,6 @@ class TobaccoLegalCompliance(Document):
 
 # return field_dictionary
 
-
     def get_55206(self):
         month_and_year = "%s / %s" % (time.strptime(
             self.month, '%B').tm_mon, self.year)
@@ -156,7 +155,7 @@ class TobaccoLegalCompliance(Document):
     tlc.permit_number as '4 PERMIT NUMBER',
     SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ) as '5 EMPLOYER IDENTIFICATION NUMBER EIN',
     tlc.phone as '(Enter the telephone number including area code.)',
-    %s as "3 MONTH AND YEAR",  
+    %s as "3 MONTH AND YEAR",
     SUBSTR( tlc.employer_identification_number FROM 3 ) as 'undefined',
     CONCAT_WS(
         '\n',
@@ -165,8 +164,8 @@ class TobaccoLegalCompliance(Document):
         tlc.zipcode,
         tlc.us_state
     ) as '2 PRINCIPAL BUSINESS ADDRESS Number Street City State and ZIP Code',
-    tlc.opening_stock as 'PIPE TOBACCO Pounds g6 On Hand Beginning of Month', 
-     coalesce(MTIW.mti_w,0) + coalesce(PRW.p_weight,0) 
+    tlc.opening_stock as 'PIPE TOBACCO Pounds g6 On Hand Beginning of Month',
+     coalesce(MTIW.mti_w,0) + coalesce(PRW.p_weight,0)
     as 'PIPE TOBACCO Pounds g7 Imported and Released from Customs Custody into the United States',
     coalesce(tlc.opening_stock,0) +  coalesce(MTIW.mti_w,0) + coalesce(PRW.p_weight,0)  as 'PIPE TOBACCO Pounds g11 TOTAL',
     coalesce(domesticsales.total_tobacco_weight_lbs,0)  as 'PIPE TOBACCO Pounds g13 Transferred to Domestic Customers',
@@ -181,11 +180,11 @@ class TobaccoLegalCompliance(Document):
     FROM
     `tabTobacco Legal Compliance` tlc ,
     (select  coalesce(round(SUM(coalesce(coalesce(I.weight_per_unit,0) * coalesce(SED.qty,0), 0)) * 2.20462,2),0)  as mti_w
-    from `tabStock Entry Detail` SED 
-    INNER JOIN tabItem  as I 
+    from `tabStock Entry Detail` SED
+    INNER JOIN tabItem  as I
     ON I.item_code= SED.item_code
-    where SED.s_warehouse 
-    like '%%bond%%' and SED.t_warehouse  = %s 
+    where SED.s_warehouse
+    like '%%bond%%' and SED.t_warehouse  = %s
     AND SED.item_group in (
         select
             distinct name
@@ -194,20 +193,20 @@ class TobaccoLegalCompliance(Document):
         where
             parent_item_group = 'TOBACCO'
     )
-    and SED.parent in (select distinct name from `tabStock Entry` as SE 
+    and SED.parent in (select distinct name from `tabStock Entry` as SE
     WHERE SE.purpose = 'Material Transfer'
     and SE.docstatus = 1
-    and MONTHNAME(SE.posting_date) = %s 
-    and year(SE.posting_date) = %s 
-    )) as MTIW,     
-    (select 
+    and MONTHNAME(SE.posting_date) = %s
+    and year(SE.posting_date) = %s
+    )) as MTIW,
+    (select
     round(SUM(coalesce(PR.total_net_weight, 0)) * 2.20462,2) AS p_weight
     from `tabPurchase Receipt` PR
-    INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States' 
+    INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States'
     where PR.docstatus = 1
-    and PR.set_warehouse = %s 
-    and MONTHNAME(PR.posting_date) = %s 
-    and year(PR.posting_date) = %s 
+    and PR.set_warehouse = %s
+    and MONTHNAME(PR.posting_date) = %s
+    and year(PR.posting_date) = %s
     AND PR.name in (select distinct parent  from `tabPurchase Receipt Item` PRI
     where  PRI.item_group in (
         select
@@ -222,18 +221,18 @@ class TobaccoLegalCompliance(Document):
                             WHEN 'Gram' then sum(total_weight/1000)
                             ELSE sum(total_weight)
                             END as total_weight,
-                            parent from `tabSales Invoice Item` 
+                            parent from `tabSales Invoice Item`
                             where item_group
                             in
-                            (select distinct name from `tabItem Group` 
-                            where parent_item_group = 'TOBACCO') group by parent,weight_uom) as t group by parent) item 
+                            (select distinct name from `tabItem Group`
+                            where parent_item_group = 'TOBACCO') group by parent,weight_uom) as t group by parent) item
                             on item.parent=si.name
     WHERE si.docstatus=1
-    and si.is_return <> 1 
+    and si.is_return <> 1
     AND MONTHNAME(si.posting_date) = %s
-    and year(si.posting_date) = %s 
+    and year(si.posting_date) = %s
     and si.company = %s
-   ) as domesticsales 
+   ) as domesticsales
     where tlc.name = %s""", (month_and_year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.name), as_dict=True, debug=True)
 
         # field_dictionary = {
@@ -261,8 +260,8 @@ class TobaccoLegalCompliance(Document):
 
     def get_tpt10(self):
         field_dictionary = frappe.db.sql("""SELECT
-        CASE tlc.month 
-        when 'January' THEN 1 
+        CASE tlc.month
+        when 'January' THEN 1
         WHEN 'February' THEN 2
         when 'March' THEN 3
         WHEN 'April' THEN 4
@@ -312,13 +311,13 @@ class TobaccoLegalCompliance(Document):
         round(((COALESCE (TOTAL_SALES.total_sales,0) - COALESCE (NJSAMPLES.nj_sample_sales,0)) - (COALESCE(NJSALES_NOTAX.nj_sales,0) + (COALESCE(TOTAL_SALES.total_sales,0) - COALESCE(NJSALES.nj_sales,0))) + COALESCE(NJSAMPLES.nj_sample_sales,0)) * tlc.state_tax_percent/100,2) as 21A
         from `tabTobacco Legal Compliance` AS tlc ,
             (select  SUM(total_amount)   as mt_total_amt
-            from `tabStock Entry` as SE 
+            from `tabStock Entry` as SE
             WHERE SE.purpose = 'Material Transfer'
             and SE.docstatus = 1
             and SE.from_warehouse like '%%bond%%' and SE.to_warehouse  = %s
-            and MONTHNAME(SE.posting_date) = %s 
-            and year(SE.posting_date) =  %s 
-            and SE.name IN (SELECT DISTINCT parent from  `tabStock Entry Detail` AS SED 
+            and MONTHNAME(SE.posting_date) = %s
+            and year(SE.posting_date) =  %s
+            and SE.name IN (SELECT DISTINCT parent from  `tabStock Entry Detail` AS SED
             where SED.item_group in (
                 select
                     distinct name
@@ -327,15 +326,15 @@ class TobaccoLegalCompliance(Document):
                 where
                     parent_item_group = 'TOBACCO'
             ))
-            ) as MTA,   
-            (select 
+            ) as MTA,
+            (select
             COALESCE (SUM(COALESCE (rounded_total,0)),0) AS p_total
-            from `tabPurchase Receipt` PR 
+            from `tabPurchase Receipt` PR
             INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States'
             where PR.docstatus = 1
-            and PR.set_warehouse =  %s  
-            and MONTHNAME(PR.posting_date) =  %s  
-            and year(PR.posting_date) =  %s 
+            and PR.set_warehouse =  %s
+            and MONTHNAME(PR.posting_date) =  %s
+            and year(PR.posting_date) =  %s
             and PR.name in (select distinct parent from `tabPurchase Receipt Item` PRI
             where  PRI.item_group in (
                 select
@@ -346,18 +345,18 @@ class TobaccoLegalCompliance(Document):
                     parent_item_group = 'TOBACCO'))
             ) as PRA,
             (SELECT sum(COALESCE(tlctc.amount,0)) as totalcost
-            FROM `tabLanded Cost Voucher` tlcv 
+            FROM `tabLanded Cost Voucher` tlcv
             INNER JOIN `tabLanded Cost Purchase Receipt`tlcpr on tlcv.name = tlcpr.parent
             and tlcpr.receipt_document_type = 'Purchase Receipt' and tlcpr.receipt_document
             in
-            (SELECT distinct PR.name from `tabPurchase Receipt` PR  
+            (SELECT distinct PR.name from `tabPurchase Receipt` PR
             INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States'
-            where 
+            where
             PR.docstatus = 1
             and PR.set_warehouse = %s
             and MONTHNAME(PR.posting_date) =  %s
             and year(PR.posting_date) = %s
-            and PR.name in  (select distinct PRI.parent from  `tabPurchase Receipt Item` PRI 
+            and PR.name in  (select distinct PRI.parent from  `tabPurchase Receipt Item` PRI
             where PRI.item_group in (
                 select
                     distinct name
@@ -367,17 +366,17 @@ class TobaccoLegalCompliance(Document):
                     parent_item_group = 'TOBACCO'
             )))
             INNER JOIN `tabLanded Cost Taxes and Charges` tlctc on tlcv.name = tlctc.parent
-            and tlctc.parenttype = "Landed Cost Voucher" 
-            INNER JOIN  tabAccount  as ac on 
-            tlctc.expense_account =  ac.name 
+            and tlctc.parenttype = "Landed Cost Voucher"
+            INNER JOIN  tabAccount  as ac on
+            tlctc.expense_account =  ac.name
             and ac.account_type='Tax') as PRLCV,
-            (select 
+            (select
             SUM(rounded_total) AS pr_local_total
-            from `tabPurchase Receipt` PR 
+            from `tabPurchase Receipt` PR
             where PR.docstatus = 1
-            and PR.set_warehouse =  %s  
-            and MONTHNAME(PR.posting_date) =  %s  
-            and year(PR.posting_date) =  %s 
+            and PR.set_warehouse =  %s
+            and MONTHNAME(PR.posting_date) =  %s
+            and year(PR.posting_date) =  %s
             AND PR.supplier in ( select ts.name from tabSupplier ts WHERE ts.country = 'United States' )
             and name in (select distinct parent from `tabPurchase Receipt Item` PRI
             where  PRI.item_group in (
@@ -388,54 +387,54 @@ class TobaccoLegalCompliance(Document):
                 where
                     parent_item_group = 'TOBACCO'))
             ) as PR_LOCAL,
-            (SELECT  sum(amount) AS total_sales from  `tabSales Invoice Item` 
+            (SELECT  sum(amount) AS total_sales from  `tabSales Invoice Item`
                                     where item_group in
-                                    (select distinct name from `tabItem Group` 
-                                    where parent_item_group = 'TOBACCO') 
-                                    and parent in (select distinct name from `tabSales Invoice` si 
+                                    (select distinct name from `tabItem Group`
+                                    where parent_item_group = 'TOBACCO')
+                                    and parent in (select distinct name from `tabSales Invoice` si
             WHERE si.docstatus=1
-            and si.is_return <> 1 
-            AND MONTHNAME(si.posting_date) = %s  
-            and year(si.posting_date) =  %s 
-            and si.company = %s  ))    
+            and si.is_return <> 1
+            AND MONTHNAME(si.posting_date) = %s
+            and year(si.posting_date) =  %s
+            and si.company = %s  ))
             as TOTAL_SALES,
-            (SELECT  sum(amount)as nj_sample_sales from  `tabSales Invoice Item` 
+            (SELECT  sum(amount)as nj_sample_sales from  `tabSales Invoice Item`
                                     where item_group in
-                                    (select distinct name from `tabItem Group` 
-                                    where parent_item_group = 'TOBACCO') 
-                                    and parent in (select distinct si.name from `tabSales Invoice` si 
-                                    inner JOIN tabAddress  AS CA ON 
+                                    (select distinct name from `tabItem Group`
+                                    where parent_item_group = 'TOBACCO')
+                                    and parent in (select distinct si.name from `tabSales Invoice` si
+                                    inner JOIN tabAddress  AS CA ON
                                     si.customer_address = CA.name and CA.state = 'NJ'
             AND si.docstatus=1
-            and si.is_return <> 1 
+            and si.is_return <> 1
             AND si.customer in ('SAMPLE/TASTING','SAMPLE/EVENT')
-            AND MONTHNAME(si.posting_date) = %s 
-            and year(si.posting_date) =  %s 
-            and si.company =  %s ) 
+            AND MONTHNAME(si.posting_date) = %s
+            and year(si.posting_date) =  %s
+            and si.company =  %s )
             )as NJSAMPLES,
-            (SELECT  sum(amount)as nj_sales from  `tabSales Invoice Item` 
+            (SELECT  sum(amount)as nj_sales from  `tabSales Invoice Item`
                                     where item_group in
-                                    (select distinct name from `tabItem Group` 
-                                    where parent_item_group = 'TOBACCO') 
-                                    and parent in (select distinct si.name from `tabSales Invoice` si 
-                                    inner JOIN tabAddress  AS CA ON 
+                                    (select distinct name from `tabItem Group`
+                                    where parent_item_group = 'TOBACCO')
+                                    and parent in (select distinct si.name from `tabSales Invoice` si
+                                    inner JOIN tabAddress  AS CA ON
                                     si.customer_address = CA.name and CA.state = 'NJ'
             AND si.docstatus=1
-            and si.is_return <> 1 
-            AND MONTHNAME(si.posting_date) = %s 
-            and year(si.posting_date) =  %s   
-            and si.company =  %s ) 
+            and si.is_return <> 1
+            AND MONTHNAME(si.posting_date) = %s
+            and year(si.posting_date) =  %s
+            and si.company =  %s )
             )as NJSALES,
             (
             SELECT sum(amount)as nj_sales
                     from `tabSales Invoice Item`
-                    where item_group in 
+                    where item_group in
                     (
                         select distinct name
                         from `tabItem Group`
                         where parent_item_group = 'TOBACCO'
                     )
-                    and parent in 
+                    and parent in
                     (
                         select distinct si.name
                         from `tabSales Invoice` si
@@ -448,23 +447,23 @@ class TobaccoLegalCompliance(Document):
                         and year(si.posting_date) = %s
                         and si.company = %s
                         and not exists (select 1 from `tabSales Taxes and Charges` x where x.parent = si.name and x.account_head like 'Tobacco.Tax%%')
-                    )                         
+                    )
             ) as NJSALES_NOTAX
         where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.month, self.year, self.company, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
 
     def get_scheduleA(self):
-        field_dictionary = frappe.db.sql("""SELECT 
+        field_dictionary = frappe.db.sql("""SELECT
 			tlc.name, tlc.month, tlc.year,
             CONCAT(SUBSTR( tlc.employer_identification_number FROM 1 FOR 2 ),'-', SUBSTR( tlc.employer_identification_number FROM 3)) as 'FederalIDNo',
             tlc.legal_company as 'TaxpayerName',
             TRIM(tlc.address_line1) as 'Address',
             'PATERSON NJ 07053' as 'CityStateZip',
            	COALESCE(PR_LOC_TrData.pr_local_total,0) as "TobaccoGrossTotal",
-           	PR_LOC_TrData.supplier, 
+           	PR_LOC_TrData.supplier,
             PR_LOC_TrData.supplier_name,
             PR_LOC_TrData.SuppAddress,
-            PR_LOC_TrData.City, 
+            PR_LOC_TrData.City,
             PR_LOC_TrData.State,
             PR_LOC_TrData.zipcode
             from `tabTobacco Legal Compliance` AS tlc ,
@@ -474,7 +473,7 @@ class TobaccoLegalCompliance(Document):
             coalesce(ta.State,'') as "State",
             coalesce(ta.pincode,'') as "zipcode",
             SUM(rounded_total) AS pr_local_total
-         	from `tabPurchase Receipt` PR 
+         	from `tabPurchase Receipt` PR
          	left outer join tabAddress ta on ta.name = PR.supplier_address
             where PR.docstatus = 1
             and PR.set_warehouse = %s
@@ -511,13 +510,13 @@ class TobaccoLegalCompliance(Document):
             coalesce(ta.State,'') as "State",
             coalesce(ta.pincode,'') as "zipcode",
             (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as "TobaccoGrossTotal"
-            from `tabSales Invoice` tsi 
-            left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item` 
+            from `tabSales Invoice` tsi
+            left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item`
             where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') group by parent) CGT on CGT.parent=tsi.name
             inner join tabCustomer c on c.name = tsi.customer
             left outer join tabAddress ta on ta.name = tsi.customer_address
-            where tsi.docstatus=1  
-            AND NOT (coalesce(ta.State,'') = 'NJ' AND tsi.customer in ('SAMPLE/TASTING','SAMPLE/EVENT')) 
+            where tsi.docstatus=1
+            AND NOT (coalesce(ta.State,'') = 'NJ' AND tsi.customer in ('SAMPLE/TASTING','SAMPLE/EVENT'))
             and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
             and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
             where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
@@ -565,12 +564,12 @@ class TobaccoLegalCompliance(Document):
             coalesce(ta.State,'') as "State",
             coalesce(ta.pincode,'') as "zipcode",
             (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as "TobaccoGrossTotal"
-            from `tabSales Invoice` tsi 
-            left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item` 
+            from `tabSales Invoice` tsi
+            left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item`
             where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') group by parent) CGT on CGT.parent=tsi.name
             inner join tabCustomer c on c.name = tsi.customer
             left outer join tabAddress ta on ta.name = tsi.customer_address
-            where tsi.docstatus=1  
+            where tsi.docstatus=1
             AND coalesce(ta.State,'') <> 'NJ'
             and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
             and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
@@ -592,12 +591,12 @@ class TobaccoLegalCompliance(Document):
             coalesce(ta.State,'') as "State",
             coalesce(ta.pincode,'') as "zipcode",
             (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as "TobaccoGrossTotal"
-            from `tabSales Invoice` tsi 
-            left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item` 
+            from `tabSales Invoice` tsi
+            left outer join (select sum(base_net_amount) CharcolNetTotal,parent  from `tabSales Invoice Item`
             where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') group by parent) CGT on CGT.parent=tsi.name
             inner join tabCustomer c on c.name = tsi.customer
             left outer join tabAddress ta on ta.name = tsi.customer_address
-            where tsi.docstatus=1  
+            where tsi.docstatus=1
             AND coalesce(ta.State,'') = 'NJ' AND tsi.customer_name like 'SAMPLE%%' and ta.country = 'United States'
             and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
             and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
@@ -613,13 +612,13 @@ class TobaccoLegalCompliance(Document):
             (COALESCE(MTA.mt_total_amt,0)+ COALESCE(PRA.p_total,0) + COALESCE(PRLCV.totalcost,0))AS 2A_Total
             from `tabTobacco Legal Compliance` AS tlc ,
             (select  SUM(total_amount)   as mt_total_amt
-            from `tabStock Entry` as SE 
+            from `tabStock Entry` as SE
             WHERE SE.purpose = 'Material Transfer'
             and SE.docstatus = 1
             and SE.from_warehouse like '%%bond%%' and SE.to_warehouse  = %s
-            and MONTHNAME(SE.posting_date) = %s 
-            and year(SE.posting_date) =  %s 
-            and SE.name IN (SELECT DISTINCT parent from  `tabStock Entry Detail` AS SED 
+            and MONTHNAME(SE.posting_date) = %s
+            and year(SE.posting_date) =  %s
+            and SE.name IN (SELECT DISTINCT parent from  `tabStock Entry Detail` AS SED
             where SED.item_group in (
                 select
                     distinct name
@@ -628,15 +627,15 @@ class TobaccoLegalCompliance(Document):
                 where
                     parent_item_group = 'TOBACCO'
             ))
-            ) as MTA,   
-            (select 
+            ) as MTA,
+            (select
             COALESCE (SUM(COALESCE (rounded_total,0)),0) AS p_total
-            from `tabPurchase Receipt` PR 
+            from `tabPurchase Receipt` PR
             INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States'
             where PR.docstatus = 1
-            and PR.set_warehouse =  %s  
-            and MONTHNAME(PR.posting_date) =  %s  
-            and year(PR.posting_date) =  %s 
+            and PR.set_warehouse =  %s
+            and MONTHNAME(PR.posting_date) =  %s
+            and year(PR.posting_date) =  %s
             and PR.name in (select distinct parent from `tabPurchase Receipt Item` PRI
             where  PRI.item_group in (
                 select
@@ -647,18 +646,18 @@ class TobaccoLegalCompliance(Document):
                     parent_item_group = 'TOBACCO'))
             ) as PRA,
             ( SELECT sum(COALESCE(tlctc.amount,0)) as totalcost
-            FROM `tabLanded Cost Voucher` tlcv 
+            FROM `tabLanded Cost Voucher` tlcv
             INNER JOIN `tabLanded Cost Purchase Receipt`tlcpr on tlcv.name = tlcpr.parent
             and tlcpr.receipt_document_type = 'Purchase Receipt' and tlcpr.receipt_document
             in
-            (SELECT distinct PR.name from `tabPurchase Receipt` PR  
+            (SELECT distinct PR.name from `tabPurchase Receipt` PR
             INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States'
-            where 
+            where
             PR.docstatus = 1
             and PR.set_warehouse = %s
             and MONTHNAME(PR.posting_date) =  %s
             and year(PR.posting_date) = %s
-            and PR.name in  (select distinct PRI.parent from  `tabPurchase Receipt Item` PRI 
+            and PR.name in  (select distinct PRI.parent from  `tabPurchase Receipt Item` PRI
             where PRI.item_group in (
                 select
                     distinct name
@@ -668,9 +667,9 @@ class TobaccoLegalCompliance(Document):
                     parent_item_group = 'TOBACCO'
             )))
             INNER JOIN `tabLanded Cost Taxes and Charges` tlctc on tlcv.name = tlctc.parent
-            and tlctc.parenttype = "Landed Cost Voucher" 
-            INNER JOIN  tabAccount  as ac on 
-            tlctc.expense_account =  ac.name 
+            and tlctc.parenttype = "Landed Cost Voucher"
+            INNER JOIN  tabAccount  as ac on
+            tlctc.expense_account =  ac.name
             and ac.account_type='Tax') as PRLCV
             where tlc.name = %s""", (self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.name), as_dict=True)
         return field_dictionary and field_dictionary[0] or {}
@@ -686,19 +685,19 @@ class TobaccoLegalCompliance(Document):
         date = datetime.date(year, month, 1)
         opening_stock = frappe.db.sql("""
 select round(coalesce(sum(OpeningWeigth),0)*2.20462,2)	 AS OpeningBalance
-			from 
-(SELECT CASE sle.stock_uom 
+			from
+(SELECT CASE sle.stock_uom
 			WHEN 'BOX' THEN SUM(0.25*actual_qty)
 			WHEN 'MASTER CASE' THEN SUM(6*actual_qty)
 			WHEN 'CARTON' THEN SUM(actual_qty*0.5)
-			ELSE 0 
+			ELSE 0
 			END AS OpeningWeigth
 		FROM `tabStock Ledger Entry` sle
-		INNER JOIN `tabItem` AS TI 
+		INNER JOIN `tabItem` AS TI
 		ON sle.item_code = TI.item_code
 		WHERE posting_date < %s
 		AND TI.item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO')
-		group by sle.stock_uom ) as OW	
+		group by sle.stock_uom ) as OW
         """, (date))
         if len(opening_stock) > 0:
             self.opening_stock = opening_stock[0][0]
@@ -841,7 +840,7 @@ def get_tpt10_summary(docname):
     data = frappe.db.sql("""
 with fn as
 (
-select 
+select
 si.posting_date as invoice_date,
 si.name as invoice,
 si.customer as customer_profile,
@@ -853,31 +852,31 @@ coalesce(ta.country,'') as country,
 if(tt.head is not null,'YES','NO') as tax_collected,
 coalesce(c.customers_license,'N/A') as license,
 (si.base_net_total - coalesce(CGT.CharcolNetTotal,0)) as tobacco_gross_total,
-st.head sales_tax, 
-st.tax sales_tax_amt, 
-tt.head tobacco_tax, 
+st.head sales_tax,
+st.tax sales_tax_amt,
+tt.head tobacco_tax,
 coalesce(tt.tax,0) as tobacco_tax_amt,
 round(coalesce(item.total_weight,0),2) as weight_kg,
 round(coalesce(item.total_weight,0)*2.20462,2) as weight_lb
 from `tabSales Invoice` si
-left outer join 
+left outer join
 (
 	select sum(base_net_amount) CharcolNetTotal,parent
-	from `tabSales Invoice Item` 
-	where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO') 
+	from `tabSales Invoice Item`
+	where item_group in (select distinct name from `tabItem Group` where parent_item_group <> 'TOBACCO')
 	group by parent
 ) CGT on CGT.parent=si.name
-left outer join 
+left outer join
 (
-SELECT sum(total_weight)as total_weight, parent 
-from 
+SELECT sum(total_weight)as total_weight, parent
+from
 (
 	select CASE weight_uom
 	WHEN 'Gram' then sum(total_weight/1000)
 	ELSE sum(total_weight)
 	END as total_weight,
-	parent 
-	from `tabSales Invoice Item` 
+	parent
+	from `tabSales Invoice Item`
 	where item_group in (select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO') group by parent,weight_uom) as t group by parent) item on item.parent=si.name
 	inner join tabCustomer c on c.name = si.customer
 	left outer join tabAddress ta on ta.name = si.customer_address
@@ -893,11 +892,11 @@ from `tabSales Taxes and Charges` st
 where account_head like 'Tobacco.Tax%%'
 group by parent
 ) tt on tt.parent = si.name
-WHERE 
-	si.docstatus=1 
-	and si.is_return <> 1 
-	and si.name in 
-		(select distinct parent from `tabSales Invoice Item` where item_group in 
+WHERE
+	si.docstatus=1
+	and si.is_return <> 1
+	and si.name in
+		(select distinct parent from `tabSales Invoice Item` where item_group in
 			(select distinct name from `tabItem Group` where parent_item_group = 'TOBACCO'))
 	and si.posting_date >= str_to_date(concat(%(year)s,%(month)s,'01'),'%%Y%%M%%d')
 	and si.posting_date <= last_day(str_to_date(concat(%(year)s,%(month)s,'01'),'%%Y%%M%%d'))
@@ -915,10 +914,10 @@ union all
 select 'NJ SAMPLE EXCLUDED [TOTAL_SALES]' grp, fn.* from fn
 union all
 select 'INTERNATIONAL SALES' grp, fn.* from fn
-where country <> 'UNITED STATES' 
+where country <> 'UNITED STATES'
 union all
 select 'NON-NJ STATEWISE SALES' grp, fn.* from fn
-where state <> 'NJ' and country = 'UNITED STATES' 
+where state <> 'NJ' and country = 'UNITED STATES'
     """, dict(
     month=doc.month,
     year=doc.year,
@@ -940,55 +939,13 @@ where state <> 'NJ' and country = 'UNITED STATES'
 @frappe.whitelist()
 def set_opening_stock_from_previous_closing_stock(docname):
     doc = frappe.get_doc("Tobacco Legal Compliance", docname)
-    # doc 01,month,year - 1 day
-    to_date = frappe.utils.add_days(datetime.datetime.strptime("{}{}".format(doc.month, doc.year), "%B%Y"), -1)
-    from_date = frappe.utils.get_first_day(to_date)
-    opening_stock = frappe.db.sql("""
-    with ig as (
-        select name from `tabItem Group`
-        where parent_item_group = 'TOBACCO'
-    ),
-    mtiw as (
-        select coalesce(round(sum(I.weight_per_unit*SED.qty)*2.20462,2),0) mtiw
-        from `tabStock Entry` SE
-        inner join `tabStock Entry Detail` SED on SED.parent =  SE.name
-        inner join tabItem I on I.item_code = SED.item_code
-        inner join ig on ig.name = SED.item_group
-        and SED.s_warehouse like '%%bond%%'
-        and SED.t_warehouse = %(warehouse)s
-        where SE.purpose = 'Material Transfer' and SE.docstatus = 1
-        and SE.posting_date between %(from_date)s and %(to_date)s
-    ),
-    prw as (
-        select round(SUM(coalesce(PR.total_net_weight,0) * 2.20462),2) AS p_weight
-        from `tabPurchase Receipt` PR
-        INNER JOIN tabSupplier  SR ON PR.supplier = SR.name AND SR.country  <> 'United States' 
-        where PR.docstatus = 1
-        and PR.set_warehouse = %(warehouse)s
-        and PR.posting_date between %(from_date)s and %(to_date)s
-        and exists (select 1 from `tabPurchase Receipt Item` x 
-        where x.parent = PR.name and x.item_group in (select name from ig))
-    ),
-    domestic_sales as (
-        select coalesce(sum(round(total_weight * if(weight_uom='Gram',1/1000,1) * 2.20462,2)),0) total_tobacco_weight_lbs
-        from `tabSales Invoice` SI
-        inner join `tabSales Invoice Item` SIT on SIT.parent = SI.name
-        inner join ig on ig.name = SIT.item_group
-        where SI.docstatus = 1 and SI.is_return <> 1
-        and SI.posting_date between %(from_date)s and %(to_date)s
-    )    
-    select 
-    coalesce((
-        select opening_stock 
-        from `tabTobacco Legal Compliance` x
-        where x.report_type = 'TTB-5220'
-        and x.month = monthname(%(from_date)s) and year = year(%(from_date)s)
-    ),0)
-    + coalesce(mtiw.mtiw,0) 
-    + coalesce(prw.p_weight,0) 
-    - coalesce(domestic_sales.total_tobacco_weight_lbs,0) 
-    from `tabTobacco Legal Compliance` tlc , mtiw, prw, domestic_sales
-    where tlc.name = %(docname)s""", dict(docname=doc.name, from_date=from_date, to_date=to_date, warehouse=doc.company_warehouse, company=doc.company),
-    debug=True)
-
-    return opening_stock and opening_stock[0][0] or 0
+    prev_month = frappe.utils.add_days(datetime.datetime.strptime("{}{}".format(doc.month, doc.year), "%B%Y"), -1)
+    for d in frappe.get_list("Tobacco Legal Compliance", filters={
+        "report_type": "TTB-5220",
+        "month": frappe.utils.formatdate(prev_month, "MMMM"),
+        "year": frappe.utils.formatdate(prev_month, "Y"),
+        "company": doc.company,
+    }):
+        data = frappe.get_doc("Tobacco Legal Compliance", d).get_55206()
+        return data.get("PIPE TOBACCO Pounds g19 On Hand End of Month") or 0
+    return 0
