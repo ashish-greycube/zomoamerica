@@ -146,7 +146,6 @@ class TobaccoLegalCompliance(Document):
 
 # return field_dictionary
 
-
     def get_55206(self):
         month_and_year = "%s / %s" % (time.strptime(
             self.month, '%B').tm_mon, self.year)
@@ -939,8 +938,9 @@ where state <> 'NJ' and country = 'UNITED STATES'
 @frappe.whitelist()
 def set_opening_stock_from_previous_closing_stock(docname):
     doc = frappe.get_doc("Tobacco Legal Compliance", docname)
-    from_date = datetime.datetime.strptime("{}{}".format(doc.month, doc.year), "%B%Y")
-    to_date = frappe.utils.get_last_day(from_date)
+    # doc 01,month,year - 1 day
+    to_date = frappe.utils.add_days(datetime.datetime.strptime("{}{}".format(doc.month, doc.year), "%B%Y"), -1)
+    from_date = frappe.utils.get_first_day(to_date)
     opening_stock = frappe.db.sql("""
     with ig as (
         select name from `tabItem Group`
