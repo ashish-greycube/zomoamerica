@@ -233,7 +233,7 @@ class TobaccoLegalCompliance(Document):
     and year(si.posting_date) = %s
     and si.company = %s
    ) as domesticsales
-    where tlc.name = %s""", (month_and_year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.name), as_dict=True, debug=True)
+    where tlc.name = %s""", (month_and_year, self.company_warehouse, self.month, self.year, self.company_warehouse, self.month, self.year, self.month, self.year, self.company, self.name), as_dict=True, debug=False)
 
         # field_dictionary = {
         #     '1 NAME OF IMPORTER': 'MAWGROUP LLC',
@@ -519,7 +519,7 @@ class TobaccoLegalCompliance(Document):
             AND NOT (coalesce(ta.State,'') = 'NJ' AND tsi.customer in ('SAMPLE/TASTING','SAMPLE/EVENT'))
             and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
             and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
-            where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
+            where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=False)
         return field_dictionary or {}
 
     def get_scheduleC(self):
@@ -546,7 +546,7 @@ class TobaccoLegalCompliance(Document):
 			and not exists (select 1 from `tabSales Taxes and Charges` x where x.parent = si.name and x.account_head like 'Tobacco.Tax%%')
 			AND coalesce(ta.State,'')='NJ'
 			AND (si.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0 ) as TrData
-			            where tlc.name =%s""", (self.month, self.year, self.name), as_dict=True, debug=True)
+			            where tlc.name =%s""", (self.month, self.year, self.name), as_dict=True, debug=False)
         return field_dictionary or {}
 
     def get_scheduleD(self):
@@ -573,7 +573,7 @@ class TobaccoLegalCompliance(Document):
             AND coalesce(ta.State,'') <> 'NJ'
             and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
             and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
-            where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
+            where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=False)
         return field_dictionary or {}
 
     def get_scheduleF(self):
@@ -600,7 +600,7 @@ class TobaccoLegalCompliance(Document):
             AND coalesce(ta.State,'') = 'NJ' AND tsi.customer_name like 'SAMPLE%%' and ta.country = 'United States'
             and MONTHNAME(tsi.posting_date) = %s and YEAR(tsi.posting_date) = %s
             and (tsi.base_net_total - coalesce(CGT.CharcolNetTotal,0)) <> 0) as TrData
-            where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=True)
+            where tlc.name = %s""", (self.month, self.year, self.name), as_dict=True, debug=False)
         return field_dictionary or {}
 
     def get_scheduleI(self):
@@ -921,7 +921,7 @@ where state <> 'NJ' and country = 'UNITED STATES'
     """, dict(
     month=doc.month,
     year=doc.year,
-    company=doc.company), as_dict=1, debug=True)
+    company=doc.company), as_dict=1, debug=False)
 
     html = frappe.render_template("zomoamerica/zomoamerica/doctype/tobacco_legal_compliance/tpt10_summary.html", dict(data=data, docname=docname))
     pdf = get_pdf(html, {
