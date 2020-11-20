@@ -238,7 +238,7 @@
                 <tr class="total">
                     <td class="text-bold">Total</td>
                     <td class="text-bold text-right">
-                        {{ data | selectattr("grp", "eq", "NON-NJ STATEWISE SALES") | sum(attribute = "tobacco_tax_amt") | round(2,"common") }}
+                        {{ data | selectattr("grp", "in", ["NON-NJ STATEWISE SALES", "NJ SALES TAXABLE"]) | sum(attribute = "tobacco_tax_amt") | round(2,"common") }}
                     </td>
                 </tr>
             </tbody>
