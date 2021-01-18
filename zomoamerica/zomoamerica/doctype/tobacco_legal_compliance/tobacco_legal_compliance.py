@@ -46,7 +46,7 @@ class TobaccoLegalCompliance(Document):
       SUM(coalesce(LCT.amount, 0))
     as TAX_7501
     FROM `tabLanded Cost Taxes and Charges` AS LCT
-    where LCT.expense_account IN (SELECT distinct name from tabAccount as AC1 where AC1.account_type = 'Tax')
+    where LCT.expense_account like "Federal Excise Tax%%"
     AND LCT.PARENT IN (select distinct parent from `tabStock Entry Detail` SED
     where SED.s_warehouse like '%%bonded%%' and SED.t_warehouse  = %s
     AND SED.item_group in (
@@ -85,7 +85,7 @@ class TobaccoLegalCompliance(Document):
      and tlctc.parenttype = "Landed Cost Voucher"
      INNER JOIN  tabAccount  as ac on
      tlctc.expense_account =  ac.name
-     and ac.account_type='Tax'
+     and tlctc.expense_account like "Federal Excise Tax%%"
     ) AS PRTAX,
     (select  coalesce(round(SUM(coalesce(coalesce(I.weight_per_unit,0) * coalesce(SED.qty,0), 0)) * 2.20462,2),0)  as mti_w
     from `tabStock Entry Detail` SED
@@ -387,7 +387,7 @@ class TobaccoLegalCompliance(Document):
                 where
                     parent_item_group = 'TOBACCO'))
             ) as PR_LOCAL,
-            (SELECT  sum(amount) AS total_sales from  `tabSales Invoice Item`
+            (SELECT  sum(base_net_amount) AS total_sales from  `tabSales Invoice Item`
                                     where item_group in
                                     (select distinct name from `tabItem Group`
                                     where parent_item_group = 'TOBACCO')
@@ -398,7 +398,7 @@ class TobaccoLegalCompliance(Document):
             and year(si.posting_date) =  %s
             and si.company = %s  ))
             as TOTAL_SALES,
-            (SELECT  sum(amount)as nj_sample_sales from  `tabSales Invoice Item`
+            (SELECT  sum(base_net_amount)as nj_sample_sales from  `tabSales Invoice Item`
                                     where item_group in
                                     (select distinct name from `tabItem Group`
                                     where parent_item_group = 'TOBACCO')
@@ -412,7 +412,7 @@ class TobaccoLegalCompliance(Document):
             and year(si.posting_date) =  %s
             and si.company =  %s )
             )as NJSAMPLES,
-            (SELECT  sum(amount)as nj_sales from  `tabSales Invoice Item`
+            (SELECT  sum(base_net_amount)as nj_sales from  `tabSales Invoice Item`
                                     where item_group in
                                     (select distinct name from `tabItem Group`
                                     where parent_item_group = 'TOBACCO')
